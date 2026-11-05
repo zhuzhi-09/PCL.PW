@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <script>document.documentElement.classList.add('js');</script>
 <title>PCL.PW</title>
-<meta name="description" content="PCL.PW：基于 Plain Craft Launcher 的第三方衍生作品，电脑和手机上的 Java Minecraft 启动器，支持 Windows 与 Android。">
+<meta name="description" content="PCL.PW：基于 Plain Craft Launcher 的第三方衍生作品，电脑和手机上的 Java Minecraft 启动器，支持 Windows、Android 与 macOS。">
 <link rel="icon" href="favicon.png">
 <link rel="stylesheet" href="demo/demo.css?v=4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -189,6 +189,8 @@ main > section { padding: 40px 0; }
 .s-card .s-tile.ter { background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container); }
 .s-card h3 { color: var(--md-sys-color-on-surface); }
 .s-card p { margin-top: 8px; color: var(--md-sys-color-on-surface-variant); }
+/* 下载区有四张卡片：宽屏时排成两行两列 */
+@media (min-width: 600px) { .dl .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .dl .s-card p { flex: 1; }
 .dl .s-card .btn { margin-top: 24px; align-self: flex-start; }
 .ver { margin-top: 24px; color: var(--md-sys-color-on-surface-variant); }
@@ -327,7 +329,7 @@ body { overflow-x: clip; }
       <div class="hero-text">
         <h1 class="display-medium">PCL.PW</h1>
         <p class="tagline headline-small">电脑和手机上的 Java Minecraft 启动器</p>
-        <p class="s-sub body-large">Plain Craft Launcher（PCL）的第三方衍生作品。界面布局参考 PCL 社区版（PCL-CE），视觉采用 Material Design 3，Windows 与 Android 通用。</p>
+        <p class="s-sub body-large">Plain Craft Launcher（PCL）的第三方衍生作品。界面布局参考 PCL 社区版（PCL-CE），视觉采用 Material Design 3，Windows、Android 与 macOS 通用。</p>
         <div class="actions">
           <a class="btn filled label-large" href="#download"><span class="icon" aria-hidden="true">download</span>立即下载</a>
           <a class="btn s-tonal label-large" href="https://github.com/zhuzhi-09/PCL.PW">查看源代码</a>
@@ -386,8 +388,13 @@ body { overflow-x: clip; }
           <p class="body-medium">Android 8.0 及以上，64 位 ARM 处理器。</p>
           <a class="btn filled label-large" data-asset="android-arm64.apk" href="https://github.com/zhuzhi-09/PCL.PW/releases/latest"><span class="icon" aria-hidden="true">download</span><span class="label">下载</span></a>
         </div>
+        <div class="s-card">
+          <div class="s-tile"><span class="icon" aria-hidden="true">laptop_mac</span></div><h3 class="title-large">macOS</h3>
+          <p class="body-medium">macOS 12 及以上，Apple 芯片与 Intel 通用。部分适配：Apple 芯片上暂时只能启动 1.19 及以上的版本。没有经过 Apple 公证，首次打开时请在「系统设置 → 隐私与安全性」中点「仍要打开」。</p>
+          <a class="btn filled label-large" data-asset="macos.dmg" href="https://github.com/zhuzhi-09/PCL.PW/releases/latest"><span class="icon" aria-hidden="true">download</span><span class="label">下载</span></a>
+        </div>
       </div>
-      <p class="ver body-medium" id="ver">macOS 版正在测试，Linux 版尚未适配。想尝鲜可以下载 <a href="https://github.com/zhuzhi-09/PCL.PW/releases/tag/nightly">Nightly 测试版</a>，可能不稳定。</p>
+      <p class="ver body-medium" id="ver">从 GitHub 下载较慢时，可以到 <a href="https://download.zhuzhi.site">竹纸软件下载站</a> 下载（与 GitHub 同步最新正式版）。Linux 版尚未适配。想尝鲜可以下载 <a href="https://github.com/zhuzhi-09/PCL.PW/releases/tag/nightly">Nightly 测试版</a>，可能不稳定。</p>
     </div>
   </section>
 

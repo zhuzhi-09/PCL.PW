@@ -1,62 +1,74 @@
 {
   "format": 1,
-  "generatedAt": "2026-11-05T12:47:29Z",
+  "generatedAt": "2026-11-05T13:09:57Z",
   "channels": {
     "stable": {
-      "tag": "v0.3.0",
-      "name": "PCL.PW v0.3.0",
-      "body": "- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：正在测试，暂不提供下载\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "tag": "v0.3.1",
+      "name": "PCL.PW v0.3.1",
+      "body": "## 新增\n\n- **macOS 版（部分适配）**：Apple 芯片与 Intel 通用，需要 macOS 12 及以上。\n  - 可以启动 **1.19 及以上**的版本（含 Fabric、Forge、NeoForge 等加载器）。\n  - **1.18 及更早的版本在 Apple 芯片上暂时无法启动**（游戏自带的 LWJGL 没有 Apple 芯片的本地库），计划在下一次大版本更新中支持。Intel Mac 不受影响。\n  - 使用系统原生的窗口按钮。\n  - 没有经过 Apple 公证：首次打开时如果提示「无法验证开发者」，请到「系统设置 → 隐私与安全性」中点「仍要打开」。\n- **局域网互传**（工具 → 局域网互传）：在同一局域网的电脑和手机之间传输整个版本，或者模组、配置、存档、资源包等内容。接收方显示 IP、端口和配对码，导入前自动备份。\n- **安卓 Java 管理**：在设置中下载、删除 Java 8 / 17 / 21 / 25，并为全局或单个版本手动选择 Java。\n- **首页公告**：显示在「Minecraft 版本动态」上方，可以关闭。\n- 检查更新改用 PCL.PW 官网接口（<https://pcl.pw.zhuzhi.site>），国内更容易连上；官网不可用时自动改用 GitHub。\n\n## 改进\n\n- 正版劝导改为四个按钮：「带我去商店」「这次先启动」「试玩」「返回」。\n- 版本使用的 Java 过高时提醒（例如 Forge 1.12.2 及更早的版本使用 Java 9 以上）。\n- AI 助手在安卓上也能看到并设置 Java。\n- 任务页的耗时每秒刷新。\n- 关于页与说明文字写明：PCL.PW 是 PCL 的衍生作品，界面布局参考 PCL 社区版（PCL-CE）。\n\n## 修复\n\n- 安卓上安装 Forge 时库文件下载失败；预先用启动器的下载器（含镜像）下载安装器需要的库。\n- 同时安装多个 Forge 时可能识别成别的版本，导致启动崩溃。\n- 安卓上 Forge 1.7 ~ 1.12 启动时因加载画面崩溃（StitcherException）。\n- 安卓上 Java 下载完成后任务一直停在「解压」。\n\n## 下载\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": false,
       "commit": "main",
-      "publishedAt": "2026-11-03T23:22:35Z",
-      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.0",
+      "publishedAt": "2026-11-05T13:09:56Z",
+      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.1",
       "assets": [
         {
-          "name": "PCL.PW-0.3.0-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.0/PCL.PW-0.3.0-android-arm64.apk",
-          "size": 46906835,
-          "sha256": "3e1c46f7dea362ca63b544331c870c9716a0131fe6a16373821eaf4e4a8e5eca"
+          "name": "PCL.PW-0.3.1-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-android-arm64.apk",
+          "size": 46937467,
+          "sha256": "2d69b93bf897da66a98dc8c122c4b9e947978d62ba6ac842cde9bc6a3d3b39c5"
         },
         {
-          "name": "PCL.PW-0.3.0-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.0/PCL.PW-0.3.0-windows-x64-portable.zip",
-          "size": 15368511,
-          "sha256": "0e5d492df7fc3b33dc019d87582429bd4d1c94591688c17a7801ad49cb9bc375"
+          "name": "PCL.PW-0.3.1-macos.dmg",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-macos.dmg",
+          "size": 26729950,
+          "sha256": "4d2917531f17bed726cb22b8ed939809fc704d526574f669e2102fd689bea1da"
         },
         {
-          "name": "PCL.PW-0.3.0-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.0/PCL.PW-0.3.0-windows-x64-setup.exe",
-          "size": 15386112,
-          "sha256": "eb03a21972b6afd937a36cef5ea6ce0681db975a7efd9a67914c893a96bf6a7f"
+          "name": "PCL.PW-0.3.1-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-portable.zip",
+          "size": 15482134,
+          "sha256": "4300482d40bd10d63f2eedc38397d479802e7f12a14d5c38d3c67bedd4bd9087"
+        },
+        {
+          "name": "PCL.PW-0.3.1-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-setup.exe",
+          "size": 15499776,
+          "sha256": "6c446791ac3679c30a003c1a5922793da9a3bac066eed54e2d31f733a1d363d1"
         }
       ]
     },
     "preview": {
-      "tag": "v0.3.0",
-      "name": "PCL.PW v0.3.0",
-      "body": "- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：正在测试，暂不提供下载\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "tag": "v0.3.1",
+      "name": "PCL.PW v0.3.1",
+      "body": "## 新增\n\n- **macOS 版（部分适配）**：Apple 芯片与 Intel 通用，需要 macOS 12 及以上。\n  - 可以启动 **1.19 及以上**的版本（含 Fabric、Forge、NeoForge 等加载器）。\n  - **1.18 及更早的版本在 Apple 芯片上暂时无法启动**（游戏自带的 LWJGL 没有 Apple 芯片的本地库），计划在下一次大版本更新中支持。Intel Mac 不受影响。\n  - 使用系统原生的窗口按钮。\n  - 没有经过 Apple 公证：首次打开时如果提示「无法验证开发者」，请到「系统设置 → 隐私与安全性」中点「仍要打开」。\n- **局域网互传**（工具 → 局域网互传）：在同一局域网的电脑和手机之间传输整个版本，或者模组、配置、存档、资源包等内容。接收方显示 IP、端口和配对码，导入前自动备份。\n- **安卓 Java 管理**：在设置中下载、删除 Java 8 / 17 / 21 / 25，并为全局或单个版本手动选择 Java。\n- **首页公告**：显示在「Minecraft 版本动态」上方，可以关闭。\n- 检查更新改用 PCL.PW 官网接口（<https://pcl.pw.zhuzhi.site>），国内更容易连上；官网不可用时自动改用 GitHub。\n\n## 改进\n\n- 正版劝导改为四个按钮：「带我去商店」「这次先启动」「试玩」「返回」。\n- 版本使用的 Java 过高时提醒（例如 Forge 1.12.2 及更早的版本使用 Java 9 以上）。\n- AI 助手在安卓上也能看到并设置 Java。\n- 任务页的耗时每秒刷新。\n- 关于页与说明文字写明：PCL.PW 是 PCL 的衍生作品，界面布局参考 PCL 社区版（PCL-CE）。\n\n## 修复\n\n- 安卓上安装 Forge 时库文件下载失败；预先用启动器的下载器（含镜像）下载安装器需要的库。\n- 同时安装多个 Forge 时可能识别成别的版本，导致启动崩溃。\n- 安卓上 Forge 1.7 ~ 1.12 启动时因加载画面崩溃（StitcherException）。\n- 安卓上 Java 下载完成后任务一直停在「解压」。\n\n## 下载\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": false,
       "commit": "main",
-      "publishedAt": "2026-11-03T23:22:35Z",
-      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.0",
+      "publishedAt": "2026-11-05T13:09:56Z",
+      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.1",
       "assets": [
         {
-          "name": "PCL.PW-0.3.0-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.0/PCL.PW-0.3.0-android-arm64.apk",
-          "size": 46906835,
-          "sha256": "3e1c46f7dea362ca63b544331c870c9716a0131fe6a16373821eaf4e4a8e5eca"
+          "name": "PCL.PW-0.3.1-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-android-arm64.apk",
+          "size": 46937467,
+          "sha256": "2d69b93bf897da66a98dc8c122c4b9e947978d62ba6ac842cde9bc6a3d3b39c5"
         },
         {
-          "name": "PCL.PW-0.3.0-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.0/PCL.PW-0.3.0-windows-x64-portable.zip",
-          "size": 15368511,
-          "sha256": "0e5d492df7fc3b33dc019d87582429bd4d1c94591688c17a7801ad49cb9bc375"
+          "name": "PCL.PW-0.3.1-macos.dmg",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-macos.dmg",
+          "size": 26729950,
+          "sha256": "4d2917531f17bed726cb22b8ed939809fc704d526574f669e2102fd689bea1da"
         },
         {
-          "name": "PCL.PW-0.3.0-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.0/PCL.PW-0.3.0-windows-x64-setup.exe",
-          "size": 15386112,
-          "sha256": "eb03a21972b6afd937a36cef5ea6ce0681db975a7efd9a67914c893a96bf6a7f"
+          "name": "PCL.PW-0.3.1-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-portable.zip",
+          "size": 15482134,
+          "sha256": "4300482d40bd10d63f2eedc38397d479802e7f12a14d5c38d3c67bedd4bd9087"
+        },
+        {
+          "name": "PCL.PW-0.3.1-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-setup.exe",
+          "size": 15499776,
+          "sha256": "6c446791ac3679c30a003c1a5922793da9a3bac066eed54e2d31f733a1d363d1"
         }
       ]
     },

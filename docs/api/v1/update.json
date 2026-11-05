@@ -1,74 +1,74 @@
 {
   "format": 1,
-  "generatedAt": "2026-11-05T14:07:18Z",
+  "generatedAt": "2026-11-05T14:07:30Z",
   "channels": {
     "stable": {
-      "tag": "v0.3.1",
-      "name": "PCL.PW v0.3.1",
-      "body": "## 新增\n\n- **macOS 版（部分适配）**：Apple 芯片与 Intel 通用，需要 macOS 12 及以上。\n  - 可以启动 **1.19 及以上**的版本（含 Fabric、Forge、NeoForge 等加载器）。\n  - **1.18 及更早的版本在 Apple 芯片上暂时无法启动**（游戏自带的 LWJGL 没有 Apple 芯片的本地库），计划在下一次大版本更新中支持。Intel Mac 不受影响。\n  - 使用系统原生的窗口按钮。\n  - 没有经过 Apple 公证：首次打开时如果提示「无法验证开发者」，请到「系统设置 → 隐私与安全性」中点「仍要打开」。\n- **局域网互传**（工具 → 局域网互传）：在同一局域网的电脑和手机之间传输整个版本，或者模组、配置、存档、资源包等内容。接收方显示 IP、端口和配对码，导入前自动备份。\n- **安卓 Java 管理**：在设置中下载、删除 Java 8 / 17 / 21 / 25，并为全局或单个版本手动选择 Java。\n- **首页公告**：显示在「Minecraft 版本动态」上方，可以关闭。\n- 检查更新改用 PCL.PW 官网接口（<https://pcl.pw.zhuzhi.site>），国内更容易连上；官网不可用时自动改用 GitHub。\n\n## 改进\n\n- 正版劝导改为四个按钮：「带我去商店」「这次先启动」「试玩」「返回」。\n- 版本使用的 Java 过高时提醒（例如 Forge 1.12.2 及更早的版本使用 Java 9 以上）。\n- AI 助手在安卓上也能看到并设置 Java。\n- 任务页的耗时每秒刷新。\n- 关于页与说明文字写明：PCL.PW 是 PCL 的衍生作品，界面布局参考 PCL 社区版（PCL-CE）。\n\n## 修复\n\n- 安卓上安装 Forge 时库文件下载失败；预先用启动器的下载器（含镜像）下载安装器需要的库。\n- 同时安装多个 Forge 时可能识别成别的版本，导致启动崩溃。\n- 安卓上 Forge 1.7 ~ 1.12 启动时因加载画面崩溃（StitcherException）。\n- 安卓上 Java 下载完成后任务一直停在「解压」。\n\n## 下载\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "tag": "v0.3.2",
+      "name": "PCL.PW v0.3.2",
+      "body": "## 修复\n\n- **macOS（Apple 芯片）：1.13～1.18 现在可以启动了。** 启动这些版本时，启动器会自动把游戏自带的 LWJGL 换成支持 Apple 芯片的 3.3.1，并使用内置的修改版 GLFW（去掉了 macOS 上设置窗口图标时的报错），不需要任何手动设置。1.12.2 及更早的版本暂时仍无法在 Apple 芯片上启动，计划在下一次大版本更新中支持；Intel Mac 不受影响。\n- **局域网互传：** 传输包会记录发送方版本的加载器和游戏版本（例如「Fabric · 1.20.1」）。导入部分内容时，默认选中加载器和游戏版本都相同的版本；如果把模组导入到没有对应加载器的版本（例如把 Fabric 模组导入原版），会提示模组不会被加载，并建议改用「整个版本」发送。发送方和接收方都需要更新到 0.3.2 才会显示这个提示。\n\n修改版 GLFW 基于 GLFW 3.4（zlib 许可证），修改内容与构建方法见源代码中的 `tool/glfw/README.md`。\n\n## 下载\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": false,
       "commit": "main",
-      "publishedAt": "2026-11-05T13:09:56Z",
-      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.1",
+      "publishedAt": "2026-11-05T14:07:29Z",
+      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.2",
       "assets": [
         {
-          "name": "PCL.PW-0.3.1-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-android-arm64.apk",
-          "size": 46937467,
-          "sha256": "2d69b93bf897da66a98dc8c122c4b9e947978d62ba6ac842cde9bc6a3d3b39c5"
+          "name": "PCL.PW-0.3.2-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-android-arm64.apk",
+          "size": 47011495,
+          "sha256": "7943cc4bad95c79bb048f25339434128301d8579dbe10e3e8b3656985bc019f7"
         },
         {
-          "name": "PCL.PW-0.3.1-macos.dmg",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-macos.dmg",
-          "size": 26729950,
-          "sha256": "4d2917531f17bed726cb22b8ed939809fc704d526574f669e2102fd689bea1da"
+          "name": "PCL.PW-0.3.2-macos.dmg",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-macos.dmg",
+          "size": 26822361,
+          "sha256": "02ebe44093f616b5f6d63677c68741097b99b1fca40686dbc066bcdba5a07143"
         },
         {
-          "name": "PCL.PW-0.3.1-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-portable.zip",
-          "size": 15482134,
-          "sha256": "4300482d40bd10d63f2eedc38397d479802e7f12a14d5c38d3c67bedd4bd9087"
+          "name": "PCL.PW-0.3.2-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-windows-x64-portable.zip",
+          "size": 15557653,
+          "sha256": "7d4784d285f857918440c303a28d2348d8f9303af7e151dfdcf84aab980a7d97"
         },
         {
-          "name": "PCL.PW-0.3.1-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-setup.exe",
-          "size": 15499776,
-          "sha256": "6c446791ac3679c30a003c1a5922793da9a3bac066eed54e2d31f733a1d363d1"
+          "name": "PCL.PW-0.3.2-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-windows-x64-setup.exe",
+          "size": 15575552,
+          "sha256": "e4f3dbf63e811b38f5e5dc071205904ae2fe098ed91b8f75f291dc5cf80e29e5"
         }
       ]
     },
     "preview": {
-      "tag": "v0.3.1",
-      "name": "PCL.PW v0.3.1",
-      "body": "## 新增\n\n- **macOS 版（部分适配）**：Apple 芯片与 Intel 通用，需要 macOS 12 及以上。\n  - 可以启动 **1.19 及以上**的版本（含 Fabric、Forge、NeoForge 等加载器）。\n  - **1.18 及更早的版本在 Apple 芯片上暂时无法启动**（游戏自带的 LWJGL 没有 Apple 芯片的本地库），计划在下一次大版本更新中支持。Intel Mac 不受影响。\n  - 使用系统原生的窗口按钮。\n  - 没有经过 Apple 公证：首次打开时如果提示「无法验证开发者」，请到「系统设置 → 隐私与安全性」中点「仍要打开」。\n- **局域网互传**（工具 → 局域网互传）：在同一局域网的电脑和手机之间传输整个版本，或者模组、配置、存档、资源包等内容。接收方显示 IP、端口和配对码，导入前自动备份。\n- **安卓 Java 管理**：在设置中下载、删除 Java 8 / 17 / 21 / 25，并为全局或单个版本手动选择 Java。\n- **首页公告**：显示在「Minecraft 版本动态」上方，可以关闭。\n- 检查更新改用 PCL.PW 官网接口（<https://pcl.pw.zhuzhi.site>），国内更容易连上；官网不可用时自动改用 GitHub。\n\n## 改进\n\n- 正版劝导改为四个按钮：「带我去商店」「这次先启动」「试玩」「返回」。\n- 版本使用的 Java 过高时提醒（例如 Forge 1.12.2 及更早的版本使用 Java 9 以上）。\n- AI 助手在安卓上也能看到并设置 Java。\n- 任务页的耗时每秒刷新。\n- 关于页与说明文字写明：PCL.PW 是 PCL 的衍生作品，界面布局参考 PCL 社区版（PCL-CE）。\n\n## 修复\n\n- 安卓上安装 Forge 时库文件下载失败；预先用启动器的下载器（含镜像）下载安装器需要的库。\n- 同时安装多个 Forge 时可能识别成别的版本，导致启动崩溃。\n- 安卓上 Forge 1.7 ~ 1.12 启动时因加载画面崩溃（StitcherException）。\n- 安卓上 Java 下载完成后任务一直停在「解压」。\n\n## 下载\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "tag": "v0.3.2",
+      "name": "PCL.PW v0.3.2",
+      "body": "## 修复\n\n- **macOS（Apple 芯片）：1.13～1.18 现在可以启动了。** 启动这些版本时，启动器会自动把游戏自带的 LWJGL 换成支持 Apple 芯片的 3.3.1，并使用内置的修改版 GLFW（去掉了 macOS 上设置窗口图标时的报错），不需要任何手动设置。1.12.2 及更早的版本暂时仍无法在 Apple 芯片上启动，计划在下一次大版本更新中支持；Intel Mac 不受影响。\n- **局域网互传：** 传输包会记录发送方版本的加载器和游戏版本（例如「Fabric · 1.20.1」）。导入部分内容时，默认选中加载器和游戏版本都相同的版本；如果把模组导入到没有对应加载器的版本（例如把 Fabric 模组导入原版），会提示模组不会被加载，并建议改用「整个版本」发送。发送方和接收方都需要更新到 0.3.2 才会显示这个提示。\n\n修改版 GLFW 基于 GLFW 3.4（zlib 许可证），修改内容与构建方法见源代码中的 `tool/glfw/README.md`。\n\n## 下载\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": false,
       "commit": "main",
-      "publishedAt": "2026-11-05T13:09:56Z",
-      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.1",
+      "publishedAt": "2026-11-05T14:07:29Z",
+      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.2",
       "assets": [
         {
-          "name": "PCL.PW-0.3.1-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-android-arm64.apk",
-          "size": 46937467,
-          "sha256": "2d69b93bf897da66a98dc8c122c4b9e947978d62ba6ac842cde9bc6a3d3b39c5"
+          "name": "PCL.PW-0.3.2-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-android-arm64.apk",
+          "size": 47011495,
+          "sha256": "7943cc4bad95c79bb048f25339434128301d8579dbe10e3e8b3656985bc019f7"
         },
         {
-          "name": "PCL.PW-0.3.1-macos.dmg",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-macos.dmg",
-          "size": 26729950,
-          "sha256": "4d2917531f17bed726cb22b8ed939809fc704d526574f669e2102fd689bea1da"
+          "name": "PCL.PW-0.3.2-macos.dmg",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-macos.dmg",
+          "size": 26822361,
+          "sha256": "02ebe44093f616b5f6d63677c68741097b99b1fca40686dbc066bcdba5a07143"
         },
         {
-          "name": "PCL.PW-0.3.1-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-portable.zip",
-          "size": 15482134,
-          "sha256": "4300482d40bd10d63f2eedc38397d479802e7f12a14d5c38d3c67bedd4bd9087"
+          "name": "PCL.PW-0.3.2-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-windows-x64-portable.zip",
+          "size": 15557653,
+          "sha256": "7d4784d285f857918440c303a28d2348d8f9303af7e151dfdcf84aab980a7d97"
         },
         {
-          "name": "PCL.PW-0.3.1-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.1/PCL.PW-0.3.1-windows-x64-setup.exe",
-          "size": 15499776,
-          "sha256": "6c446791ac3679c30a003c1a5922793da9a3bac066eed54e2d31f733a1d363d1"
+          "name": "PCL.PW-0.3.2-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/v0.3.2/PCL.PW-0.3.2-windows-x64-setup.exe",
+          "size": 15575552,
+          "sha256": "e4f3dbf63e811b38f5e5dc071205904ae2fe098ed91b8f75f291dc5cf80e29e5"
         }
       ]
     },

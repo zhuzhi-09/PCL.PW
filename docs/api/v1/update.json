@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "generatedAt": "2026-11-06T20:26:46Z",
+  "generatedAt": "2026-11-06T20:49:35Z",
   "channels": {
     "stable": {
       "tag": "v0.3.3",
@@ -74,36 +74,36 @@
     },
     "nightly": {
       "tag": "nightly",
-      "name": "PCL.PW Nightly (6a5fd4f)",
-      "body": "自动构建的测试版，来自 main 分支的 6a5fd4f01b4ce507181ec812095472f96178b2af，可能不稳定。\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "name": "PCL.PW Nightly (b2bcdd3)",
+      "body": "自动构建的测试版，来自 main 分支的 b2bcdd32fcbb18bfe57ff8183f0619b201ffb75a，可能不稳定。\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": true,
-      "commit": "6a5fd4f01b4ce507181ec812095472f96178b2af",
-      "publishedAt": "2026-11-06T20:26:45Z",
+      "commit": "b2bcdd32fcbb18bfe57ff8183f0619b201ffb75a",
+      "publishedAt": "2026-11-06T20:49:34Z",
       "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/nightly",
       "assets": [
         {
-          "name": "PCL.PW-nightly-6a5fd4f-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-6a5fd4f-android-arm64.apk",
-          "size": 47288739,
-          "sha256": "b4625c5a0a020301577250f6bdc5a4ce20f5622b319b8d3a34a14d8354f574e1"
+          "name": "PCL.PW-nightly-b2bcdd3-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-b2bcdd3-android-arm64.apk",
+          "size": 47328531,
+          "sha256": "ea1f1493409a1d6b0ff4870a25a452fb0d7e884c4ff06d7a79df6106b4597e11"
         },
         {
-          "name": "PCL.PW-nightly-6a5fd4f-macos.dmg",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-6a5fd4f-macos.dmg",
-          "size": 27382547,
-          "sha256": "5418812eab9ffce905b4964307b4650448e63719c0bb028e850c13d2fe3ce029"
+          "name": "PCL.PW-nightly-b2bcdd3-macos.dmg",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-b2bcdd3-macos.dmg",
+          "size": 27435296,
+          "sha256": "13f7ba865c1a83e9f222c61f1fff5a1f74af92600dd96cab7b9a61040cf746d3"
         },
         {
-          "name": "PCL.PW-nightly-6a5fd4f-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-6a5fd4f-windows-x64-portable.zip",
-          "size": 15805601,
-          "sha256": "6142190c3ee1c486a38cdaadb055492f7ef3aab9523e4f7713effcfc84a9b936"
+          "name": "PCL.PW-nightly-b2bcdd3-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-b2bcdd3-windows-x64-portable.zip",
+          "size": 15834018,
+          "sha256": "af1836aa1e076c371bcd9d3febff16d9f79471b94903dc8b08fdd8976b23b33b"
         },
         {
-          "name": "PCL.PW-nightly-6a5fd4f-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-6a5fd4f-windows-x64-setup.exe",
-          "size": 15823360,
-          "sha256": "bebf2372eb07e7326d1a0ce0eead761d8d19fbe1cde7af61d9afbfced9b0c65f"
+          "name": "PCL.PW-nightly-b2bcdd3-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PCL.PW/releases/download/nightly/PCL.PW-nightly-b2bcdd3-windows-x64-setup.exe",
+          "size": 15851520,
+          "sha256": "842e9c73d1ce57e53ea50c40e7140455cda38e106498a5cdd4e974da4af50c06"
         }
       ]
     }

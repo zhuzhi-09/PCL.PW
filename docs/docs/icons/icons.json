@@ -1,0 +1,796 @@
+{
+  "material": [
+    {
+      "name": "account_circle_outlined",
+      "file": "material/account_circle_outlined.svg",
+      "codepoint": "0xee35"
+    },
+    {
+      "name": "add",
+      "file": "material/add.svg",
+      "codepoint": "0xe047"
+    },
+    {
+      "name": "alt_route",
+      "file": "material/alt_route.svg",
+      "codepoint": "0xe080"
+    },
+    {
+      "name": "android",
+      "file": "material/android.svg",
+      "codepoint": "0xe085"
+    },
+    {
+      "name": "arrow_back",
+      "file": "material/arrow_back.svg",
+      "codepoint": "0xe092"
+    },
+    {
+      "name": "arrow_upward",
+      "file": "material/arrow_upward.svg",
+      "codepoint": "0xe0a0"
+    },
+    {
+      "name": "article_outlined",
+      "file": "material/article_outlined.svg",
+      "codepoint": "0xee93"
+    },
+    {
+      "name": "aspect_ratio",
+      "file": "material/aspect_ratio.svg",
+      "codepoint": "0xe0a3"
+    },
+    {
+      "name": "auto_awesome",
+      "file": "material/auto_awesome.svg",
+      "codepoint": "0xe0b7"
+    },
+    {
+      "name": "auto_awesome_outlined",
+      "file": "material/auto_awesome_outlined.svg",
+      "codepoint": "0xeea9"
+    },
+    {
+      "name": "battery_2_bar",
+      "file": "material/battery_2_bar.svg",
+      "codepoint": "0xf078a"
+    },
+    {
+      "name": "battery_3_bar",
+      "file": "material/battery_3_bar.svg",
+      "codepoint": "0xf078b"
+    },
+    {
+      "name": "battery_5_bar",
+      "file": "material/battery_5_bar.svg",
+      "codepoint": "0xf078d"
+    },
+    {
+      "name": "battery_6_bar",
+      "file": "material/battery_6_bar.svg",
+      "codepoint": "0xf078e"
+    },
+    {
+      "name": "battery_alert",
+      "file": "material/battery_alert.svg",
+      "codepoint": "0xe0d0"
+    },
+    {
+      "name": "battery_charging_full",
+      "file": "material/battery_charging_full.svg",
+      "codepoint": "0xe0d1"
+    },
+    {
+      "name": "battery_full",
+      "file": "material/battery_full.svg",
+      "codepoint": "0xe0d2"
+    },
+    {
+      "name": "block",
+      "file": "material/block.svg",
+      "codepoint": "0xe0e1"
+    },
+    {
+      "name": "brightness_auto",
+      "file": "material/brightness_auto.svg",
+      "codepoint": "0xe10c"
+    },
+    {
+      "name": "build_circle_outlined",
+      "file": "material/build_circle_outlined.svg",
+      "codepoint": "0xef05"
+    },
+    {
+      "name": "call_split",
+      "file": "material/call_split.svg",
+      "codepoint": "0xe12d"
+    },
+    {
+      "name": "campaign_outlined",
+      "file": "material/campaign_outlined.svg",
+      "codepoint": "0xef27"
+    },
+    {
+      "name": "cancel",
+      "file": "material/cancel.svg",
+      "codepoint": "0xe139"
+    },
+    {
+      "name": "check",
+      "file": "material/check.svg",
+      "codepoint": "0xe156"
+    },
+    {
+      "name": "check_circle",
+      "file": "material/check_circle.svg",
+      "codepoint": "0xe159"
+    },
+    {
+      "name": "check_circle_outline",
+      "file": "material/check_circle_outline.svg",
+      "codepoint": "0xe15a"
+    },
+    {
+      "name": "checklist",
+      "file": "material/checklist.svg",
+      "codepoint": "0xe15b"
+    },
+    {
+      "name": "chevron_right",
+      "file": "material/chevron_right.svg",
+      "codepoint": "0xe15f"
+    },
+    {
+      "name": "cleaning_services_outlined",
+      "file": "material/cleaning_services_outlined.svg",
+      "codepoint": "0xef56"
+    },
+    {
+      "name": "clear_all",
+      "file": "material/clear_all.svg",
+      "codepoint": "0xe169"
+    },
+    {
+      "name": "close",
+      "file": "material/close.svg",
+      "codepoint": "0xe16a"
+    },
+    {
+      "name": "cloud_download_outlined",
+      "file": "material/cloud_download_outlined.svg",
+      "codepoint": "0xef60"
+    },
+    {
+      "name": "cloud_off_outlined",
+      "file": "material/cloud_off_outlined.svg",
+      "codepoint": "0xef61"
+    },
+    {
+      "name": "code",
+      "file": "material/code.svg",
+      "codepoint": "0xe176"
+    },
+    {
+      "name": "coffee_outlined",
+      "file": "material/coffee_outlined.svg",
+      "codepoint": "0xef68"
+    },
+    {
+      "name": "compress",
+      "file": "material/compress.svg",
+      "codepoint": "0xe184"
+    },
+    {
+      "name": "construction",
+      "file": "material/construction.svg",
+      "codepoint": "0xe189"
+    },
+    {
+      "name": "construction_outlined",
+      "file": "material/construction_outlined.svg",
+      "codepoint": "0xef78"
+    },
+    {
+      "name": "content_copy",
+      "file": "material/content_copy.svg",
+      "codepoint": "0xe190"
+    },
+    {
+      "name": "content_cut",
+      "file": "material/content_cut.svg",
+      "codepoint": "0xe191"
+    },
+    {
+      "name": "content_paste",
+      "file": "material/content_paste.svg",
+      "codepoint": "0xe192"
+    },
+    {
+      "name": "copy",
+      "file": "material/copy.svg",
+      "codepoint": "0xe190"
+    },
+    {
+      "name": "copy_all_outlined",
+      "file": "material/copy_all_outlined.svg",
+      "codepoint": "0xef86"
+    },
+    {
+      "name": "copy_outlined",
+      "file": "material/copy_outlined.svg",
+      "codepoint": "0xef7f"
+    },
+    {
+      "name": "create_new_folder_outlined",
+      "file": "material/create_new_folder_outlined.svg",
+      "codepoint": "0xef8c"
+    },
+    {
+      "name": "crop_landscape",
+      "file": "material/crop_landscape.svg",
+      "codepoint": "0xe1aa"
+    },
+    {
+      "name": "dark_mode_outlined",
+      "file": "material/dark_mode_outlined.svg",
+      "codepoint": "0xef9f"
+    },
+    {
+      "name": "dashboard_outlined",
+      "file": "material/dashboard_outlined.svg",
+      "codepoint": "0xefa1"
+    },
+    {
+      "name": "data_object",
+      "file": "material/data_object.svg",
+      "codepoint": "0xf04e6"
+    },
+    {
+      "name": "delete_outline",
+      "file": "material/delete_outline.svg",
+      "codepoint": "0xe1bb"
+    },
+    {
+      "name": "description_outlined",
+      "file": "material/description_outlined.svg",
+      "codepoint": "0xefae"
+    },
+    {
+      "name": "dns_outlined",
+      "file": "material/dns_outlined.svg",
+      "codepoint": "0xefd4"
+    },
+    {
+      "name": "download",
+      "file": "material/download.svg",
+      "codepoint": "0xe201"
+    },
+    {
+      "name": "download_for_offline_outlined",
+      "file": "material/download_for_offline_outlined.svg",
+      "codepoint": "0xeff1"
+    },
+    {
+      "name": "download_outlined",
+      "file": "material/download_outlined.svg",
+      "codepoint": "0xeff2"
+    },
+    {
+      "name": "downloading",
+      "file": "material/downloading.svg",
+      "codepoint": "0xe204"
+    },
+    {
+      "name": "emoji_events_outlined",
+      "file": "material/emoji_events_outlined.svg",
+      "codepoint": "0xf01a"
+    },
+    {
+      "name": "error",
+      "file": "material/error.svg",
+      "codepoint": "0xe237"
+    },
+    {
+      "name": "error_outline",
+      "file": "material/error_outline.svg",
+      "codepoint": "0xe238"
+    },
+    {
+      "name": "expand_less",
+      "file": "material/expand_less.svg",
+      "codepoint": "0xe245"
+    },
+    {
+      "name": "expand_more",
+      "file": "material/expand_more.svg",
+      "codepoint": "0xe246"
+    },
+    {
+      "name": "extension_outlined",
+      "file": "material/extension_outlined.svg",
+      "codepoint": "0xf03f"
+    },
+    {
+      "name": "face_outlined",
+      "file": "material/face_outlined.svg",
+      "codepoint": "0xf040"
+    },
+    {
+      "name": "favorite",
+      "file": "material/favorite.svg",
+      "codepoint": "0xe25b"
+    },
+    {
+      "name": "favorite_border",
+      "file": "material/favorite_border.svg",
+      "codepoint": "0xe25c"
+    },
+    {
+      "name": "favorite_outline",
+      "file": "material/favorite_outline.svg",
+      "codepoint": "0xe25c"
+    },
+    {
+      "name": "file_upload_outlined",
+      "file": "material/file_upload_outlined.svg",
+      "codepoint": "0xf05d"
+    },
+    {
+      "name": "flutter_dash",
+      "file": "material/flutter_dash.svg",
+      "codepoint": "0xe2a0"
+    },
+    {
+      "name": "folder",
+      "file": "material/folder.svg",
+      "codepoint": "0xe2a3"
+    },
+    {
+      "name": "folder_copy_outlined",
+      "file": "material/folder_copy_outlined.svg",
+      "codepoint": "0xf05ff"
+    },
+    {
+      "name": "folder_open",
+      "file": "material/folder_open.svg",
+      "codepoint": "0xe2a4"
+    },
+    {
+      "name": "folder_outlined",
+      "file": "material/folder_outlined.svg",
+      "codepoint": "0xf091"
+    },
+    {
+      "name": "folder_zip_outlined",
+      "file": "material/folder_zip_outlined.svg",
+      "codepoint": "0xf0602"
+    },
+    {
+      "name": "gavel_outlined",
+      "file": "material/gavel_outlined.svg",
+      "codepoint": "0xf0c0"
+    },
+    {
+      "name": "grid_view_outlined",
+      "file": "material/grid_view_outlined.svg",
+      "codepoint": "0xf0d7"
+    },
+    {
+      "name": "groups_outlined",
+      "file": "material/groups_outlined.svg",
+      "codepoint": "0xf0db"
+    },
+    {
+      "name": "handyman_outlined",
+      "file": "material/handyman_outlined.svg",
+      "codepoint": "0xf0df"
+    },
+    {
+      "name": "height",
+      "file": "material/height.svg",
+      "codepoint": "0xe308"
+    },
+    {
+      "name": "help_outline",
+      "file": "material/help_outline.svg",
+      "codepoint": "0xe30b"
+    },
+    {
+      "name": "history",
+      "file": "material/history.svg",
+      "codepoint": "0xe314"
+    },
+    {
+      "name": "history_outlined",
+      "file": "material/history_outlined.svg",
+      "codepoint": "0xf102"
+    },
+    {
+      "name": "hourglass_bottom",
+      "file": "material/hourglass_bottom.svg",
+      "codepoint": "0xe323"
+    },
+    {
+      "name": "hourglass_empty",
+      "file": "material/hourglass_empty.svg",
+      "codepoint": "0xe325"
+    },
+    {
+      "name": "image_outlined",
+      "file": "material/image_outlined.svg",
+      "codepoint": "0xf120"
+    },
+    {
+      "name": "info_outline",
+      "file": "material/info_outline.svg",
+      "codepoint": "0xe33d"
+    },
+    {
+      "name": "insert_drive_file_outlined",
+      "file": "material/insert_drive_file_outlined.svg",
+      "codepoint": "0xf12d"
+    },
+    {
+      "name": "inventory_2_outlined",
+      "file": "material/inventory_2_outlined.svg",
+      "codepoint": "0xf134"
+    },
+    {
+      "name": "key_outlined",
+      "file": "material/key_outlined.svg",
+      "codepoint": "0xf0624"
+    },
+    {
+      "name": "label_outline",
+      "file": "material/label_outline.svg",
+      "codepoint": "0xe364"
+    },
+    {
+      "name": "lan_outlined",
+      "file": "material/lan_outlined.svg",
+      "codepoint": "0xf062c"
+    },
+    {
+      "name": "layers_outlined",
+      "file": "material/layers_outlined.svg",
+      "codepoint": "0xf157"
+    },
+    {
+      "name": "light_mode_outlined",
+      "file": "material/light_mode_outlined.svg",
+      "codepoint": "0xf162"
+    },
+    {
+      "name": "lightbulb_outline",
+      "file": "material/lightbulb_outline.svg",
+      "codepoint": "0xe37c"
+    },
+    {
+      "name": "list_alt",
+      "file": "material/list_alt.svg",
+      "codepoint": "0xe385"
+    },
+    {
+      "name": "lock_outline",
+      "file": "material/lock_outline.svg",
+      "codepoint": "0xe3b1"
+    },
+    {
+      "name": "login",
+      "file": "material/login.svg",
+      "codepoint": "0xe3b2"
+    },
+    {
+      "name": "memory",
+      "file": "material/memory.svg",
+      "codepoint": "0xe3db"
+    },
+    {
+      "name": "memory_outlined",
+      "file": "material/memory_outlined.svg",
+      "codepoint": "0xf1c1"
+    },
+    {
+      "name": "menu_book_outlined",
+      "file": "material/menu_book_outlined.svg",
+      "codepoint": "0xf1c2"
+    },
+    {
+      "name": "more_horiz",
+      "file": "material/more_horiz.svg",
+      "codepoint": "0xe402"
+    },
+    {
+      "name": "move_down",
+      "file": "material/move_down.svg",
+      "codepoint": "0xf053f"
+    },
+    {
+      "name": "new_releases_outlined",
+      "file": "material/new_releases_outlined.svg",
+      "codepoint": "0xf20e"
+    },
+    {
+      "name": "newspaper_outlined",
+      "file": "material/newspaper_outlined.svg",
+      "codepoint": "0xf0639"
+    },
+    {
+      "name": "open_in_new",
+      "file": "material/open_in_new.svg",
+      "codepoint": "0xe45c"
+    },
+    {
+      "name": "palette_outlined",
+      "file": "material/palette_outlined.svg",
+      "codepoint": "0xf24f"
+    },
+    {
+      "name": "person_add_alt",
+      "file": "material/person_add_alt.svg",
+      "codepoint": "0xe493"
+    },
+    {
+      "name": "photo_library_outlined",
+      "file": "material/photo_library_outlined.svg",
+      "codepoint": "0xf29d"
+    },
+    {
+      "name": "play_arrow",
+      "file": "material/play_arrow.svg",
+      "codepoint": "0xe4cb"
+    },
+    {
+      "name": "play_circle_outline",
+      "file": "material/play_circle_outline.svg",
+      "codepoint": "0xe4ce"
+    },
+    {
+      "name": "public",
+      "file": "material/public.svg",
+      "codepoint": "0xe4f0"
+    },
+    {
+      "name": "refresh",
+      "file": "material/refresh.svg",
+      "codepoint": "0xe514"
+    },
+    {
+      "name": "remove_circle_outline",
+      "file": "material/remove_circle_outline.svg",
+      "codepoint": "0xe518"
+    },
+    {
+      "name": "rocket_launch",
+      "file": "material/rocket_launch.svg",
+      "codepoint": "0xf055d"
+    },
+    {
+      "name": "rocket_launch_outlined",
+      "file": "material/rocket_launch_outlined.svg",
+      "codepoint": "0xf0653"
+    },
+    {
+      "name": "save_alt",
+      "file": "material/save_alt.svg",
+      "codepoint": "0xe551"
+    },
+    {
+      "name": "science_outlined",
+      "file": "material/science_outlined.svg",
+      "codepoint": "0xf33d"
+    },
+    {
+      "name": "search",
+      "file": "material/search.svg",
+      "codepoint": "0xe567"
+    },
+    {
+      "name": "send",
+      "file": "material/send.svg",
+      "codepoint": "0xe571"
+    },
+    {
+      "name": "settings",
+      "file": "material/settings.svg",
+      "codepoint": "0xe57f"
+    },
+    {
+      "name": "settings_ethernet",
+      "file": "material/settings_ethernet.svg",
+      "codepoint": "0xe586"
+    },
+    {
+      "name": "settings_outlined",
+      "file": "material/settings_outlined.svg",
+      "codepoint": "0xf36e"
+    },
+    {
+      "name": "shortcut",
+      "file": "material/shortcut.svg",
+      "codepoint": "0xe59e"
+    },
+    {
+      "name": "signal_cellular_alt",
+      "file": "material/signal_cellular_alt.svg",
+      "codepoint": "0xe5a7"
+    },
+    {
+      "name": "smartphone",
+      "file": "material/smartphone.svg",
+      "codepoint": "0xe5c6"
+    },
+    {
+      "name": "speed",
+      "file": "material/speed.svg",
+      "codepoint": "0xe5e0"
+    },
+    {
+      "name": "sports_esports",
+      "file": "material/sports_esports.svg",
+      "codepoint": "0xe5e8"
+    },
+    {
+      "name": "sports_esports_outlined",
+      "file": "material/sports_esports_outlined.svg",
+      "codepoint": "0xf3ca"
+    },
+    {
+      "name": "stacked_line_chart",
+      "file": "material/stacked_line_chart.svg",
+      "codepoint": "0xe5f7"
+    },
+    {
+      "name": "stop",
+      "file": "material/stop.svg",
+      "codepoint": "0xe606"
+    },
+    {
+      "name": "swap_horiz",
+      "file": "material/swap_horiz.svg",
+      "codepoint": "0xe625"
+    },
+    {
+      "name": "sync",
+      "file": "material/sync.svg",
+      "codepoint": "0xe62f"
+    },
+    {
+      "name": "sync_alt",
+      "file": "material/sync_alt.svg",
+      "codepoint": "0xe630"
+    },
+    {
+      "name": "system_update_alt",
+      "file": "material/system_update_alt.svg",
+      "codepoint": "0xe637"
+    },
+    {
+      "name": "terminal",
+      "file": "material/terminal.svg",
+      "codepoint": "0xf0589"
+    },
+    {
+      "name": "translate",
+      "file": "material/translate.svg",
+      "codepoint": "0xe67b"
+    },
+    {
+      "name": "troubleshoot",
+      "file": "material/troubleshoot.svg",
+      "codepoint": "0xf07ce"
+    },
+    {
+      "name": "tune",
+      "file": "material/tune.svg",
+      "codepoint": "0xe683"
+    },
+    {
+      "name": "update",
+      "file": "material/update.svg",
+      "codepoint": "0xe692"
+    },
+    {
+      "name": "verified_user_outlined",
+      "file": "material/verified_user_outlined.svg",
+      "codepoint": "0xf47d"
+    },
+    {
+      "name": "view_in_ar_outlined",
+      "file": "material/view_in_ar_outlined.svg",
+      "codepoint": "0xf497"
+    },
+    {
+      "name": "visibility_off_outlined",
+      "file": "material/visibility_off_outlined.svg",
+      "codepoint": "0xf4a0"
+    },
+    {
+      "name": "visibility_outlined",
+      "file": "material/visibility_outlined.svg",
+      "codepoint": "0xf4a1"
+    },
+    {
+      "name": "volunteer_activism_outlined",
+      "file": "material/volunteer_activism_outlined.svg",
+      "codepoint": "0xf4a9"
+    },
+    {
+      "name": "warning_amber_rounded",
+      "file": "material/warning_amber_rounded.svg",
+      "codepoint": "0xf02a0"
+    },
+    {
+      "name": "wb_sunny_outlined",
+      "file": "material/wb_sunny_outlined.svg",
+      "codepoint": "0xf4bc"
+    },
+    {
+      "name": "width_normal_outlined",
+      "file": "material/width_normal_outlined.svg",
+      "codepoint": "0xf0726"
+    },
+    {
+      "name": "wifi",
+      "file": "material/wifi.svg",
+      "codepoint": "0xe6e7"
+    },
+    {
+      "name": "wifi_off",
+      "file": "material/wifi_off.svg",
+      "codepoint": "0xe6eb"
+    }
+  ],
+  "loader": [
+    {
+      "name": "vanilla",
+      "file": "loader/vanilla.svg"
+    },
+    {
+      "name": "forge",
+      "file": "loader/forge.svg"
+    },
+    {
+      "name": "neoforge",
+      "file": "loader/neoforge.svg"
+    },
+    {
+      "name": "cleanroom",
+      "file": "loader/cleanroom.svg"
+    },
+    {
+      "name": "fabric",
+      "file": "loader/fabric.svg"
+    },
+    {
+      "name": "legacyfabric",
+      "file": "loader/legacyfabric.svg"
+    },
+    {
+      "name": "quilt",
+      "file": "loader/quilt.svg"
+    },
+    {
+      "name": "optifine",
+      "file": "loader/optifine.svg"
+    },
+    {
+      "name": "labymod",
+      "file": "loader/labymod.svg"
+    },
+    {
+      "name": "liteloader",
+      "file": "loader/liteloader.svg"
+    }
+  ],
+  "app": [
+    {
+      "name": "pclpw-logo",
+      "file": "app/pclpw-logo.svg"
+    },
+    {
+      "name": "pclpw-logo-original",
+      "file": "app/pclpw-logo-original.png"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1175ff"/>
+      <stop offset="1" stop-color="#0a5fe0"/>
+    </linearGradient>
+    <clipPath id="top"><path d="M512 200 790 360 512 520 234 360Z"/></clipPath>
+    <clipPath id="left"><path d="M234 360 512 520 512 800 234 640Z"/></clipPath>
+    <clipPath id="right"><path d="M790 360 512 520 512 800 790 640Z"/></clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" rx="180" fill="url(#bg)"/>
+
+  <path d="M512 200 790 360 512 520 234 360Z" fill="#f8fbff"/>
+  <path d="M234 360 512 520v280L234 640Z" fill="#eef4ff"/>
+  <path d="M790 360 512 520v280l278-160Z" fill="#d2e1ff"/>
+
+  <g clip-path="url(#top)" stroke="#dbe7ff" stroke-width="6" fill="none">
+    <path d="M419.3 253.3 697.3 413.3M326.7 306.7 604.7 466.7"/>
+    <path d="M604.7 306.7 326.7 466.7M697.3 253.3 419.3 413.3"/>
+  </g>
+  <g clip-path="url(#left)" stroke="#dde8ff" stroke-width="6" fill="none">
+    <path d="M234 453.3 512 613.3M234 546.7 512 706.7"/>
+  </g>
+  <g clip-path="url(#right)" stroke="#bcd4ff" stroke-width="6" fill="none">
+    <path d="M512 613.3 790 453.3M512 706.7 790 546.7"/>
+  </g>
+
+  <path d="M512 310 610 365 512 420 414 365Z" fill="#7edcff"/>
+  <path d="M414 365 512 420 610 365v22L512 442l-98-55Z" fill="#4fc4f0"/>
+
+  <g fill="#1570f0" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    <g clip-path="url(#left)">
+      <text transform="translate(296 500) skewY(30)" font-size="102">PC</text>
+      <text transform="translate(296 626) skewY(30)" font-size="102">L.</text>
+    </g>
+    <g clip-path="url(#right)">
+      <text transform="translate(548 616) skewY(-30)" font-size="108">PW</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Pixel World 新版 UI 演示</title>
+<style>
+  :root {
+    --brand: #2F6B4F;
+    --brand-soft: #E2F0DE;
+    --brand-ink: #173B29;
+    --bg: #F3F5EC;
+    --side: #EDF2E7;
+    --card: #FBFDF7;
+    --text: #1B241E;
+    --muted: #68756B;
+    --line: #DDE6D8;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+    font-family: "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    display: flex; overflow: hidden;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .sidebar {
+    width: 226px; flex: none; display: flex; flex-direction: column;
+    background: var(--side); border-right: 1px solid var(--line); padding: 20px 12px 14px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 18px; }
+  .logo { width: 38px; height: 38px; border-radius: 11px; background: #1370f3; display: grid; place-items: center; }
+  .logo svg { width: 24px; height: 24px; }
+  .brand b { font-size: 16px; letter-spacing: .2px; }
+  .account {
+    display: flex; align-items: center; gap: 9px; padding: 9px 10px; margin-bottom: 12px;
+    border-radius: 13px; background: #E4EEDD; cursor: pointer;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+    background: #CDE3C4; color: #28503A; font-weight: 700; font-size: 13px;
+  }
+  .account .n { font-size: 12.5px; font-weight: 650; }
+  .account .t { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  nav { display: flex; flex-direction: column; gap: 3px; }
+  .nav {
+    display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 13px;
+    border: 0; border-radius: 11px; background: transparent; text-align: left;
+    color: #4F5F54; font-size: 12.5px; font-weight: 500;
+  }
+  .nav .ico { width: 20px; text-align: center; font-size: 18px; }
+  .nav:hover { background: #E6EFE0; }
+  .nav.on { background: var(--brand); color: #fff; font-weight: 650; }
+  .side-foot { margin-top: auto; padding: 10px 10px 0; color: var(--muted); font-size: 10px; }
+  .main { flex: 1; min-width: 0; overflow: auto; padding: 28px 32px 40px; }
+  .top { display: flex; align-items: flex-start; gap: 16px; }
+  .top h1 { margin: 5px 0 0; font-size: 30px; letter-spacing: -.5px; }
+  .hello { color: var(--muted); font-size: 12px; }
+  .top .actions { margin-left: auto; display: flex; gap: 6px; }
+  .icon-btn { width: 38px; height: 38px; border: 0; border-radius: 11px; background: transparent; font-size: 19px; color: var(--muted); }
+  .icon-btn:hover { background: #E3EBDD; color: var(--text); }
+  .hero {
+    position: relative; overflow: hidden; min-height: 230px; margin-top: 20px;
+    border-radius: 25px; padding: 24px 28px; color: #fff;
+    background: linear-gradient(145deg, #2F6B4F, #1C4934);
+    box-shadow: 0 18px 40px rgba(34, 78, 54, .18);
+  }
+  .hero .badges { display: flex; gap: 7px; }
+  .pill { padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 650; background: rgba(255,255,255,.18); }
+  .pill.ok { color: #234A33; background: #CDE8C4; }
+  .hero h2 { position: relative; z-index: 1; margin: 13px 0 4px; font-size: 34px; }
+  .hero p { position: relative; z-index: 1; margin: 0; color: rgba(255,255,255,.76); font-size: 12.5px; }
+  .hero .row { position: relative; z-index: 1; display: flex; gap: 9px; margin-top: 20px; }
+  .btn {
+    border: 0; border-radius: 13px; padding: 12px 20px; font-size: 12.5px; font-weight: 650;
+    background: #E7F4DF; color: #1C3D2A;
+  }
+  .btn.ghost { background: rgba(255,255,255,.13); color: #fff; border: 1px solid rgba(255,255,255,.18); }
+  .btn.small { padding: 9px 14px; }
+  .landscape { position: absolute; inset: 0; pointer-events: none; }
+  .landscape .sun { position: absolute; right: 17%; top: 16%; width: 54px; height: 54px; border-radius: 50%; background: #F6E3A2; opacity: .9; }
+  .landscape .hill { position: absolute; right: -3%; bottom: 0; width: 55%; height: 82%; background: #3C7257; clip-path: polygon(35% 0, 100% 42%, 100% 100%, 0 100%, 0 48%); opacity: .75; }
+  .landscape .hill.two { right: 20%; width: 41%; height: 58%; background: #4A8163; opacity: .62; clip-path: polygon(50% 0, 100% 54%, 100% 100%, 0 100%, 0 54%); }
+  .landscape .ground { position: absolute; right: 0; bottom: 0; width: 46%; height: 25%; background: #27573F; }
+  .landscape .tree { position: absolute; right: 21%; bottom: 12%; width: 8px; height: 44px; background: #765337; }
+  .landscape .crown { position: absolute; right: 17%; bottom: 22%; width: 66px; height: 52px; background: #4C8A5B; }
+  .landscape .cloud { position: absolute; height: 9px; border-radius: 99px; background: rgba(255,255,255,.22); }
+  .landscape .c1 { right: 26%; top: 17%; width: 92px; }
+  .landscape .c2 { right: 15%; top: 27%; width: 55px; }
+  .section-head { display: flex; align-items: baseline; gap: 9px; margin: 28px 0 11px; }
+  .section-head h3 { margin: 0; font-size: 19px; }
+  .section-head span { color: var(--muted); font-size: 11px; }
+  .section-head .more { margin-left: auto; border: 0; background: none; color: var(--brand); font-size: 11.5px; }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 15px; padding: 13px; }
+  .recent { display: flex; align-items: center; gap: 10px; }
+  .recent .ico { width: 42px; height: 42px; border-radius: 11px; background: var(--brand-soft); display: grid; place-items: center; font-size: 20px; }
+  .recent .t { min-width: 0; }
+  .recent b { display: block; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent small { color: var(--muted); font-size: 10px; }
+  .recent .play { margin-left: auto; width: 34px; height: 34px; border: 0; border-radius: 10px; background: var(--brand-soft); color: var(--brand-ink); }
+  .hint { margin-top: 16px; padding: 13px 15px; border-radius: 14px; background: #E3F1DF; color: #2B4A35; font-size: 11.5px; line-height: 1.65; }
+  .hint b { font-weight: 700; }
+  .empty { color: var(--muted); font-size: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 15px; padding: 20px; }
+  .page-title { margin: 4px 0 4px; font-size: 27px; }
+  .page-sub { margin: 0 0 20px; color: var(--muted); font-size: 12px; }
+  .list { display: flex; flex-direction: column; gap: 9px; }
+  .list-item { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; }
+  .list-item b { font-size: 12.5px; }
+  .list-item small { display: block; color: var(--muted); font-size: 10.5px; margin-top: 2px; }
+  .list-item .right { margin-left: auto; }
+  .tag { display: inline-block; padding: 3px 7px; border-radius: 99px; background: var(--brand-soft); color: var(--brand-ink); font-size: 9.5px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 9px; margin: 8px 0 16px; }
+  .swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; }
+  .swatch.on { border-color: var(--text); }
+  .swatch.rainbow { background: conic-gradient(#ff4d4d,#ffd24d,#4dff88,#4dd2ff,#6b4dff,#ff4dc4,#ff4d4d); position: relative; }
+  .swatch.rainbow::after { content: "+"; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 17px; }
+  .setting-row { display: flex; align-items: center; gap: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; margin-bottom: 9px; }
+  .setting-row .grow { flex: 1; }
+  .setting-row b { font-size: 12.5px; }
+  .setting-row small { display: block; color: var(--muted); font-size: 10.5px; margin-top: 2px; }
+  .fake-chat { display: flex; flex-direction: column; gap: 10px; }
+  .bubble { max-width: 78%; padding: 10px 13px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); font-size: 12px; line-height: 1.6; }
+  .bubble.me { align-self: flex-end; background: var(--brand); color: #fff; border: 0; }
+  .composer { margin-top: 16px; display: flex; gap: 8px; }
+  .composer input { flex: 1; border: 1px solid var(--line); border-radius: 13px; background: var(--card); padding: 11px 13px; font: inherit; color: inherit; outline: none; }
+  .composer button { border: 0; border-radius: 12px; background: var(--brand); color: #fff; padding: 0 18px; }
+  .notice { margin-top: 12px; color: var(--muted); font-size: 10px; }
+  @media (max-width: 780px) {
+    body { display: block; overflow: auto; }
+    .sidebar { width: 100%; flex-direction: row; align-items: center; gap: 10px; padding: 9px 10px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+    .brand { padding: 0 8px; flex: none; }
+    .brand b { display: none; }
+    .account { margin: 0; flex: none; padding: 6px 8px; }
+    .account .t, .account .n { display: none; }
+    nav { flex-direction: row; gap: 3px; }
+    .nav { height: 36px; padding: 0 9px; }
+    .nav .ico { font-size: 16px; }
+    .nav span:not(.ico) { display: none; }
+    .side-foot { display: none; }
+    .main { padding: 20px 14px 30px; }
+    .cards { grid-template-columns: 1fr; }
+    .top h1 { font-size: 25px; }
+    .hero { min-height: 210px; padding: 20px; }
+    .hero h2 { font-size: 28px; }
+    .landscape { opacity: .55; }
+  }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round">
+        <path d="M12 3 21 8v8l-9 5-9-5V8l9-5Z"/><path d="m3 8 9 5 9-5M12 13v8"/>
+      </svg>
+    </div>
+    <b>Pixel World</b>
+  </div>
+  <div class="account" onclick="alert('演示里点账户会打开账户管理')">
+    <div class="avatar">Z</div>
+    <div><div class="n">zhuzhi</div><div class="t">离线账户</div></div>
+    <div style="margin-left:auto;color:#68756B">⌃</div>
+  </div>
+  <nav id="nav">
+    <button class="nav on" data-p="home"><span class="ico">🚀</span><span>启动</span></button>
+    <button class="nav" data-p="download"><span class="ico">⬇</span><span>下载</span></button>
+    <button class="nav" data-p="tools"><span class="ico">🛠</span><span>工具</span></button>
+    <button class="nav" data-p="settings"><span class="ico">⚙</span><span>设置</span></button>
+    <button class="nav" data-p="ai"><span class="ico">✦</span><span>AI 助手</span></button>
+    <button class="nav" data-p="tasks"><span class="ico">◷</span><span>任务历史</span></button>
+  </nav>
+  <div class="side-foot">Pixel World v0.3.3</div>
+</aside>
+<main class="main" id="main"></main>
+<script>
+(function () {
+  var VERSIONS = [
+    { id: '1.21.4', desc: '原版 · 1.21.4', icon: '▦' },
+    { id: 'Fabric 1.21.1', desc: 'Fabric 0.16.9 · 1.21.1', icon: '▤' },
+    { id: 'Forge 1.20.1', desc: 'Forge 47.3.0 · 1.20.1', icon: '⚒' }
+  ];
+  var current = '1.21.4';
+  var page = 'home';
+  var theme = '#2F6B4F';
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function hero() {
+    return '<section class="hero">' +
+      '<div class="landscape"><span class="sun"></span><span class="cloud c1"></span><span class="cloud c2"></span>' +
+      '<span class="hill two"></span><span class="hill"></span><span class="ground"></span><span class="tree"></span><span class="crown"></span></div>' +
+      '<div class="badges"><span class="pill">当前实例</span><span class="pill ok">✓ 已同步</span></div>' +
+      '<h2>' + esc(current) + '</h2>' +
+      '<p>原版 · ' + esc(current) + ' · 准备开始冒险</p>' +
+      '<div class="row"><button class="btn" onclick="alert(\'演示里点击开始游戏不会真的启动\')">▶ 开始游戏</button>' +
+      '<button class="btn ghost" onclick="showPage(\'download\')">＋ 安装版本</button></div></section>';
+  }
+
+  function home() {
+    return '<div class="top"><div><div class="hello">早上好，zhuzhi</div><h1>准备好冒险了吗？</h1></div>' +
+      '<div class="actions"><button class="icon-btn" title="版本选择">⌕</button><button class="icon-btn" title="任务">♧</button></div></div>' +
+      hero() +
+      '<div class="section-head"><h3>最近游玩</h3><span>快速回到你的世界</span><button class="more" onclick="showPage(\'download\')">获取更多</button></div>' +
+      '<div class="cards">' + VERSIONS.map(function (v) {
+        return '<div class="card recent"><div class="ico">' + v.icon + '</div><div class="t"><b>' + v.id + '</b><small>' + v.desc + '</small></div>' +
+          '<button class="play" onclick="current=\'' + esc(v.id) + '\';showPage(\'home\')">▶</button></div>';
+      }).join('') + '</div>' +
+      '<div class="hint"><b>这是新版 UI 的内测演示。</b> 实际启动器支持下载、版本管理、模组、AI 排障和游戏内助手；这里只展示界面和交互。</div>';
+  }
+
+  function download() {
+    return '<h1 class="page-title">下载</h1><p class="page-sub">安装 Minecraft、加载器和社区资源。</p>' +
+      '<div class="list">' + [
+        ['Minecraft 1.21.4', '正式版 · 2024-12-03', '安装'],
+        ['Minecraft 26.3', '最新快照 · 2026-09-15', '安装'],
+        ['Fabric 0.16.9', '支持 1.21.4', '安装'],
+        ['Forge 47.3.0', '支持 1.20.1', '安装'],
+        ['NeoForge 21.1.172', '支持 1.21.1', '安装'],
+        ['OptiFine', '高清修复与光影支持', '安装']
+      ].map(function (x) {
+        return '<div class="list-item"><div class="ico" style="width:36px;height:36px;border-radius:10px;background:var(--brand-soft);display:grid;place-items:center">▦</div><div><b>' + x[0] + '</b><small>' + x[1] + '</small></div><div class="right"><button class="btn small" onclick="alert(\'演示里不会真的下载\')">' + x[2] + '</button></div></div>';
+      }).join('') + '</div>';
+  }
+
+  function tools() {
+    return '<h1 class="page-title">工具</h1><p class="page-sub">错误分析、文件管理、服务器查询和更多。</p><div class="cards">' +
+      [['错误分析', '分析游戏日志和崩溃报告'], ['百宝箱', '自定义下载、皮肤、成就图片'], ['文件管理', '查看版本、模组、存档和配置'], ['服务器查询', '查看服务器状态和在线人数'], ['局域网互传', '在设备之间传版本和存档'], ['使用文档', '在启动器里查阅文档']].map(function (x) {
+        return '<div class="card"><div style="width:38px;height:38px;border-radius:11px;background:var(--brand-soft);display:grid;place-items:center;margin-bottom:10px">✦</div><b style="font-size:12.5px">' + x[0] + '</b><p style="color:var(--muted);font-size:10.5px;line-height:1.6">' + x[1] + '</p></div>';
+      }).join('') + '</div>';
+  }
+
+  function settings() {
+    var presets = ['#2F6B4F','#1370F3','#6B4FBB','#B35C1E','#C42B2B','#0F7C7C','#B02E77','#6B5B3E'];
+    return '<h1 class="page-title">设置</h1><p class="page-sub">个性化、启动、Java 和更多。</p>' +
+      '<div class="setting-row"><div class="ico">◐</div><div class="grow"><b>颜色模式</b><small>启动器界面的明暗模式</small></div><span class="tag">跟随系统</span></div>' +
+      '<div class="setting-row"><div class="ico" style="color:' + theme + '">●</div><div class="grow"><b>主题色</b><small>按 Material Design 3 从主题色生成整套配色</small></div></div>' +
+      '<div class="swatches">' + presets.map(function (c) {
+        return '<button class="swatch' + (c.toLowerCase() === theme.toLowerCase() ? ' on' : '') + '" style="background:' + c + '" onclick="setTheme(\'' + c + '\')" title="' + c + '"></button>';
+      }).join('') + '<button class="swatch rainbow" onclick="alert(\'演示里点击加号会打开 RGB 调色\')" title="自定义"></button></div>' +
+      '<div class="setting-row"><div class="grow"><b>游戏内叠加层</b><small>在游戏画面上显示可拖动的小球</small></div><span class="tag">已开启</span></div>' +
+      '<div class="setting-row"><div class="grow"><b>游戏内 AI</b><small>在小球菜单里问 AI</small></div><span class="tag">已开启</span></div>';
+  }
+
+  function ai() {
+    return '<h1 class="page-title">AI 助手</h1><p class="page-sub">可以问我 Minecraft、崩溃和启动器设置。</p>' +
+      '<div class="fake-chat"><div class="bubble me">游戏启动到一半就崩了，帮我看看日志。</div>' +
+      '<div class="bubble"><b>结论：</b>可能是模组和渲染器不兼容，把握中等。<br><br>可以先关闭最近安装的优化模组，再用 MobileGlues 渲染器启动。需要的话回到启动器里的「AI 排障」查看完整日志。</div></div>' +
+      '<div class="composer"><input placeholder="问点什么…" readonly><button onclick="alert(\'演示里不会真的发送\')">➤</button></div>';
+  }
+
+  function tasks() {
+    return '<h1 class="page-title">任务历史</h1><p class="page-sub">下载、安装和启动任务的进度。</p><div class="list">' +
+      [['安装 Minecraft 1.21.4', '已完成 · 原版', '100%'], ['下载 Fabric 0.16.9', '已完成 · 5.2 MB/s', '100%'], ['检查 Java 运行时', '已完成 · Java 21', '100%']].map(function (x) {
+        return '<div class="list-item"><div><b>' + x[0] + '</b><small>' + x[1] + '</small></div><div class="right"><span class="tag">' + x[2] + '</span></div></div>';
+      }).join('') + '</div>';
+  }
+
+  function showPage(p) {
+    page = p;
+    var html = p === 'download' ? download() : p === 'tools' ? tools() : p === 'settings' ? settings() : p === 'ai' ? ai() : p === 'tasks' ? tasks() : home();
+    document.getElementById('main').innerHTML = html;
+    Array.prototype.forEach.call(document.querySelectorAll('.nav'), function (b) { b.classList.toggle('on', b.dataset.p === p); });
+    document.getElementById('main').scrollTop = 0;
+  }
+
+  function setTheme(c) {
+    theme = c;
+    document.documentElement.style.setProperty('--brand', c);
+    var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+    var mix = function (v, t) { return Math.round(v + (255 - v) * t); };
+    document.documentElement.style.setProperty('--brand-soft', 'rgb(' + mix(r, .82) + ',' + mix(g, .82) + ',' + mix(b, .82) + ')');
+    document.documentElement.style.setProperty('--brand-ink', 'rgb(' + Math.round(r*.35) + ',' + Math.round(g*.35) + ',' + Math.round(b*.35) + ')');
+    showPage('settings');
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.nav'), function (b) {
+    b.addEventListener('click', function () { showPage(b.dataset.p); });
+  });
+  showPage('home');
+  window.showPage = showPage;
+  window.setTheme = setTheme;
+})();
+</script>
+</body>
+</html>

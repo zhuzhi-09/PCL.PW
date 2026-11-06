@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>常见问题与排错 · PCL.PW 文档</title>
+<meta name="description" content="PCL.PW 常见问题：安装被拦截、微软登录、Java、下载失败、游戏崩溃、更新与反馈。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html">总览</a>
+      <a href="install.html">下载与安装</a>
+      <a href="first-run.html">第一次启动</a>
+      <a href="versions.html">版本与加载器</a>
+      <a href="resources.html">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html" class="active">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">使用指南</div>
+      <h1>常见问题与排错</h1>
+      <p class="lead">游戏启动失败时，先看日志和崩溃分析，大多数问题能直接定位到 Java、模组或网络。</p>
+
+      <h2>先看日志</h2>
+      <ol>
+        <li>在首页点「游戏日志」，查看本次启动的完整输出，尤其是最上面的 Java 版本和最后的报错。</li>
+        <li>游戏崩溃时启动器会自动截取日志并做一次崩溃分析，指出可能的原因（Java 版本不对、模组冲突、内存不足等）。</li>
+        <li>需要把日志发给别人时，可以直接从日志页复制或保存文件。</li>
+      </ol>
+
+      <h2>更新启动器</h2>
+      <p>在「设置 → 其他 → 更新」里可以切换更新通道、开关启动时自动检查，也可以点「检查」手动检查。三个通道：</p>
+      <ul>
+        <li><strong>正式版</strong>：最稳定，推荐日常使用。</li>
+        <li><strong>预览版</strong>：包含测试中的版本。</li>
+        <li><strong>Nightly</strong>：<code>main</code> 分支的每次更新，可能不稳定。</li>
+      </ul>
+      <p>Windows 安装版和便携版都可以在启动器内下载并更新；macOS 会下载 dmg，由你把新版本拖进「应用程序」覆盖；安卓会下载 apk 交给系统安装。</p>
+
+      <h2>常见问题</h2>
+
+      <h3>Windows 提示「Windows 已保护你的电脑」</h3>
+      <p>这是 SmartScreen 对没有签名或下载量较少的程序的提示。点「更多信息」→「仍要运行」。安装包来自 GitHub Releases，可以在那里核对来源与 SHA-256。</p>
+
+      <h3>macOS 提示无法验证开发者</h3>
+      <p>PCL.PW 没有经过 Apple 公证。打开「系统设置 → 隐私与安全性」，在页面下方点「仍要打开」；或者右键 App 选择「打开」。</p>
+
+      <h3>安卓提示禁止安装未知应用</h3>
+      <p>安卓版不在应用商店上架。按系统提示，允许浏览器或文件管理器安装应用，然后重新点 apk 安装。覆盖安装会保留游戏与设置。</p>
+
+      <h3>微软正版登录提示需要填写 Client ID</h3>
+      <div class="callout warn">
+        <span class="icon" aria-hidden="true">key</span>
+        <div class="body">
+          <p>由于作者暂时未通过微软云开发者的支付验证，两个月内暂时不会内置默认的 Client ID，也就没有开箱即用的正版验证支持。目前需要自行填写 Azure 应用 Client ID：到 <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade">Azure 门户</a>注册「个人 Microsoft 账户」类型的公共客户端应用，开启“允许公共客户端流”，把应用 ID 填到「设置 → 其他 → 正版登录」。</p>
+          <p>暂时不想配置的话，可以先用离线账户。</p>
+        </div>
+      </div>
+
+      <h3>找不到 Java，或提示 Java 版本不对</h3>
+      <p>「设置 → Java」里会列出检测到的 Java，并标明每个版本需要什么 Java。可以直接点「下载」让启动器安装 Mojang 提供的 Java，或者点「手动选择」指定本机的 <code>javaw.exe</code>。改完在版本设置里确认该版本使用的是「自动选择」还是某个手动指定的 Java。</p>
+
+      <h3>下载很慢、失败或卡住</h3>
+      <ul>
+        <li>在「设置 → 其他 → 下载」里把下载源换成 BMCLAPI；失败时会自动回退到官方源。</li>
+        <li>启动器会多线程下载并校验每个文件，结尾连接卡住时会自动换节点重试，稍等一会儿。</li>
+        <li>更新文件、Apple 芯片专用的库等只能从 GitHub 下载，网络不通时请换网络或开启代理后重试。</li>
+        <li>启动器本身可以到 <a href="https://download.zhuzhi.site">竹纸软件下载站</a> 下载。</li>
+      </ul>
+
+      <h3>游戏启动就崩溃</h3>
+      <ul>
+        <li>先换回原版、不装模组启动一次，确认是游戏本身还是模组的问题。</li>
+        <li>在版本的文件列表里禁用最近装的模组，再逐个启用排查。</li>
+        <li>确认模组与游戏版本、加载器匹配（Fabric 模组不能用在 Forge 上）。</li>
+        <li>看崩溃分析给出的原因，例如内存不足、Java 版本过低、缺少前置模组。</li>
+      </ul>
+
+      <h3>安卓上装不了 Forge、NeoForge、Cleanroom 或 OptiFine</h3>
+      <p>这些加载器需要运行安装器，安卓版暂时还不支持。可以先用 Fabric、Quilt 等不需要安装器的加载器，或者在电脑上装好后用局域网互传把版本传到手机。</p>
+
+      <h3>检查更新没有提示</h3>
+      <p>确认「设置 → 其他 → 更新」里的通道选对了，并且没有跳过这个版本；如果之前点过「跳过这个版本」，手动检查或等下一个版本即可。Nightly 的本地构建没有提交号，不会自动提示更新。</p>
+
+      <h2>AI 排障（可选）</h2>
+      <p>在「设置 → AI 排障」里可以填写自己的 AI 接口（OpenAI 兼容接口或 Anthropic），游戏崩溃后让 AI 结合日志分析原因。支持查看日志、搜索并安装模组、修改配置文件、备份与恢复，但每次修改都需要你确认。费用由你的 AI 服务商收取，API Key 只保存在本机。</p>
+
+      <h2>反馈问题</h2>
+      <p>还是解决不了的话，请到 <a href="https://github.com/zhuzhi-09/PCL.PW/issues">GitHub Issues</a> 反馈，并附上：</p>
+      <ul>
+        <li>启动器版本（「设置 → 关于与致谢」里可以看到）、系统和平台；</li>
+        <li>做了什么操作、期望的结果和实际的结果；</li>
+        <li>游戏日志或崩溃分析的内容；如果是界面问题，最好附截图。</li>
+      </ul>
+      <p>PCL.PW 是第三方作品，请不要就本软件的问题打扰 PCL 作者。</p>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a href="android.html"><span class="dir">上一篇</span><span class="t">安卓版</span></a>
+      <a class="next" href="api.html"><span class="dir">下一篇</span><span class="t">启动器接口</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

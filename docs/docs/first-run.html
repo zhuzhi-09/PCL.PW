@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>第一次启动 · PCL.PW 文档</title>
+<meta name="description" content="PCL.PW 第一次启动：选择游戏文件夹、添加账户、准备 Java、安装版本并启动游戏。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html">总览</a>
+      <a href="install.html">下载与安装</a>
+      <a href="first-run.html" class="active">第一次启动</a>
+      <a href="versions.html">版本与加载器</a>
+      <a href="resources.html">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">使用指南</div>
+      <h1>第一次启动</h1>
+      <p class="lead">打开启动器后，按顺序完成这几步就能进游戏。设置都可以之后再改。</p>
+
+      <h2>1. 选择游戏文件夹</h2>
+      <p>游戏文件夹（通常叫 <code>.minecraft</code>）保存版本、模组、存档和资源。默认位置在启动器的用户数据目录里，也可以直接使用已有的游戏文件夹。</p>
+      <ul>
+        <li>在「设置 → 游戏管理」里查看当前文件夹，或者添加一个新的文件夹。</li>
+        <li>安卓版第一次打开时会询问把游戏文件放在哪里；之后可以在同一个位置修改。</li>
+        <li>如果你之前用 PCL 或 PCL-CE，可以在「设置 → 其他 → PCL-CE」里导入游戏文件夹、启动设置和账户。</li>
+      </ul>
+
+      <h2>2. 添加账户</h2>
+      <p>在首页左侧点账户头像，选择微软正版或离线账户。离线账户填一个名字即可，适合没有正版或只想本地测试的时候。</p>
+
+      <div class="callout warn">
+        <span class="icon" aria-hidden="true">key</span>
+        <div class="body">
+          <p><strong>微软正版登录暂时需要自己填写 Azure 应用 Client ID。</strong>由于作者暂时未通过微软云开发者的支付验证，两个月内暂时不会内置默认的 Client ID，也就没有开箱即用的「正版验证支持」。</p>
+          <p>需要正版登录的话，请到 <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade">Azure 门户</a>注册一个「个人 Microsoft 账户」类型的公共客户端应用，在「身份验证」里开启“允许公共客户端流”，然后把应用 ID 填到「设置 → 其他 → 正版登录 → Azure 应用 Client ID」。不填的话会提示需要填写 Client ID，只能使用离线账户。</p>
+        </div>
+      </div>
+
+      <p>Windows 上账户凭据（包括微软账户的刷新令牌）会用系统 DPAPI 加密后保存，不会以明文写进配置文件；安卓与 macOS 上使用系统密钥库的支持还在计划中。</p>
+
+      <h2>3. 准备 Java</h2>
+      <p>启动器会自动查找本机安装的 Java。找不到需要的版本时，会按游戏版本的要求自动下载 Mojang 提供的 Java（Java 8 / 17 / 21 等）。</p>
+      <ul>
+        <li>在「设置 → Java」里可以看到检测到的 Java，也可以手动指定某个 <code>javaw.exe</code> 或 <code>java</code> 路径。</li>
+        <li>「设置 → 启动」里的「游戏内存」默认自动分配；内存很小或很大的机器建议改成自定义。</li>
+        <li>安卓版使用内置运行时，不需要自己安装 Java。</li>
+      </ul>
+
+      <h2>4. 安装一个游戏版本</h2>
+      <p>打开「下载」，选择原版游戏版本（正式版、快照、远古版或愚人节版本），点安装。也可以顺便装上 Forge、Fabric 等加载器，详见 <a href="versions.html">版本与加载器</a>。</p>
+      <p>下载会优先使用你选择的下载源（官方源或 BMCLAPI 镜像），失败时自动回退；每个文件都会做校验。</p>
+
+      <h2>5. 选择版本并开始游戏</h2>
+      <ol>
+        <li>回到首页，点「版本选择」选中刚装好的版本。</li>
+        <li>点「开始游戏」。第一次启动要准备资源文件，会比之后慢一些。</li>
+        <li>游戏运行后，首页的大按钮会变成「结束游戏」；安卓上游戏切到后台后可以点「返回游戏」。</li>
+      </ol>
+
+      <h2>接下来</h2>
+      <ul>
+        <li>想装模组、光影或资源包：看 <a href="resources.html">模组与资源</a>。</li>
+        <li>想让每个版本用不同的 Java、内存或隔离规则：看 <a href="versions.html">版本与加载器</a>。</li>
+        <li>游戏启动失败：首页点「游戏日志」，或者看 <a href="troubleshooting.html">常见问题与排错</a>。</li>
+      </ul>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a href="install.html"><span class="dir">上一篇</span><span class="t">下载与安装</span></a>
+      <a class="next" href="versions.html"><span class="dir">下一篇</span><span class="t">版本与加载器</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

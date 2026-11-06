@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>下载与安装 · PCL.PW 文档</title>
+<meta name="description" content="PCL.PW 在 Windows、macOS、Android 上的系统要求、安装步骤和首次打开提示。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html">总览</a>
+      <a href="install.html" class="active">下载与安装</a>
+      <a href="first-run.html">第一次启动</a>
+      <a href="versions.html">版本与加载器</a>
+      <a href="resources.html">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">使用指南</div>
+      <h1>下载与安装</h1>
+      <p class="lead">所有版本都在 <a href="https://github.com/zhuzhi-09/PCL.PW/releases">GitHub Releases</a> 发布。正式版最稳定，Nightly 是每次提交后自动构建的测试版。</p>
+
+      <h2>系统要求</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>平台</th><th>要求</th><th>安装包</th></tr></thead>
+          <tbody>
+            <tr><td>Windows</td><td>Windows 10 及以上，64 位</td><td>安装版 <code>*-setup.exe</code>、便携版 <code>*-portable.zip</code></td></tr>
+            <tr><td>macOS</td><td>macOS 12 及以上，Apple 芯片与 Intel 通用</td><td><code>*-macos.dmg</code></td></tr>
+            <tr><td>Android</td><td>Android 8.0 及以上，64 位 ARM</td><td><code>*-android-arm64.apk</code></td></tr>
+            <tr><td>Linux</td><td>尚未适配</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Windows</h2>
+      <h3>安装版（推荐）</h3>
+      <ol>
+        <li>下载 <code>PCL.PW-版本号-windows-x64-setup.exe</code> 并运行。</li>
+        <li>安装程序只为当前用户安装，不需要管理员权限，默认装到 <code>%LOCALAPPDATA%\Programs\PCL.PW</code>，安装目录可以修改。</li>
+        <li>安装版可以在启动器里检查并自动更新。</li>
+      </ol>
+      <p>首次运行时 Windows SmartScreen 可能提示「Windows 已保护你的电脑」，点「更多信息」→「仍要运行」即可。安装包来自本项目的 GitHub Releases，可以在那里核对文件来源。</p>
+
+      <h3>便携版</h3>
+      <p>下载 <code>*-portable.zip</code> 解压到任意目录，运行其中的 <code>PCL.PW.exe</code>。适合放在 U 盘里，或者不想安装的时候使用。便携版也能在启动器内更新，更新时会替换程序文件。</p>
+      <p>安装版与便携版共用同一份用户数据（设置、账户、默认游戏文件夹），换一种方式打开不会丢配置。</p>
+
+      <h2>macOS</h2>
+      <ol>
+        <li>下载 <code>*-macos.dmg</code>，打开后把 PCL.PW 拖进「应用程序」文件夹。</li>
+        <li>第一次打开时，如果提示「无法验证开发者」或「Apple 无法检查 App 是否包含恶意软件」，打开「系统设置 → 隐私与安全性」，在下方点「仍要打开」；也可以右键 App 选择「打开」。</li>
+      </ol>
+      <div class="callout warn">
+        <span class="icon" aria-hidden="true">warning</span>
+        <div class="body">
+          <p>PCL.PW 没有经过 Apple 公证，所以会有上面的提示。应用本身是开源的，可以自行从源码构建。更新时打开下载好的 dmg，把新的 PCL.PW 拖进「应用程序」覆盖旧版本即可，游戏文件不受影响。</p>
+        </div>
+      </div>
+
+      <h2>Android</h2>
+      <ol>
+        <li>下载 <code>*-android-arm64.apk</code>，用文件管理器或浏览器打开。</li>
+        <li>系统会提示「禁止安装未知应用」，按提示允许当前应用安装，然后确认安装。</li>
+        <li>要求 Android 8.0 及以上、64 位 ARM 处理器；x86 设备暂时不支持。</li>
+      </ol>
+      <p>安卓版不在应用商店上架。覆盖安装会保留游戏、账户和设置；第一次打开时会询问游戏文件夹放在哪里，详见 <a href="android.html">安卓版</a>。</p>
+
+      <h2>Nightly 测试版</h2>
+      <p>每次向 <code>main</code> 分支推送后，工作流会自动构建 Nightly，发布在 <a href="https://github.com/zhuzhi-09/PCL.PW/releases/tag/nightly">nightly 标签</a>下，包含最新的改动，也可能不稳定。想尝鲜或者帮忙测试时可以下载；日常使用建议选正式版。</p>
+
+      <h2>下载慢或打不开 GitHub</h2>
+      <p>可以先到 <a href="https://download.zhuzhi.site">竹纸软件下载站</a> 下载，那里会同步最新正式版。启动器内的游戏下载也支持 BMCLAPI 镜像：在「设置 → 其他 → 下载」里把下载源换成 BMCLAPI，失败时还会自动回退到官方源。</p>
+
+      <h2>校验下载的文件</h2>
+      <p><code>update.json</code> 中每个发布文件都有 <code>size</code> 与 <code>sha256</code>，可以用系统自带的工具核对，例如 Windows 上：</p>
+<pre><code>certutil -hashfile PCL.PW-0.3.3-windows-x64-setup.exe SHA256</code></pre>
+      <p>启动器自己下载更新时也会核对大小与 SHA-256，校验不通过会删除文件并报错。</p>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a href="index.html"><span class="dir">上一篇</span><span class="t">总览</span></a>
+      <a class="next" href="first-run.html"><span class="dir">下一篇</span><span class="t">第一次启动</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

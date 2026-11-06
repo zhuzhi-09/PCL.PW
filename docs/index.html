@@ -216,6 +216,21 @@ main > section { padding: 40px 0; }
 .notice p + p { margin-top: 12px; }
 .notice a { color: var(--md-sys-color-primary); text-decoration: underline; }
 
+/* ---------- 在线体验 ---------- */
+.demo-frame {
+  display: block; width: 100%; height: 760px; margin-top: 14px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 22px; background: #F3F5EC;
+}
+.beta {
+  display: inline-block; margin-left: 8px; padding: 2px 8px;
+  border-radius: 999px; font-size: 10px; line-height: 16px; font-weight: 600;
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+  vertical-align: middle;
+}
+@media (max-width: 599px) { .demo-frame { height: 620px; } }
+
 /* ---------- 常见问题：可展开列表 ---------- */
 .faq-list { border-radius: 16px; background: var(--md-sys-color-surface-container-low); overflow: hidden; }
 details + details { border-top: 1px solid var(--md-sys-color-outline-variant); }
@@ -381,6 +396,10 @@ body { overflow-x: clip; }
         <p class="lead body-large">下面是启动器界面的网页演示，可以点击试试。实际功能请下载启动器使用。</p>
       </div>
       <div id="pcl-demo"><p style="color:var(--md-sys-color-on-surface-variant)">演示需要启用 JavaScript。</p></div>
+
+      <h3 class="title-large" style="margin-top:40px">Pixel World 新版 UI<span class="beta">内测中</span></h3>
+      <p class="body-medium" style="margin-top:6px;color:var(--md-sys-color-on-surface-variant)">新界面正在开发中，下面是可交互的界面预览。旧版演示保留在上面，功能仍以下载的启动器为准。</p>
+      <iframe class="demo-frame" src="demo/pixel-world.html" title="Pixel World 新版 UI 在线体验" loading="lazy"></iframe>
     </div>
   </section>
 

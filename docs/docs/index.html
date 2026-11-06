@@ -30,6 +30,11 @@
 
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="search">
+      <span class="icon" aria-hidden="true">search</span>
+      <input id="q" type="search" placeholder="搜索文档" aria-label="搜索文档" autocomplete="off">
+    </div>
+    <div class="search-results" id="results" hidden></div>
     <div class="group">
       <div class="group-title">使用指南</div>
       <a href="index.html" class="active">总览</a>
@@ -38,6 +43,7 @@
       <a href="versions.html">版本与加载器</a>
       <a href="resources.html">模组与资源</a>
       <a href="android.html">安卓版</a>
+      <a href="ai.html">AI 排障</a>
       <a href="troubleshooting.html">常见问题与排错</a>
     </div>
     <div class="group">
@@ -78,20 +84,21 @@
         </a>
       </div>
 
-      <h2>使用指南</h2>
+      <h2 id="sec-1">使用指南</h2>
       <ul>
         <li><a href="install.html">下载与安装</a>：系统要求、安装版与便携版的区别、GitHub 下载慢时怎么办。</li>
         <li><a href="first-run.html">第一次启动</a>：选择游戏文件夹、添加账户、准备 Java、安装并启动第一个版本。</li>
         <li><a href="versions.html">版本与加载器</a>：原版与 Forge、NeoForge、Fabric、Quilt 等加载器，版本隔离与每个版本单独的设置。</li>
         <li><a href="resources.html">模组与资源</a>：从 Modrinth 安装模组、光影、资源包和数据包，管理存档与截图，局域网互传。</li>
         <li><a href="android.html">安卓版</a>：支持的版本、渲染器、渲染比例和安装器限制。</li>
+        <li><a href="ai.html">AI 排障</a>：接入自己的模型，查看日志、安装模组、改配置、备份恢复，以及启动器提供的操作接口。</li>
         <li><a href="troubleshooting.html">常见问题与排错</a>：看日志、崩溃分析、更新与反馈。</li>
       </ul>
 
-      <h2>接口</h2>
+      <h2 id="sec-2">接口</h2>
       <p><a href="api.html">启动器接口</a> 说明了更新检查与公告读取的地址、<code>update.json</code> 与 <code>notices.json</code> 的字段和格式版本规则。</p>
 
-      <h2>遇到问题</h2>
+      <h2 id="sec-3">遇到问题</h2>
       <p>先看看 <a href="troubleshooting.html">常见问题与排错</a>；仍然解决不了，请带上启动器版本、系统和游戏日志，到 <a href="https://github.com/zhuzhi-09/PCL.PW/issues">GitHub Issues</a> 反馈。</p>
     </article>
 

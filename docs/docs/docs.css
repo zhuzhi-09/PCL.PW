@@ -140,6 +140,79 @@ img { max-width: 100%; }
 .content { flex: 1; min-width: 0; max-width: 840px; }
 .scrim { display: none; }
 
+/* ---------- 可展开的问答 ---------- */
+details {
+  margin: 0 0 10px; padding: 0 16px;
+  border: 1px solid var(--md-sys-color-outline-variant); border-radius: 12px;
+  background: var(--md-sys-color-surface-container-low);
+}
+summary {
+  position: relative; padding: 12px 28px 12px 0; cursor: pointer;
+  font-weight: 500; list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: "expand_more";
+  font-family: "Material Symbols Rounded"; font-size: 20px; line-height: 1;
+  position: absolute; right: 0; top: 14px;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: transform var(--md-motion);
+}
+details[open] summary::after { transform: rotate(180deg); }
+details p { margin: 0 0 12px; color: var(--md-sys-color-on-surface-variant); }
+
+/* ---------- 搜索 ---------- */
+.search {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  height: 44px; margin: 0 0 20px; padding: 0 14px;
+  border-radius: 9999px;
+  background: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  transition: border-color var(--md-motion), background-color var(--md-motion);
+}
+.search:focus-within { border-color: var(--md-sys-color-primary); background: var(--md-sys-color-surface-container-lowest); }
+.search .icon { font-size: 20px; color: var(--md-sys-color-on-surface-variant); }
+.search input {
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent;
+  font-family: inherit; font-size: 14px; line-height: 20px; letter-spacing: .25px;
+  color: var(--md-sys-color-on-surface);
+}
+.search input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+.search input::-webkit-search-cancel-button { cursor: pointer; }
+.search-results { margin: -8px 0 16px; }
+.search-results a {
+  display: block; padding: 10px 12px; margin-bottom: 4px; border-radius: 12px;
+  color: var(--md-sys-color-on-surface);
+}
+.search-results a:hover { background: var(--md-sys-color-surface-container); text-decoration: none; }
+.search-results a:focus-visible { outline: 3px solid var(--md-sys-color-primary); outline-offset: -3px; }
+.search-results .t {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  color: var(--md-sys-color-primary);
+  font-size: 14px; line-height: 20px; font-weight: 500;
+}
+.search-results .m {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+  margin-top: 2px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 12px; line-height: 17px;
+}
+.search-results mark {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-radius: 4px; padding: 0 2px;
+}
+.search-empty { padding: 8px 12px; color: var(--md-sys-color-on-surface-variant); font-size: 13px; line-height: 18px; }
+body.searching .sidebar .group { display: none; }
+article h2:target, article h3:target {
+  animation: md-flash 2.4s var(--md-motion) 1;
+  border-radius: 6px;
+}
+@keyframes md-flash {
+  from { background: var(--md-sys-color-primary-container); }
+  to { background: transparent; }
+}
+
 /* ---------- 正文 ---------- */
 article { padding-bottom: 8px; }
 .crumbs { color: var(--md-sys-color-on-surface-variant); font-size: 12px; line-height: 16px; margin-bottom: 8px; }

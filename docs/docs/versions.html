@@ -30,6 +30,11 @@
 
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="search">
+      <span class="icon" aria-hidden="true">search</span>
+      <input id="q" type="search" placeholder="搜索文档" aria-label="搜索文档" autocomplete="off">
+    </div>
+    <div class="search-results" id="results" hidden></div>
     <div class="group">
       <div class="group-title">使用指南</div>
       <a href="index.html">总览</a>
@@ -38,6 +43,7 @@
       <a href="versions.html" class="active">版本与加载器</a>
       <a href="resources.html">模组与资源</a>
       <a href="android.html">安卓版</a>
+      <a href="ai.html">AI 排障</a>
       <a href="troubleshooting.html">常见问题与排错</a>
     </div>
     <div class="group">
@@ -53,7 +59,7 @@
       <h1>版本与加载器</h1>
       <p class="lead">「下载」页负责安装游戏本体和加载器；首页和「版本选择」负责管理已经装好的版本。</p>
 
-      <h2>安装原版</h2>
+      <h2 id="sec-1">安装原版</h2>
       <p>在「下载」里选择 Minecraft 原版，可以安装：</p>
       <ul>
         <li>正式版与快照；</li>
@@ -62,7 +68,7 @@
       </ul>
       <p>下载源可选官方源或 BMCLAPI 镜像，失败时自动回退；支持多线程下载，每个文件都会校验，结尾连接卡住时会自动换节点重试。</p>
 
-      <h2>安装加载器</h2>
+      <h2 id="sec-2">安装加载器</h2>
       <p>安装原版时可以一起选择加载器，也可以之后单独安装。支持：</p>
       <div class="table-wrap">
         <table>
@@ -89,7 +95,7 @@
         </div>
       </div>
 
-      <h2>管理版本</h2>
+      <h2 id="sec-3">管理版本</h2>
       <ul>
         <li><strong>版本选择</strong>：首页左侧的按钮，切换当前要启动的版本。</li>
         <li><strong>改名与复制</strong>：在版本列表里操作，复制适合在同一个游戏版本上做不同的模组组合。</li>
@@ -97,7 +103,7 @@
         <li><strong>版本设置</strong>：首页的「版本设置」进入当前版本的单独配置。</li>
       </ul>
 
-      <h2>版本隔离</h2>
+      <h2 id="sec-4">版本隔离</h2>
       <p>版本隔离决定每个版本是否使用自己的 <code>mods</code>、<code>saves</code>、<code>config</code> 等目录。在「设置 → 启动 → 版本隔离」里选择规则，新版本第一次启动时按规则决定，之后可以在版本设置里单独修改。</p>
       <div class="table-wrap">
         <table>
@@ -113,7 +119,7 @@
       </div>
       <p>规则的判断方式与 PCL-CE 相同，从 PCL-CE 迁移过来的版本文件夹可以直接使用。</p>
 
-      <h2>每个版本单独的设置</h2>
+      <h2 id="sec-5">每个版本单独的设置</h2>
       <p>在「版本设置」里可以覆盖全局设置，常见的包括：</p>
       <ul>
         <li>使用的 Java（自动选择或手动指定）；</li>

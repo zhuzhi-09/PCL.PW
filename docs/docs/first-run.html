@@ -30,6 +30,11 @@
 
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="search">
+      <span class="icon" aria-hidden="true">search</span>
+      <input id="q" type="search" placeholder="搜索文档" aria-label="搜索文档" autocomplete="off">
+    </div>
+    <div class="search-results" id="results" hidden></div>
     <div class="group">
       <div class="group-title">使用指南</div>
       <a href="index.html">总览</a>
@@ -38,6 +43,7 @@
       <a href="versions.html">版本与加载器</a>
       <a href="resources.html">模组与资源</a>
       <a href="android.html">安卓版</a>
+      <a href="ai.html">AI 排障</a>
       <a href="troubleshooting.html">常见问题与排错</a>
     </div>
     <div class="group">
@@ -53,7 +59,7 @@
       <h1>第一次启动</h1>
       <p class="lead">打开启动器后，按顺序完成这几步就能进游戏。设置都可以之后再改。</p>
 
-      <h2>1. 选择游戏文件夹</h2>
+      <h2 id="sec-1">1. 选择游戏文件夹</h2>
       <p>游戏文件夹（通常叫 <code>.minecraft</code>）保存版本、模组、存档和资源。默认位置在启动器的用户数据目录里，也可以直接使用已有的游戏文件夹。</p>
       <ul>
         <li>在「设置 → 游戏管理」里查看当前文件夹，或者添加一个新的文件夹。</li>
@@ -61,7 +67,7 @@
         <li>如果你之前用 PCL 或 PCL-CE，可以在「设置 → 其他 → PCL-CE」里导入游戏文件夹、启动设置和账户。</li>
       </ul>
 
-      <h2>2. 添加账户</h2>
+      <h2 id="sec-2">2. 添加账户</h2>
       <p>在首页左侧点账户头像，选择微软正版或离线账户。离线账户填一个名字即可，适合没有正版或只想本地测试的时候。</p>
 
       <div class="callout warn">
@@ -74,7 +80,7 @@
 
       <p>Windows 上账户凭据（包括微软账户的刷新令牌）会用系统 DPAPI 加密后保存，不会以明文写进配置文件；安卓与 macOS 上使用系统密钥库的支持还在计划中。</p>
 
-      <h2>3. 准备 Java</h2>
+      <h2 id="sec-3">3. 准备 Java</h2>
       <p>启动器会自动查找本机安装的 Java。找不到需要的版本时，会按游戏版本的要求自动下载 Mojang 提供的 Java（Java 8 / 17 / 21 等）。</p>
       <ul>
         <li>在「设置 → Java」里可以看到检测到的 Java，也可以手动指定某个 <code>javaw.exe</code> 或 <code>java</code> 路径。</li>
@@ -82,18 +88,18 @@
         <li>安卓版使用内置运行时，不需要自己安装 Java。</li>
       </ul>
 
-      <h2>4. 安装一个游戏版本</h2>
+      <h2 id="sec-4">4. 安装一个游戏版本</h2>
       <p>打开「下载」，选择原版游戏版本（正式版、快照、远古版或愚人节版本），点安装。也可以顺便装上 Forge、Fabric 等加载器，详见 <a href="versions.html">版本与加载器</a>。</p>
       <p>下载会优先使用你选择的下载源（官方源或 BMCLAPI 镜像），失败时自动回退；每个文件都会做校验。</p>
 
-      <h2>5. 选择版本并开始游戏</h2>
+      <h2 id="sec-5">5. 选择版本并开始游戏</h2>
       <ol>
         <li>回到首页，点「版本选择」选中刚装好的版本。</li>
         <li>点「开始游戏」。第一次启动要准备资源文件，会比之后慢一些。</li>
         <li>游戏运行后，首页的大按钮会变成「结束游戏」；安卓上游戏切到后台后可以点「返回游戏」。</li>
       </ol>
 
-      <h2>接下来</h2>
+      <h2 id="sec-6">接下来</h2>
       <ul>
         <li>想装模组、光影或资源包：看 <a href="resources.html">模组与资源</a>。</li>
         <li>想让每个版本用不同的 Java、内存或隔离规则：看 <a href="versions.html">版本与加载器</a>。</li>

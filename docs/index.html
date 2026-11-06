@@ -195,6 +195,15 @@ main > section { padding: 40px 0; }
 .dl .s-card .btn { margin-top: 24px; align-self: flex-start; }
 .ver { margin-top: 24px; color: var(--md-sys-color-on-surface-variant); }
 
+/* ---------- 公告 ---------- */
+.notice.announce {
+  margin-top: 16px;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+.notice.announce .title-medium { color: inherit; }
+.notice.announce p + p { margin-top: 4px; }
+
 /* ---------- 声明：Tonal card ---------- */
 .notice {
   display: flex; gap: 16px; align-items: flex-start;
@@ -250,6 +259,7 @@ footer p + p { margin-top: 4px; }
   .wrap { padding: 0 16px; }
   .grid { grid-template-columns: minmax(0, 1fr); }
   .app-bar nav .opt { display: none; }
+  .app-bar nav a[href*="github.com"] { display: none; }
   section { padding: 32px 0; }
   .notice { flex-direction: column; gap: 12px; padding: 20px; }
   summary { padding: 16px; }
@@ -326,6 +336,13 @@ body { overflow-x: clip; }
 
 <main>
   <div class="wrap">
+    <div class="notice announce" role="status">
+      <span class="icon" aria-hidden="true">campaign</span>
+      <div class="body">
+        <p class="title-medium">界面正在重做，敬请期待</p>
+        <p class="body-medium">PCL 系列的界面在手机上不便于操作，我们正在迁移到为触屏重新设计的新界面。PCL.PW 会在未来几个版本后更名为 <strong>Pixel World Launcher</strong>。</p>
+      </div>
+    </div>
     <div class="hero">
       <div class="hero-text">
         <h1 class="display-medium">PCL.PW</h1>
@@ -423,6 +440,7 @@ body { overflow-x: clip; }
       </div>
       <div class="faq-list">
         <details><summary><span class="q title-medium">和 PCL、PCL-CE 是什么关系？</span><span class="icon" aria-hidden="true">expand_more</span></summary><p class="answer body-large">PCL.PW 是 PCL 的第三方衍生作品：界面布局参考 PCL-CE，用 Flutter 重新编写，视觉采用 Material Design 3，并增加了安卓版。它由第三方独立开发，与 PCL 和 PCL-CE 官方无关。可以从 PCL-CE 导入设置、游戏文件夹和账户。</p></details>
+        <details><summary><span class="q title-medium">为什么要改界面和改名？</span><span class="icon" aria-hidden="true">expand_more</span></summary><p class="answer body-large">PCL 系列的界面是为电脑设计的，在手机上不便于操作。我们正在把界面迁移到更适合触屏的新设计，PCL.PW 也会在未来几个版本后更名为 <strong>Pixel World Launcher</strong>。更名不会影响现有的游戏版本、存档和设置，更新时会保留。</p></details>
         <details><summary><span class="q title-medium">安卓版能玩哪些版本？</span><span class="icon" aria-hidden="true">expand_more</span></summary><p class="answer body-large">支持 1.0 到最新的 Java 版，也能在手机上安装 Forge、NeoForge、OptiFine 等加载器。帧率取决于手机性能和所选的渲染器。</p></details>
         <details><summary><span class="q title-medium">安装时提示「未知来源」或被拦截？</span><span class="icon" aria-hidden="true">expand_more</span></summary><p class="answer body-large">安卓版不在应用商店上架，需要允许浏览器或文件管理器安装应用。Windows 上如果 SmartScreen 提示，点「更多信息」→「仍要运行」。安装包都可以在 GitHub 上核对来源。</p></details>
         <details><summary><span class="q title-medium">遇到问题去哪里反馈？</span><span class="icon" aria-hidden="true">expand_more</span></summary><p class="answer body-large">请在 <a href="https://github.com/zhuzhi-09/PCL.PW/issues">GitHub Issues</a> 反馈，不要打扰 PCL 的作者。</p></details>

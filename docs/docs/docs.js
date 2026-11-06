@@ -36,7 +36,7 @@
   // ---------- 搜索：第一次输入时才加载各页内容，不需要构建步骤 ----------
   var PAGES = [
     'index.html', 'install.html', 'first-run.html', 'versions.html',
-    'resources.html', 'android.html', 'ai.html', 'troubleshooting.html', 'api.html'
+    'resources.html', 'android.html', 'ai.html', 'troubleshooting.html', 'api.html', 'icons.html'
   ];
   var input = document.getElementById('q');
   var results = document.getElementById('results');

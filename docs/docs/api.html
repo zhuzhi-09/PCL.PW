@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>启动器接口 · PCL.PW 文档</title>
+<meta name="description" content="PCL.PW 启动器读取的 update.json 与 notices.json：地址、格式版本和字段说明。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html">总览</a>
+      <a href="install.html">下载与安装</a>
+      <a href="first-run.html">第一次启动</a>
+      <a href="versions.html">版本与加载器</a>
+      <a href="resources.html">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html" class="active">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">接口</div>
+      <h1>启动器接口</h1>
+      <p class="lead">启动器从这里读取更新信息和公告。所有地址都失败时，更新检查退回到 GitHub API，公告不显示。</p>
+
+      <h2>地址</h2>
+      <p>按顺序尝试，前一个失败就用下一个：</p>
+      <ol>
+        <li><code>https://pcl.pw.zhuzhi.site/api/v1/</code></li>
+        <li><code>https://raw.githubusercontent.com/zhuzhi-09/PCL.PW/site/docs/api/v1/</code></li>
+      </ol>
+      <p>路径里的 <code>v1</code> 是格式版本：以后格式不兼容时新建 <code>v2</code>，<code>v1</code> 继续保留给旧版启动器。响应必须是 JSON，且 <code>format</code> 为 <code>1</code>，否则整个文件会被忽略。</p>
+
+      <h2>update.json</h2>
+      <p>各更新通道的最新发布。由发布工作流（<code>.github/workflows/release.yml</code> 的 Update API 步骤，脚本 <code>tool/update_api.py</code>）在每次发布后自动生成，<strong>不要手动修改</strong>。</p>
+<pre><code>{
+  "format": 1,
+  "generatedAt": "2026-11-06T10:06:09Z",
+  "channels": {
+    "stable": {
+      "tag": "v0.3.3",
+      "name": "PCL.PW v0.3.3",
+      "body": "## 新增\n\n- ...",
+      "prerelease": false,
+      "commit": "main",
+      "publishedAt": "2026-11-05T14:48:23Z",
+      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.3",
+      "assets": [
+        {
+          "name": "PCL.PW-0.3.3-windows-x64-setup.exe",
+          "url": "https://github.com/.../PCL.PW-0.3.3-windows-x64-setup.exe",
+          "size": 15575552,
+          "sha256": "06e49780..."
+        }
+      ]
+    }
+  }
+}</code></pre>
+
+      <h3>顶层字段</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>format</code></td><td>number</td><td>格式版本，目前固定为 <code>1</code>。</td></tr>
+            <tr><td><code>generatedAt</code></td><td>string</td><td>生成时间，ISO 8601。</td></tr>
+            <tr><td><code>channels</code></td><td>object</td><td>键为更新通道 <code>stable</code>、<code>preview</code>、<code>nightly</code>；没有发布的通道可以省略。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>通道字段</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>tag</code></td><td>string</td><td>发布标签，正式版形如 <code>v0.3.3</code>，Nightly 固定为 <code>nightly</code>。版本比较会去掉开头的 <code>v</code>。</td></tr>
+            <tr><td><code>name</code></td><td>string</td><td>显示名称。</td></tr>
+            <tr><td><code>body</code></td><td>string</td><td>更新说明，Markdown。</td></tr>
+            <tr><td><code>prerelease</code></td><td>boolean</td><td>是否为预发布。Nightly 为 <code>true</code>。</td></tr>
+            <tr><td><code>commit</code></td><td>string</td><td>Nightly 的提交号，用于判断是否需要更新；其他通道可能是 <code>main</code>。</td></tr>
+            <tr><td><code>publishedAt</code></td><td>string</td><td>发布时间，ISO 8601。</td></tr>
+            <tr><td><code>page</code></td><td>string</td><td>发布页面地址。</td></tr>
+            <tr><td><code>assets</code></td><td>array</td><td>发布文件，字段见下。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>文件字段</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>name</code></td><td>string</td><td>文件名，启动器按后缀选择当前平台的包。</td></tr>
+            <tr><td><code>url</code></td><td>string</td><td>下载地址。</td></tr>
+            <tr><td><code>size</code></td><td>number</td><td>字节数，下载后核对。</td></tr>
+            <tr><td><code>sha256</code></td><td>string</td><td>SHA-256；为 <code>null</code> 或格式不对时跳过校验。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>启动器按平台选择文件：安卓 <code>*-android-arm64.apk</code>、macOS <code>*-macos.dmg</code>、Windows 安装版 <code>*-windows-x64-setup.exe</code>、Windows 便携版 <code>*-windows-x64-portable.zip</code>。</p>
+
+      <h2>notices.json</h2>
+      <p>首页公告，<strong>手动维护</strong>：编辑后提交到 <code>site</code> 分支即可。启动器每次打开时读取，显示在首页提示条与「Minecraft 版本动态」之间。</p>
+<pre><code>{
+  "format": 1,
+  "notices": [
+    {
+      "id": "2026-11-05-example",
+      "level": "info",
+      "title": "标题",
+      "body": "正文，支持 Markdown",
+      "url": "https://github.com/zhuzhi-09/PCL.PW/releases",
+      "urlText": "查看详情",
+      "platforms": ["windows", "android", "macos"],
+      "channels": ["stable", "preview", "nightly"],
+      "minVersion": "0.3.0",
+      "maxVersion": "0.4.0",
+      "start": "2026-11-05T00:00:00+08:00",
+      "end": "2026-11-12T00:00:00+08:00",
+      "dismissible": true
+    }
+  ]
+}</code></pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>字段</th><th>必填</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>是</td><td>唯一标识。用户关闭后按 id 记住，不再显示；内容有重要修改时换一个 id。</td></tr>
+            <tr><td><code>level</code></td><td>否</td><td><code>info</code>（默认）、<code>warning</code>、<code>error</code>，决定图标和颜色。</td></tr>
+            <tr><td><code>title</code> / <code>body</code></td><td>是</td><td>标题和正文，正文支持 Markdown。</td></tr>
+            <tr><td><code>url</code> / <code>urlText</code></td><td>否</td><td>操作按钮。只接受 <code>http</code> 与 <code>https</code>。</td></tr>
+            <tr><td><code>platforms</code></td><td>否</td><td>只在这些平台显示，省略为全部。取值为 <code>windows</code>、<code>android</code>、<code>macos</code>、<code>linux</code>。</td></tr>
+            <tr><td><code>channels</code></td><td>否</td><td>只在这些更新通道显示，省略为全部。</td></tr>
+            <tr><td><code>minVersion</code> / <code>maxVersion</code></td><td>否</td><td>只在这个版本范围内显示，包含两端。</td></tr>
+            <tr><td><code>start</code> / <code>end</code></td><td>否</td><td>显示的时间范围，ISO 8601。</td></tr>
+            <tr><td><code>dismissible</code></td><td>否</td><td>能否关闭，默认 <code>true</code>；设为 <code>false</code> 时用户无法关闭。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>本地或镜像使用</h2>
+      <p>接口只要求 HTTP(S) 能访问到 JSON，并且 <code>format</code> 为 <code>1</code>。如果想给启动器做镜像，保持同样的目录结构和字段即可；新增字段应保持旧版启动器可忽略，不兼容的改动请新建 <code>v2</code>。</p>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a href="troubleshooting.html"><span class="dir">上一篇</span><span class="t">常见问题与排错</span></a>
+      <a class="next" href="index.html"><span class="dir">回到</span><span class="t">文档总览</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>版本与加载器 · PCL.PW 文档</title>
+<meta name="description" content="PCL.PW 安装原版与 Forge、NeoForge、Fabric、Quilt 等加载器，管理版本，理解版本隔离和每个版本单独的设置。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html">总览</a>
+      <a href="install.html">下载与安装</a>
+      <a href="first-run.html">第一次启动</a>
+      <a href="versions.html" class="active">版本与加载器</a>
+      <a href="resources.html">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">使用指南</div>
+      <h1>版本与加载器</h1>
+      <p class="lead">「下载」页负责安装游戏本体和加载器；首页和「版本选择」负责管理已经装好的版本。</p>
+
+      <h2>安装原版</h2>
+      <p>在「下载」里选择 Minecraft 原版，可以安装：</p>
+      <ul>
+        <li>正式版与快照；</li>
+        <li>远古版本；</li>
+        <li>愚人节版本。</li>
+      </ul>
+      <p>下载源可选官方源或 BMCLAPI 镜像，失败时自动回退；支持多线程下载，每个文件都会校验，结尾连接卡住时会自动换节点重试。</p>
+
+      <h2>安装加载器</h2>
+      <p>安装原版时可以一起选择加载器，也可以之后单独安装。支持：</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>加载器</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>Forge</td><td>覆盖大多数游戏版本，模组生态最大。</td></tr>
+            <tr><td>NeoForge</td><td>较新版本上的 Forge 分支，常见于 1.20.2 之后的整合包。</td></tr>
+            <tr><td>Fabric</td><td>轻量，更新快，很多现代模组使用。</td></tr>
+            <tr><td>Quilt</td><td>Fabric 的分支，兼容大部分 Fabric 模组。</td></tr>
+            <tr><td>Legacy Fabric</td><td>为旧版本准备的 Fabric。</td></tr>
+            <tr><td>LiteLoader</td><td>旧版本上的轻量加载器，通常与 Forge 一起使用。</td></tr>
+            <tr><td>Cleanroom</td><td>1.12.2 上基于 Forge 的现代 Java 兼容方案。</td></tr>
+            <tr><td>OptiFine</td><td>可以独立安装，也可以作为模组与 Forge 等一起安装。</td></tr>
+            <tr><td>LabyMod</td><td>带客户端功能的整合加载器。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>安装时会依次完成下载安装器、运行、合并版本 JSON 等步骤，进度显示在「任务」和首页的启动按钮上。安装完成后，加载器会作为一个新的版本出现，例如 <code>1.20.1-forge-47.2.0</code>。</p>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">info</span>
+        <div class="body">
+          <p>安卓上暂时不能安装需要运行安装器的 Forge、NeoForge、Cleanroom 与 OptiFine，可以用 Fabric、Quilt 这类不需要运行安装器的加载器。具体见 <a href="android.html">安卓版</a>。</p>
+        </div>
+      </div>
+
+      <h2>管理版本</h2>
+      <ul>
+        <li><strong>版本选择</strong>：首页左侧的按钮，切换当前要启动的版本。</li>
+        <li><strong>改名与复制</strong>：在版本列表里操作，复制适合在同一个游戏版本上做不同的模组组合。</li>
+        <li><strong>删除</strong>：删除版本文件夹；存档等如果在该版本的隔离目录里也会一起删掉，操作前会确认。</li>
+        <li><strong>版本设置</strong>：首页的「版本设置」进入当前版本的单独配置。</li>
+      </ul>
+
+      <h2>版本隔离</h2>
+      <p>版本隔离决定每个版本是否使用自己的 <code>mods</code>、<code>saves</code>、<code>config</code> 等目录。在「设置 → 启动 → 版本隔离」里选择规则，新版本第一次启动时按规则决定，之后可以在版本设置里单独修改。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>规则</th><th>行为</th></tr></thead>
+          <tbody>
+            <tr><td>关闭</td><td>所有版本共用游戏文件夹根目录下的模组与存档。</td></tr>
+            <tr><td>隔离可安装 Mod 的版本</td><td>Forge、Fabric 等能装模组的版本使用自己的目录。</td></tr>
+            <tr><td>隔离非正式版</td><td>快照、远古版等非正式版使用自己的目录。</td></tr>
+            <tr><td>隔离可安装 Mod 的版本与非正式版</td><td>以上两类都隔离。</td></tr>
+            <tr><td>隔离所有版本</td><td>每个版本都使用 <code>versions/版本名</code> 下的独立目录（默认）。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>规则的判断方式与 PCL-CE 相同，从 PCL-CE 迁移过来的版本文件夹可以直接使用。</p>
+
+      <h2>每个版本单独的设置</h2>
+      <p>在「版本设置」里可以覆盖全局设置，常见的包括：</p>
+      <ul>
+        <li>使用的 Java（自动选择或手动指定）；</li>
+        <li>游戏内存（自动或自定义）；</li>
+        <li>JVM 参数、游戏参数；</li>
+        <li>窗口大小与启动后行为；</li>
+        <li>启动前执行的命令；</li>
+        <li>安卓上的渲染器与渲染比例。</li>
+      </ul>
+      <p>没有单独设置的项会跟随「设置」里的全局值。</p>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a href="first-run.html"><span class="dir">上一篇</span><span class="t">第一次启动</span></a>
+      <a class="next" href="resources.html"><span class="dir">下一篇</span><span class="t">模组与资源</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

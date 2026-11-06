@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>文档 · PCL.PW</title>
+<meta name="description" content="PCL.PW 使用文档：下载安装、第一次启动、版本与加载器、模组与资源、安卓版、常见问题与启动器接口。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html" class="active">总览</a>
+      <a href="install.html">下载与安装</a>
+      <a href="first-run.html">第一次启动</a>
+      <a href="versions.html">版本与加载器</a>
+      <a href="resources.html">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">PCL.PW 文档</div>
+      <h1>文档</h1>
+      <p class="lead">PCL.PW 是 PCL 的第三方衍生作品，一个跨平台的 Minecraft Java 版启动器，支持 Windows、Android 与 macOS。这里是从安装到排错的完整说明。</p>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">info</span>
+        <div class="body">
+          <p>PCL.PW 由第三方独立开发和维护，与 PCL 及其作者龙腾猫跃无关，也不代表 PCL 官方。遇到本软件的问题请到 <a href="https://github.com/zhuzhi-09/PCL.PW/issues">GitHub Issues</a> 反馈，不要打扰 PCL 作者。</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <a class="card" href="install.html">
+          <span class="icon" aria-hidden="true">download</span>
+          <span class="t">下载与安装</span>
+          <span class="d">Windows、macOS、Android 的安装包与首次打开提示。</span>
+        </a>
+        <a class="card" href="first-run.html">
+          <span class="icon" aria-hidden="true">rocket_launch</span>
+          <span class="t">第一次启动</span>
+          <span class="d">游戏文件夹、账户、Java 和第一个游戏版本。</span>
+        </a>
+        <a class="card" href="android.html">
+          <span class="icon" aria-hidden="true">smartphone</span>
+          <span class="t">安卓版</span>
+          <span class="d">内置运行时、渲染器选择、触屏操作与已知限制。</span>
+        </a>
+      </div>
+
+      <h2>使用指南</h2>
+      <ul>
+        <li><a href="install.html">下载与安装</a>：系统要求、安装版与便携版的区别、GitHub 下载慢时怎么办。</li>
+        <li><a href="first-run.html">第一次启动</a>：选择游戏文件夹、添加账户、准备 Java、安装并启动第一个版本。</li>
+        <li><a href="versions.html">版本与加载器</a>：原版与 Forge、NeoForge、Fabric、Quilt 等加载器，版本隔离与每个版本单独的设置。</li>
+        <li><a href="resources.html">模组与资源</a>：从 Modrinth 安装模组、光影、资源包和数据包，管理存档与截图，局域网互传。</li>
+        <li><a href="android.html">安卓版</a>：支持的版本、渲染器、渲染比例和安装器限制。</li>
+        <li><a href="troubleshooting.html">常见问题与排错</a>：看日志、崩溃分析、更新与反馈。</li>
+      </ul>
+
+      <h2>接口</h2>
+      <p><a href="api.html">启动器接口</a> 说明了更新检查与公告读取的地址、<code>update.json</code> 与 <code>notices.json</code> 的字段和格式版本规则。</p>
+
+      <h2>遇到问题</h2>
+      <p>先看看 <a href="troubleshooting.html">常见问题与排错</a>；仍然解决不了，请带上启动器版本、系统和游戏日志，到 <a href="https://github.com/zhuzhi-09/PCL.PW/issues">GitHub Issues</a> 反馈。</p>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a class="next" href="install.html"><span class="dir">下一篇</span><span class="t">下载与安装</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

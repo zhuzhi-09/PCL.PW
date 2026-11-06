@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>模组与资源 · PCL.PW 文档</title>
+<meta name="description" content="在 PCL.PW 中从 Modrinth 安装模组、光影、资源包和数据包，管理存档、截图，使用局域网互传。">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<header class="app-bar" id="appbar">
+  <div class="wrap">
+    <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <nav>
+      <a class="btn text opt" href="../index.html">首页</a>
+      <a class="btn text opt" href="../index.html#download">下载</a>
+      <a class="btn text" href="index.html">文档</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="group">
+      <div class="group-title">使用指南</div>
+      <a href="index.html">总览</a>
+      <a href="install.html">下载与安装</a>
+      <a href="first-run.html">第一次启动</a>
+      <a href="versions.html">版本与加载器</a>
+      <a href="resources.html" class="active">模组与资源</a>
+      <a href="android.html">安卓版</a>
+      <a href="troubleshooting.html">常见问题与排错</a>
+    </div>
+    <div class="group">
+      <div class="group-title">接口</div>
+      <a href="api.html">启动器接口</a>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="content">
+    <article>
+      <div class="crumbs">使用指南</div>
+      <h1>模组与资源</h1>
+      <p class="lead">PCL.PW 内置 Modrinth 搜索，可以直接把模组、光影、资源包和数据包装到当前版本，不需要手动找 <code>.minecraft</code> 的各个子目录。</p>
+
+      <h2>从哪里安装</h2>
+      <p>打开「下载」→「资源」，选择类型：</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>类型</th><th>安装位置</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>模组</td><td><code>mods</code></td><td>需要对应游戏版本和加载器；会提示缺少的前置模组并一起安装。</td></tr>
+            <tr><td>光影包</td><td><code>shaderpacks</code></td><td>需要 Iris、OptiFine 等支持光影的加载器。</td></tr>
+            <tr><td>资源包</td><td><code>resourcepacks</code></td><td>材质与音效，原版即可使用。</td></tr>
+            <tr><td>数据包</td><td><code>datapacks</code></td><td>作用于存档或整个游戏。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>列表会按当前版本的游戏版本和加载器筛选；装到哪个版本、装什么类型在顶部选择。下载完成后文件会直接放进对应目录，并记录已安装的项目。</p>
+
+      <div class="callout">
+        <span class="icon" aria-hidden="true">info</span>
+        <div class="body">
+          <p>模组必须和游戏版本、加载器匹配。例如 Fabric 模组不能装到 Forge 版本上；版本不匹配时列表里可能根本搜不到，或者装好后游戏报错。先确认当前版本用的是哪个加载器，见 <a href="versions.html">版本与加载器</a>。</p>
+        </div>
+      </div>
+
+      <h2>启用与禁用模组</h2>
+      <p>已经装好的模组可以在版本的文件列表里启用或禁用，不需要删除文件。排查模组冲突时，可以先禁用一半再逐步缩小范围。</p>
+
+      <h2>存档、截图与文件管理</h2>
+      <p>在版本页面可以打开游戏文件夹，查看存档、截图、日志和配置文件。删除、重命名这些文件前会要求确认；版本隔离打开时，它们位于 <code>versions/版本名</code> 下。</p>
+
+      <h2>局域网互传</h2>
+      <p>同一局域网里的两台设备都打开「工具 → 局域网互传」，输入对方显示的地址和配对码即可传输：</p>
+      <ul>
+        <li>游戏版本；</li>
+        <li>模组、配置和存档。</li>
+      </ul>
+      <p>适合在没有网络或不想走云盘的时候，把电脑上的整合搬到手机上，或者反过来。传输只在局域网内进行，不经过第三方服务器。</p>
+
+      <h2>下载与校验</h2>
+      <p>模组和资源从 Modrinth 的官方接口获取。启动器的游戏文件下载支持官方源与 BMCLAPI 镜像、多线程和校验；这些设置在「设置 → 其他 → 下载」里。</p>
+    </article>
+
+    <nav class="pager" aria-label="翻页">
+      <a href="versions.html"><span class="dir">上一篇</span><span class="t">版本与加载器</span></a>
+      <a class="next" href="android.html"><span class="dir">下一篇</span><span class="t">安卓版</span></a>
+    </nav>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
+  </div>
+</footer>
+
+<script src="docs.js" defer></script>
+</body>
+</html>

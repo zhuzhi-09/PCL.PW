@@ -30,6 +30,11 @@
 
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="search">
+      <span class="icon" aria-hidden="true">search</span>
+      <input id="q" type="search" placeholder="搜索文档" aria-label="搜索文档" autocomplete="off">
+    </div>
+    <div class="search-results" id="results" hidden></div>
     <div class="group">
       <div class="group-title">使用指南</div>
       <a href="index.html">总览</a>
@@ -38,6 +43,7 @@
       <a href="versions.html">版本与加载器</a>
       <a href="resources.html">模组与资源</a>
       <a href="android.html">安卓版</a>
+      <a href="ai.html">AI 排障</a>
       <a href="troubleshooting.html">常见问题与排错</a>
     </div>
     <div class="group">
@@ -53,7 +59,7 @@
       <h1>启动器接口</h1>
       <p class="lead">启动器从这里读取更新信息和公告。所有地址都失败时，更新检查退回到 GitHub API，公告不显示。</p>
 
-      <h2>地址</h2>
+      <h2 id="sec-1">地址</h2>
       <p>按顺序尝试，前一个失败就用下一个：</p>
       <ol>
         <li><code>https://pcl.pw.zhuzhi.site/api/v1/</code></li>
@@ -61,7 +67,7 @@
       </ol>
       <p>路径里的 <code>v1</code> 是格式版本：以后格式不兼容时新建 <code>v2</code>，<code>v1</code> 继续保留给旧版启动器。响应必须是 JSON，且 <code>format</code> 为 <code>1</code>，否则整个文件会被忽略。</p>
 
-      <h2>update.json</h2>
+      <h2 id="sec-2">update.json</h2>
       <p>各更新通道的最新发布。由发布工作流（<code>.github/workflows/release.yml</code> 的 Update API 步骤，脚本 <code>tool/update_api.py</code>）在每次发布后自动生成，<strong>不要手动修改</strong>。</p>
 <pre><code>{
   "format": 1,
@@ -87,7 +93,7 @@
   }
 }</code></pre>
 
-      <h3>顶层字段</h3>
+      <h3 id="sec-3">顶层字段</h3>
       <div class="table-wrap">
         <table>
           <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
@@ -99,7 +105,7 @@
         </table>
       </div>
 
-      <h3>通道字段</h3>
+      <h3 id="sec-4">通道字段</h3>
       <div class="table-wrap">
         <table>
           <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
@@ -116,7 +122,7 @@
         </table>
       </div>
 
-      <h3>文件字段</h3>
+      <h3 id="sec-5">文件字段</h3>
       <div class="table-wrap">
         <table>
           <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
@@ -130,7 +136,7 @@
       </div>
       <p>启动器按平台选择文件：安卓 <code>*-android-arm64.apk</code>、macOS <code>*-macos.dmg</code>、Windows 安装版 <code>*-windows-x64-setup.exe</code>、Windows 便携版 <code>*-windows-x64-portable.zip</code>。</p>
 
-      <h2>notices.json</h2>
+      <h2 id="sec-6">notices.json</h2>
       <p>首页公告，<strong>手动维护</strong>：编辑后提交到 <code>site</code> 分支即可。启动器每次打开时读取，显示在首页提示条与「Minecraft 版本动态」之间。</p>
 <pre><code>{
   "format": 1,
@@ -170,7 +176,7 @@
         </table>
       </div>
 
-      <h2>本地或镜像使用</h2>
+      <h2 id="sec-7">本地或镜像使用</h2>
       <p>接口只要求 HTTP(S) 能访问到 JSON，并且 <code>format</code> 为 <code>1</code>。如果想给启动器做镜像，保持同样的目录结构和字段即可；新增字段应保持旧版启动器可忽略，不兼容的改动请新建 <code>v2</code>。</p>
     </article>
 

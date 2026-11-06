@@ -30,6 +30,11 @@
 
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="search">
+      <span class="icon" aria-hidden="true">search</span>
+      <input id="q" type="search" placeholder="搜索文档" aria-label="搜索文档" autocomplete="off">
+    </div>
+    <div class="search-results" id="results" hidden></div>
     <div class="group">
       <div class="group-title">使用指南</div>
       <a href="index.html">总览</a>
@@ -38,6 +43,7 @@
       <a href="versions.html">版本与加载器</a>
       <a href="resources.html">模组与资源</a>
       <a href="android.html">安卓版</a>
+      <a href="ai.html">AI 排障</a>
       <a href="troubleshooting.html">常见问题与排错</a>
     </div>
     <div class="group">
@@ -53,7 +59,7 @@
       <h1>下载与安装</h1>
       <p class="lead">所有版本都在 <a href="https://github.com/zhuzhi-09/PCL.PW/releases">GitHub Releases</a> 发布。正式版最稳定，Nightly 是每次提交后自动构建的测试版。</p>
 
-      <h2>系统要求</h2>
+      <h2 id="sec-1">系统要求</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>平台</th><th>要求</th><th>安装包</th></tr></thead>
@@ -66,8 +72,8 @@
         </table>
       </div>
 
-      <h2>Windows</h2>
-      <h3>安装版（推荐）</h3>
+      <h2 id="sec-2">Windows</h2>
+      <h3 id="sec-3">安装版（推荐）</h3>
       <ol>
         <li>下载 <code>PCL.PW-版本号-windows-x64-setup.exe</code> 并运行。</li>
         <li>安装程序只为当前用户安装，不需要管理员权限，默认装到 <code>%LOCALAPPDATA%\Programs\PCL.PW</code>，安装目录可以修改。</li>
@@ -75,11 +81,11 @@
       </ol>
       <p>首次运行时 Windows SmartScreen 可能提示「Windows 已保护你的电脑」，点「更多信息」→「仍要运行」即可。安装包来自本项目的 GitHub Releases，可以在那里核对文件来源。</p>
 
-      <h3>便携版</h3>
+      <h3 id="sec-4">便携版</h3>
       <p>下载 <code>*-portable.zip</code> 解压到任意目录，运行其中的 <code>PCL.PW.exe</code>。适合放在 U 盘里，或者不想安装的时候使用。便携版也能在启动器内更新，更新时会替换程序文件。</p>
       <p>安装版与便携版共用同一份用户数据（设置、账户、默认游戏文件夹），换一种方式打开不会丢配置。</p>
 
-      <h2>macOS</h2>
+      <h2 id="sec-5">macOS</h2>
       <ol>
         <li>下载 <code>*-macos.dmg</code>，打开后把 PCL.PW 拖进「应用程序」文件夹。</li>
         <li>第一次打开时，如果提示「无法验证开发者」或「Apple 无法检查 App 是否包含恶意软件」，打开「系统设置 → 隐私与安全性」，在下方点「仍要打开」；也可以右键 App 选择「打开」。</li>
@@ -91,7 +97,7 @@
         </div>
       </div>
 
-      <h2>Android</h2>
+      <h2 id="sec-6">Android</h2>
       <ol>
         <li>下载 <code>*-android-arm64.apk</code>，用文件管理器或浏览器打开。</li>
         <li>系统会提示「禁止安装未知应用」，按提示允许当前应用安装，然后确认安装。</li>
@@ -99,13 +105,13 @@
       </ol>
       <p>安卓版不在应用商店上架。覆盖安装会保留游戏、账户和设置；第一次打开时会询问游戏文件夹放在哪里，详见 <a href="android.html">安卓版</a>。</p>
 
-      <h2>Nightly 测试版</h2>
+      <h2 id="sec-7">Nightly 测试版</h2>
       <p>每次向 <code>main</code> 分支推送后，工作流会自动构建 Nightly，发布在 <a href="https://github.com/zhuzhi-09/PCL.PW/releases/tag/nightly">nightly 标签</a>下，包含最新的改动，也可能不稳定。想尝鲜或者帮忙测试时可以下载；日常使用建议选正式版。</p>
 
-      <h2>下载慢或打不开 GitHub</h2>
+      <h2 id="sec-8">下载慢或打不开 GitHub</h2>
       <p>可以先到 <a href="https://download.zhuzhi.site">竹纸软件下载站</a> 下载，那里会同步最新正式版。启动器内的游戏下载也支持 BMCLAPI 镜像：在「设置 → 其他 → 下载」里把下载源换成 BMCLAPI，失败时还会自动回退到官方源。</p>
 
-      <h2>校验下载的文件</h2>
+      <h2 id="sec-9">校验下载的文件</h2>
       <p><code>update.json</code> 中每个发布文件都有 <code>size</code> 与 <code>sha256</code>，可以用系统自带的工具核对，例如 Windows 上：</p>
 <pre><code>certutil -hashfile PCL.PW-0.3.3-windows-x64-setup.exe SHA256</code></pre>
       <p>启动器自己下载更新时也会核对大小与 SHA-256，校验不通过会删除文件并报错。</p>

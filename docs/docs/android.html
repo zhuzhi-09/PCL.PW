@@ -30,6 +30,11 @@
 
 <div class="shell">
   <aside class="sidebar" id="sidebar" aria-label="文档目录">
+    <div class="search">
+      <span class="icon" aria-hidden="true">search</span>
+      <input id="q" type="search" placeholder="搜索文档" aria-label="搜索文档" autocomplete="off">
+    </div>
+    <div class="search-results" id="results" hidden></div>
     <div class="group">
       <div class="group-title">使用指南</div>
       <a href="index.html">总览</a>
@@ -38,6 +43,7 @@
       <a href="versions.html">版本与加载器</a>
       <a href="resources.html">模组与资源</a>
       <a href="android.html" class="active">安卓版</a>
+      <a href="ai.html">AI 排障</a>
       <a href="troubleshooting.html">常见问题与排错</a>
     </div>
     <div class="group">
@@ -53,17 +59,17 @@
       <h1>安卓版</h1>
       <p class="lead">安卓版内置 Java 运行时和游戏库，不需要安装 Java，也不需要用第三方启动器。要求 Android 8.0 及以上、64 位 ARM 处理器。</p>
 
-      <h2>第一次打开</h2>
+      <h2 id="sec-1">第一次打开</h2>
       <ul>
         <li>启动器会询问把游戏文件放在哪里。可以选公共目录（方便用文件管理器查看），也可以放在应用自己的目录里。</li>
         <li>如果选择了公共目录，可能需要授予文件夹访问权限；之后可以在「设置 → 游戏管理」里修改。</li>
         <li>账户、Java、版本和模组的使用方式与桌面版相同，见 <a href="first-run.html">第一次启动</a>。</li>
       </ul>
 
-      <h2>支持的版本</h2>
+      <h2 id="sec-2">支持的版本</h2>
       <p>内置运行时支持 Minecraft 1.0 到最新版本的 Java 版。具体能跑多快取决于手机性能、内存和渲染器；较新的版本对手机要求更高。</p>
 
-      <h2>渲染器</h2>
+      <h2 id="sec-3">渲染器</h2>
       <p>在「设置 → 启动 → 渲染器」里选择；也可以在版本设置里为单个版本另选。</p>
       <div class="table-wrap">
         <table>
@@ -78,20 +84,20 @@
       </div>
       <p>切换渲染器后需要重新启动游戏。如果进入游戏黑屏或崩溃，先换回「自动」或 MobileGlues 试试。</p>
 
-      <h2>渲染比例</h2>
+      <h2 id="sec-4">渲染比例</h2>
       <p>「设置 → 启动 → 渲染比例」控制游戏画面相对屏幕分辨率的比例。调低后画面会更模糊，但帧率更高、发热更少，适合性能有限的手机。每个版本也可以单独设置。</p>
 
-      <h2>触屏操作</h2>
+      <h2 id="sec-5">触屏操作</h2>
       <p>游戏内提供触屏按键和摇杆，可以用屏幕模拟键盘与鼠标操作。游戏切到后台再回来时，首页的大按钮会变成「返回游戏」，旁边单独有一个结束按钮。</p>
 
-      <h2>已知限制</h2>
+      <h2 id="sec-6">已知限制</h2>
       <ul>
         <li>暂时不能安装需要运行安装器的 Forge、NeoForge、Cleanroom 与 OptiFine；可以用 Fabric、Quilt 等不需要安装器的加载器。在手机上运行安装器的能力还在开发中。</li>
         <li>账户与 AI API Key 目前还没有使用 Android Keystore 加密，计划在后续版本加入。</li>
         <li>手柄支持、自定义按键布局和更多渲染器选项还在计划中。</li>
       </ul>
 
-      <h2>性能建议</h2>
+      <h2 id="sec-7">性能建议</h2>
       <ul>
         <li>优先用 MobileGlues 渲染器，必要时降低渲染比例。</li>
         <li>内存不要分配超过手机实际可用内存；「设置 → 启动 → 游戏内存」默认自动分配。</li>
@@ -101,7 +107,7 @@
 
     <nav class="pager" aria-label="翻页">
       <a href="resources.html"><span class="dir">上一篇</span><span class="t">模组与资源</span></a>
-      <a class="next" href="troubleshooting.html"><span class="dir">下一篇</span><span class="t">常见问题与排错</span></a>
+      <a class="next" href="ai.html"><span class="dir">下一篇</span><span class="t">AI 排障</span></a>
     </nav>
   </main>
 </div>

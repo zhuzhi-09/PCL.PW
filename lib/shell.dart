@@ -135,12 +135,13 @@ class _ShellState extends State<Shell> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TweenAnimationBuilder<double>(
-                  tween: Tween<double>(begin: sidebarWidth, end: _sidebarCollapsed ? 0 : sidebarWidth),
+                  tween: Tween<double>(begin: sidebarWidth, end: _sidebarCollapsed ? 64 : sidebarWidth),
                   duration: const Duration(milliseconds: 180),
                   curve: Curves.easeOutCubic,
                   child: _Sidebar(
                     page: _page,
                     sub: _sub,
+                    collapsed: _sidebarCollapsed,
                     onMain: _goMain,
                     onSub: _openSub,
                   ),
@@ -149,9 +150,12 @@ class _ShellState extends State<Shell> {
                     child: ClipRect(
                       child: OverflowBox(
                         alignment: Alignment.centerLeft,
-                        minWidth: sidebarWidth,
-                        maxWidth: sidebarWidth,
-                        child: SizedBox(width: sidebarWidth, child: child),
+                        minWidth: _sidebarCollapsed ? 64 : sidebarWidth,
+                        maxWidth: _sidebarCollapsed ? 64 : sidebarWidth,
+                        child: SizedBox(
+                          width: _sidebarCollapsed ? 64 : sidebarWidth,
+                          child: child,
+                        ),
                       ),
                     ),
                   ),
@@ -181,10 +185,17 @@ class _ShellState extends State<Shell> {
 
 /// 左侧品牌、账户和主导航
 class _Sidebar extends StatelessWidget {
-  const _Sidebar({required this.page, required this.sub, required this.onMain, required this.onSub});
+  const _Sidebar({
+    required this.page,
+    required this.sub,
+    required this.collapsed,
+    required this.onMain,
+    required this.onSub,
+  });
 
   final MainPage page;
   final SubPage? sub;
+  final bool collapsed;
   final ValueChanged<MainPage> onMain;
   final ValueChanged<SubPage> onSub;
 
@@ -194,30 +205,28 @@ class _Sidebar extends StatelessWidget {
     final scheme = theme.colorScheme;
     final state = AppScope.of(context);
     final account = state.selectedAccount;
-    final width = isDesktop ? 236.0 : 210.0;
+    final width = collapsed ? 64.0 : (isDesktop ? 236.0 : 210.0);
     final topInset = isDesktop && nativeWindowButtons ? macTrafficLightsWidth : 0.0;
 
     Widget brand = Padding(
-      padding: EdgeInsets.fromLTRB(18 + topInset, 20, 16, 16),
-      child: Row(
-        children: [
-          const AppLogo(size: 38),
-          const SizedBox(width: 11),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+      padding: collapsed
+          ? const EdgeInsets.symmetric(vertical: 20)
+          : EdgeInsets.fromLTRB(18 + topInset, 20, 16, 16),
+      child: collapsed
+          ? const Center(child: AppLogo(size: 36))
+          : Row(
               children: [
-                Text(
-                  AppInfo.brandName,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: .2),
-                  overflow: TextOverflow.ellipsis,
+                const AppLogo(size: 38),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Text(
+                    AppInfo.brandName,
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: .2),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
     if (isDesktop) brand = DragToMoveArea(child: brand);
 
@@ -231,19 +240,18 @@ class _Sidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           brand,
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-            child: Material(
-              color: scheme.surfaceContainerHighest.withValues(alpha: .45),
-              borderRadius: BorderRadius.circular(14),
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () => showAccountsDialog(context),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
+          if (collapsed)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 10),
+              child: Tooltip(
+                message: account?.name ?? '添加账户',
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () => showAccountsDialog(context),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    child: Center(
+                      child: CircleAvatar(
                         radius: 17,
                         backgroundColor: scheme.primaryContainer,
                         foregroundColor: scheme.onPrimaryContainer,
@@ -252,40 +260,68 @@ class _Sidebar extends StatelessWidget {
                           style: theme.textTheme.labelLarge,
                         ),
                       ),
-                      const SizedBox(width: 9),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              account?.name ?? '添加账户',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.labelLarge,
-                            ),
-                            Text(
-                              account == null ? '账户' : (account.type.name == 'microsoft' ? '微软账户' : '离线账户'),
-                              maxLines: 1,
-                              style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
-                            ),
-                          ],
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+              child: Material(
+                color: scheme.surfaceContainerHighest.withValues(alpha: .45),
+                borderRadius: BorderRadius.circular(14),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () => showAccountsDialog(context),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 17,
+                          backgroundColor: scheme.primaryContainer,
+                          foregroundColor: scheme.onPrimaryContainer,
+                          child: Text(
+                            account == null ? '+' : account.name.characters.first.toUpperCase(),
+                            style: theme.textTheme.labelLarge,
+                          ),
                         ),
-                      ),
-                      Icon(Icons.unfold_more, size: 16, color: scheme.onSurfaceVariant),
-                    ],
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                account?.name ?? '添加账户',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelLarge,
+                              ),
+                              Text(
+                                account == null ? '账户' : (account.type.name == 'microsoft' ? '微软账户' : '离线账户'),
+                                maxLines: 1,
+                                style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.unfold_more, size: 16, color: scheme.onSurfaceVariant),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: EdgeInsets.symmetric(horizontal: collapsed ? 8 : 12),
               children: [
                 _SideItem(
                   icon: Icons.rocket_launch_outlined,
                   activeIcon: Icons.rocket_launch,
                   label: '启动',
+                    collapsed: collapsed,
                   selected: sub == null && page == MainPage.home,
                   onTap: () => onMain(MainPage.home),
                 ),
@@ -293,6 +329,7 @@ class _Sidebar extends StatelessWidget {
                   icon: Icons.download_outlined,
                   activeIcon: Icons.download,
                   label: '下载',
+                    collapsed: collapsed,
                   selected: sub == null && page == MainPage.download,
                   onTap: () => onMain(MainPage.download),
                 ),
@@ -300,6 +337,7 @@ class _Sidebar extends StatelessWidget {
                   icon: Icons.construction_outlined,
                   activeIcon: Icons.construction,
                   label: '工具',
+                    collapsed: collapsed,
                   selected: sub == null && page == MainPage.tools,
                   onTap: () => onMain(MainPage.tools),
                 ),
@@ -307,6 +345,7 @@ class _Sidebar extends StatelessWidget {
                   icon: Icons.settings_outlined,
                   activeIcon: Icons.settings,
                   label: '设置',
+                    collapsed: collapsed,
                   selected: sub == null && page == MainPage.settings,
                   onTap: () => onMain(MainPage.settings),
                 ),
@@ -314,6 +353,7 @@ class _Sidebar extends StatelessWidget {
                   icon: Icons.auto_awesome_outlined,
                   activeIcon: Icons.auto_awesome,
                   label: 'AI 助手',
+                    collapsed: collapsed,
                   selected: sub == null && page == MainPage.ai,
                   onTap: () => onMain(MainPage.ai),
                 ),
@@ -321,6 +361,7 @@ class _Sidebar extends StatelessWidget {
                   icon: Icons.history_outlined,
                   activeIcon: Icons.history,
                   label: '任务历史',
+                    collapsed: collapsed,
                   selected: sub == SubPage.tasks,
                   onTap: () => onSub(SubPage.tasks),
                   badge: state.runningTasks.length,
@@ -328,13 +369,14 @@ class _Sidebar extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
-            child: Text(
-              '${AppInfo.brandName} v${AppInfo.version}',
-              style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant.withValues(alpha: .7)),
+          if (!collapsed)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
+              child: Text(
+                '${AppInfo.brandName} v${AppInfo.version}',
+                style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant.withValues(alpha: .7)),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -348,6 +390,7 @@ class _SideItem extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    required this.collapsed,
     this.badge = 0,
   });
 
@@ -356,6 +399,7 @@ class _SideItem extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final bool collapsed;
   final int badge;
 
   @override
@@ -363,6 +407,48 @@ class _SideItem extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final fg = selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant;
+    if (collapsed) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 3),
+        child: Tooltip(
+          message: label,
+          child: Material(
+            color: selected ? scheme.primaryContainer.withValues(alpha: .72) : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: SizedBox(
+                height: 44,
+                child: Center(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Icon(selected ? activeIcon : icon, size: 21, color: fg),
+                      if (badge > 0)
+                        Positioned(
+                          right: -5,
+                          top: -5,
+                          child: Container(
+                            width: 14,
+                            height: 14,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
+                            child: Text(
+                              '$badge',
+                              style: theme.textTheme.labelSmall?.copyWith(color: scheme.onPrimary, fontSize: 8),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 3),
       child: Material(

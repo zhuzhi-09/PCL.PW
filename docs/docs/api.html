@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>启动器接口 · PCL.PW 文档</title>
-<meta name="description" content="PCL.PW 启动器读取的 update.json 与 notices.json：地址、格式版本和字段说明。">
+<title>启动器接口 · Pixel World 文档</title>
+<meta name="description" content="Pixel World 启动器读取的 update.json 与 notices.json：地址、格式版本和字段说明。">
 <link rel="icon" href="../favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,12 +18,12 @@
 <header class="app-bar" id="appbar">
   <div class="wrap">
     <button class="icon-btn" id="menu" aria-label="文档目录" aria-expanded="false" aria-controls="sidebar"><span class="icon">menu</span></button>
-    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">PCL.PW</a>
+    <a class="brand" href="../index.html"><img src="../favicon.png" alt="">Pixel World</a>
     <nav>
       <a class="btn text opt" href="../index.html">首页</a>
       <a class="btn text opt" href="../index.html#download">下载</a>
       <a class="btn text" href="index.html">文档</a>
-      <a class="btn text" href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a>
+      <a class="btn text" href="https://github.com/zhuzhi-09/PixelWorld">GitHub</a>
     </nav>
   </div>
 </header>
@@ -66,8 +66,8 @@
       <h2 id="sec-1">地址</h2>
       <p>按顺序尝试，前一个失败就用下一个：</p>
       <ol>
-        <li><code>https://pcl.pw.zhuzhi.site/api/v1/</code></li>
-        <li><code>https://raw.githubusercontent.com/zhuzhi-09/PCL.PW/site/docs/api/v1/</code></li>
+        <li><code>https://pixelworld.zhuzhi.site/api/v1/</code></li>
+        <li><code>https://raw.githubusercontent.com/zhuzhi-09/PixelWorld/site/docs/api/v1/</code></li>
       </ol>
       <p>路径里的 <code>v1</code> 是格式版本：以后格式不兼容时新建 <code>v2</code>，<code>v1</code> 继续保留给旧版启动器。响应必须是 JSON，且 <code>format</code> 为 <code>1</code>，否则整个文件会被忽略。</p>
 
@@ -79,16 +79,16 @@
   "channels": {
     "stable": {
       "tag": "v0.3.3",
-      "name": "PCL.PW v0.3.3",
+      "name": "Pixel World v0.3.3",
       "body": "## 新增\n\n- ...",
       "prerelease": false,
       "commit": "main",
       "publishedAt": "2026-11-05T14:48:23Z",
-      "page": "https://github.com/zhuzhi-09/PCL.PW/releases/tag/v0.3.3",
+      "page": "https://github.com/zhuzhi-09/PixelWorld/releases/tag/v0.3.3",
       "assets": [
         {
-          "name": "PCL.PW-0.3.3-windows-x64-setup.exe",
-          "url": "https://github.com/.../PCL.PW-0.3.3-windows-x64-setup.exe",
+          "name": "Pixel World-0.3.3-windows-x64-setup.exe",
+          "url": "https://github.com/.../Pixel World-0.3.3-windows-x64-setup.exe",
           "size": 15575552,
           "sha256": "06e49780..."
         }
@@ -150,7 +150,7 @@
       "level": "info",
       "title": "标题",
       "body": "正文，支持 Markdown",
-      "url": "https://github.com/zhuzhi-09/PCL.PW/releases",
+      "url": "https://github.com/zhuzhi-09/PixelWorld/releases",
       "urlText": "查看详情",
       "platforms": ["windows", "android", "macos"],
       "channels": ["stable", "preview", "nightly"],
@@ -193,7 +193,7 @@
 
 <footer>
   <div class="wrap">
-    <p>PCL.PW（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PCL.PW/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PCL.PW">GitHub</a></p>
+    <p>Pixel World（PixelsWorld 修改版）· <a href="https://github.com/zhuzhi-09/PixelWorld/blob/main/LICENSE">开源许可</a> · <a href="../index.html">官网首页</a> · <a href="https://github.com/zhuzhi-09/PixelWorld">GitHub</a></p>
     <p>非 PCL 官方网站 · 与 Mojang Studios、Microsoft 无关</p>
   </div>
 </footer>

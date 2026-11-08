@@ -1,9 +1,9 @@
-# PCL.PW 启动器接口
+# Pixel World 启动器接口
 
 启动器从这里读取更新信息和公告，地址按顺序尝试：
 
-1. `https://pcl.pw.zhuzhi.site/api/v1/`
-2. `https://raw.githubusercontent.com/zhuzhi-09/PCL.PW/site/docs/api/v1/`
+1. `https://pixelworld.zhuzhi.site/api/v1/`
+2. `https://raw.githubusercontent.com/zhuzhi-09/PixelWorld/site/docs/api/v1/`
 
 都失败时，更新检查退回到 GitHub API，公告不显示。路径中的 `v1` 是格式版本：以后格式不兼容时新建 `v2`，`v1` 继续保留给旧版启动器。
 
@@ -24,7 +24,7 @@
       "level": "info",
       "title": "标题",
       "body": "正文，支持 Markdown",
-      "url": "https://github.com/zhuzhi-09/PCL.PW/releases",
+      "url": "https://github.com/zhuzhi-09/PixelWorld/releases",
       "urlText": "查看详情",
       "platforms": ["windows", "android", "macos"],
       "channels": ["stable", "preview", "nightly"],

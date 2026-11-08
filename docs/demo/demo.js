@@ -1,4 +1,4 @@
-/* PCL.PW 网页演示：纯前端复刻启动器界面，所有数据都是假的，不会真正执行任何操作。 */
+/* Pixel World 网页演示：纯前端复刻启动器界面，所有数据都是假的，不会真正执行任何操作。 */
 (function () {
   'use strict';
   var host = document.getElementById('pcl-demo');
@@ -10,7 +10,7 @@
 
   function start(host) {
     var W = 1100, H = 700;
-    var REPO = 'https://github.com/zhuzhi-09/PCL.PW';
+    var REPO = 'https://github.com/zhuzhi-09/PixelWorld';
 
     /* ---------- 假数据 ---------- */
     var VERSIONS = [
@@ -99,7 +99,7 @@
         var t = S.sub === 'instance' ? '版本设置 - ' + VERSIONS[S.inst].id : SUBT[S.sub];
         h += '<button type="button" class="ibtn hv back" data-a="back" aria-label="返回">' + ic('arrow_back') + '</button><div class="subt">' + esc(t) + '</div>';
       } else {
-        h += '<div class="brand"><img src="icon.png" alt="">PCL.PW</div><div class="navp" role="tablist">' + NAV.map(function (n) {
+        h += '<div class="brand"><img src="icon.png" alt="">Pixel World</div><div class="navp" role="tablist">' + NAV.map(function (n) {
           return '<button type="button" role="tab" aria-selected="' + (S.page === n[0]) + '" class="pill hv' + (S.page === n[0] ? ' on' : '') + '" data-a="nav" data-v="' + n[0] + '">' + ic(n[2]) + n[1] + '</button>';
         }).join('') + '</div>';
       }
@@ -118,11 +118,11 @@
         '<div class="sp"></div>' +
         '<button type="button" class="launch hv" data-a="tip" data-v="启动游戏">' + ic('play_arrow') + '<span class="t"><span class="t1" style="display:block">开始游戏</span><span class="t2" style="display:block">' + esc(v.id) + '</span></span></button>' +
         '<div class="two-b"><button type="button" class="b hv out" data-a="sub" data-v="versions">版本选择</button><button type="button" class="b hv out" data-a="inst" data-v="' + S.ver + '">版本设置</button></div></div>';
-      var r = '<div class="hero"><img src="icon.png" alt=""><div><div class="g">' + greeting() + '</div><div class="tt">PCL.PW</div><div class="ss">第三方基于 PCL 二次创作的跨平台 Minecraft 启动器</div></div></div>' +
+      var r = '<div class="hero"><img src="icon.png" alt=""><div><div class="g">' + greeting() + '</div><div class="tt">Pixel World</div><div class="ss">第三方基于 PCL 二次创作的跨平台 Minecraft 启动器</div></div></div>' +
         '<button type="button" class="card lt two hv mt16" data-a="sub" data-v="versions"><span class="tile">' + ic(v.icon) + '</span><span class="t"><span class="t1" style="display:block">' + esc(v.id) + '</span><span class="t2" style="display:block">' + esc(v.desc) + '</span></span>' + ic('chevron_right') + '</button>' +
         '<div class="mt12"><button type="button" class="b txt ico hv" data-a="sub" data-v="log">' + ic('article') + '游戏日志</button></div>';
       if (swOn('hints', true)) {
-        r += '<div class="hint">' + ic('info') + '<div class="x">你正在使用 PCL.PW 0.3.0 测试版。这是第三方基于 PCL 二次创作的启动器，功能还在完善中，遇到问题请到 GitHub 反馈，不要打扰 PCL 作者。</div>' + lnk('txt', '反馈问题', REPO + '/issues') + '</div>' +
+        r += '<div class="hint">' + ic('info') + '<div class="x">你正在使用 Pixel World 0.3.0 测试版。这是第三方基于 PCL 二次创作的启动器，功能还在完善中，遇到问题请到 GitHub 反馈，不要打扰 PCL 作者。</div>' + lnk('txt', '反馈问题', REPO + '/issues') + '</div>' +
           '<div class="hint">' + ic('volunteer_activism', '').replace('class="ic"', 'class="ic" style="color:var(--err)"') + '<div class="x">本软件完全免费、开源。如果你是付费购买或下载的，那么你可能被骗了，请向卖家申请退款，并从 GitHub 获取正版。</div>' + lnk('txt', '获取正版', REPO + '/releases') + '</div>';
       }
       if (swOn('news', true)) {
@@ -288,9 +288,9 @@
           grp('正版登录', [row(null, 'Azure 应用 Client ID', '微软登录需要在 Azure 注册一个「个人 Microsoft 账户」类型的公共客户端应用，并开启“允许公共客户端流”', tf('azure', '', '', 280))]);
       } else {
         r = grp('关于', [
-          row('favorite', 'PCL 的作者：龙腾猫跃', 'Plain Craft Launcher（PCL）的作者。PCL.PW 基于 PCL 二次创作', lnk('fill', '赞助作者', 'https://afdian.com/a/LTCat', 'volunteer_activism')).replace('<span class="ic" aria-hidden="true">favorite</span>', '<span class="ava">' + ic('favorite') + '</span>'),
-          row(null, 'PCL.PW 0.3.0', '本软件是第三方基于 PCL 独立进行二次创作的产物，属于 PCL 的衍生作品，界面布局参考 PCL 社区版（PCL-CE）。本软件由第三方开发和维护，与 PCL 及其作者无关，也不代表 PCL 官方。请勿就本软件的问题打扰 PCL 作者。').replace('<div class="t">', '<img class="logo40" src="icon.png" alt=""><div class="t">'),
-          aboutLink('code', '源代码', 'PCL.PW 以 Apache-2.0 协议开源', REPO, '打开'),
+          row('favorite', 'PCL 的作者：Paper.Zhu', 'Plain Craft Launcher（PCL）的作者。Pixel World 基于 PCL 二次创作', lnk('fill', '赞助作者', 'https://afdian.com/a/Paper_Zhu', 'volunteer_activism')).replace('<span class="ic" aria-hidden="true">favorite</span>', '<span class="ava">' + ic('favorite') + '</span>'),
+          row(null, 'Pixel World 0.3.0', '本软件是第三方基于 PCL 独立进行二次创作的产物，属于 PCL 的衍生作品，界面布局参考 PCL 社区版（PCL-CE）。本软件由第三方开发和维护，与 PCL 及其作者无关，也不代表 PCL 官方。请勿就本软件的问题打扰 PCL 作者。').replace('<div class="t">', '<img class="logo40" src="icon.png" alt=""><div class="t">'),
+          aboutLink('code', '源代码', 'Pixel World 以 Apache-2.0 协议开源', REPO, '打开'),
           aboutLink('gavel', 'PCL 存储库合理使用指南', '本项目遵循的命名、署名与使用规则，随源代码一同发布', REPO + '/blob/main/PCL-GUIDE.md')
         ]) + grp('致谢', [
           aboutLink('groups', 'PCL Community', 'PCL 社区版（PCL-CE）的开发者们，本软件与 PCL-CE 的数据兼容', 'https://github.com/PCL-Community/PCL-CE'),
@@ -371,7 +371,7 @@
     var stage = document.createElement('div'); stage.className = 'pd-stage';
     var scale = document.createElement('div'); scale.className = 'pd-scale';
     var root = document.createElement('div'); root.className = 'pd';
-    root.setAttribute('role', 'application'); root.setAttribute('aria-label', 'PCL.PW 启动器网页演示');
+    root.setAttribute('role', 'application'); root.setAttribute('aria-label', 'Pixel World 启动器网页演示');
     root.innerHTML = '<div class="app" style="position:absolute;inset:0"></div><div class="toast" role="status" aria-live="polite"></div>';
     scale.appendChild(root); stage.appendChild(scale); host.innerHTML = ''; host.appendChild(stage);
     var app = root.firstChild, toast = root.lastChild;

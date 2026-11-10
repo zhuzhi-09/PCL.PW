@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "generatedAt": "2026-11-10T10:44:56Z",
+  "generatedAt": "2026-11-10T13:07:46Z",
   "channels": {
     "stable": {
       "tag": "v0.3.3",
@@ -74,66 +74,66 @@
     },
     "nightly": {
       "tag": "nightly",
-      "name": "PCL.PW Nightly (2c1f515)",
-      "body": "自动构建的测试版，来自 main 分支的 2c1f51576aaae1e38b4c0345bc6560540147913c，可能不稳定。\n\n## 更新日志\n\nMerge pull request #59 from zhuzhi-09/fix/hide-ms-client-id\n\nfix(auth): 设置里不再回显内置的微软 Client ID\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n- Linux（测试版）：需要 Ubuntu 24.04 及以上（glibc 2.39+）\n  - `*-linux-amd64.deb`：Debian/Ubuntu 安装包\n  - `*-linux-x86_64.rpm`：Fedora/openSUSE/RHEL 安装包\n  - `*-linux-x86_64.pkg.tar.zst`：Arch / CachyOS / Manjaro 安装包，`sudo pacman -U 文件名`\n  - `*-linux-x86_64.AppImage`：下载后 `chmod +x` 直接运行\n  - `*-linux-x64.tar.gz`：解压后运行 `PCL.PW/pcl_pw`\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
+      "name": "PCL.PW Nightly (45888a7)",
+      "body": "自动构建的测试版，来自 main 分支的 45888a77053802f142c10586f7940902bee77784，可能不稳定。\n\n## 更新日志\n\n- `9e4e44f` feat(android): 游戏内叠加层显示 GPU 占用\n- `b7a46c5` feat(android): 常驻简略信息贴顶部、可左右拖动并记住位置，默认靠左\n- `9295dbb` feat(android): 所有 GL 渲染器都能显示帧率（native 交换计数）；常驻简略信息移到左上角\n- `cd19aeb` fix(android): 帧计数放进共享的 pojav_environ\n- `01f4cd7` docs: 更新 v0.3.4 说明（叠加层帧率、GPU、简略信息拖动）\n- `72f3dc2` feat(ui): 桌面端工具页改回左侧二级菜单，手机保留卡片\n- `e5dbfb1` feat(ui): 桌面主页新排版\n\n- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」\n- Linux（测试版）：需要 Ubuntu 24.04 及以上（glibc 2.39+）\n  - `*-linux-amd64.deb`：Debian/Ubuntu 安装包\n  - `*-linux-x86_64.rpm`：Fedora/openSUSE/RHEL 安装包\n  - `*-linux-x86_64.pkg.tar.zst`：Arch / CachyOS / Manjaro 安装包，`sudo pacman -U 文件名`\n  - `*-linux-x86_64.AppImage`：下载后 `chmod +x` 直接运行\n  - `*-linux-x64.tar.gz`：解压后运行 `PCL.PW/pcl_pw`\n\n本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。",
       "prerelease": true,
-      "commit": "2c1f51576aaae1e38b4c0345bc6560540147913c",
-      "publishedAt": "2026-11-10T10:44:55Z",
+      "commit": "45888a77053802f142c10586f7940902bee77784",
+      "publishedAt": "2026-11-10T13:07:45Z",
       "page": "https://github.com/zhuzhi-09/PixelWorld/releases/tag/nightly",
       "assets": [
         {
-          "name": "PCL.PW-nightly-2c1f515-android-arm64.apk",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-android-arm64.apk",
-          "size": 49542011,
-          "sha256": "7e30ebd9a1186336611a9b22b038b896d46ae45e080a2c12ba810b8437a9c707"
+          "name": "PCL.PW-nightly-45888a7-android-arm64.apk",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-android-arm64.apk",
+          "size": 49544103,
+          "sha256": "c8258f791fe640cba255a03ed5f7b9966ed51c77f73f427a73a66b9d04266ced"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-linux-amd64.deb",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-linux-amd64.deb",
-          "size": 10901098,
-          "sha256": "2e4b32a6b3d8bf43c8dad41ccc333d17f558db8a2f2d92436d3637daefce7669"
+          "name": "PCL.PW-nightly-45888a7-linux-amd64.deb",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-linux-amd64.deb",
+          "size": 10898312,
+          "sha256": "3a0adf5c5498b76914e6089a62fed4b91678802d9dac722c7a11eb91b9f8c3bf"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-linux-x64.tar.gz",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-linux-x64.tar.gz",
-          "size": 13160890,
-          "sha256": "81985eadec1b5f9c6dca4914ecefede29e4449ff81e5e228383bb679b166e521"
+          "name": "PCL.PW-nightly-45888a7-linux-x64.tar.gz",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-linux-x64.tar.gz",
+          "size": 13168493,
+          "sha256": "9a427c69a9759a560887b9c7ebeb783f10f92530049fb5ec3cadf4d4517509ab"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-linux-x86_64.AppImage",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-linux-x86_64.AppImage",
-          "size": 12941816,
-          "sha256": "19bf63c95bfa62dffa9296f625281568369f9a1cb6131c8a776659b6322537d4"
+          "name": "PCL.PW-nightly-45888a7-linux-x86_64.AppImage",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-linux-x86_64.AppImage",
+          "size": 12954104,
+          "sha256": "2829d8f8e6281fc54f25c35608baf31c5ce596bca3f1a04cdd8d3e9c6eb2422f"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-linux-x86_64.pkg.tar.zst",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-linux-x86_64.pkg.tar.zst",
-          "size": 13257379,
-          "sha256": "48b8aaf426d174cf69b16b54650893efac964a055b7af1a9249a88c3e3fd3fcc"
+          "name": "PCL.PW-nightly-45888a7-linux-x86_64.pkg.tar.zst",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-linux-x86_64.pkg.tar.zst",
+          "size": 13261103,
+          "sha256": "bf6cfa1999d89b05321239bf23569469169da73531c2263daa3da5605d5a64c1"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-linux-x86_64.rpm",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-linux-x86_64.rpm",
-          "size": 13315486,
-          "sha256": "b6f69f7f351ef482e34cbb96e5861d579b46cec0478d22b21c1461aea4f9c365"
+          "name": "PCL.PW-nightly-45888a7-linux-x86_64.rpm",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-linux-x86_64.rpm",
+          "size": 13323579,
+          "sha256": "884aa257e7a4cc340fbd7b82478c2718ad8d35ae27979c7f2a420ce11c2c0c74"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-macos.dmg",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-macos.dmg",
-          "size": 27457458,
-          "sha256": "f5e8286681872d3790253f240964b2e4bfc9e5942038549962415603cb3473d5"
+          "name": "PCL.PW-nightly-45888a7-macos.dmg",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-macos.dmg",
+          "size": 27458390,
+          "sha256": "2e3d993bdb0ff0cadb186be598f3c35f82e7954fd637bab89547d73dd8e8e2fe"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-windows-x64-portable.zip",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-windows-x64-portable.zip",
-          "size": 15841568,
-          "sha256": "313e92fd1b3171a59d1766de6b965377de9061119dab429a9dd74d55f14e1570"
+          "name": "PCL.PW-nightly-45888a7-windows-x64-portable.zip",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-windows-x64-portable.zip",
+          "size": 15846213,
+          "sha256": "0046f1ca147a8de2e6d65cc425737c4e403824732dd637d72f0ef91b592f3435"
         },
         {
-          "name": "PCL.PW-nightly-2c1f515-windows-x64-setup.exe",
-          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-2c1f515-windows-x64-setup.exe",
-          "size": 15922176,
-          "sha256": "be4cf4a325953b4cef0251bdd521ccf54412450ab0f5927e98291a901040614d"
+          "name": "PCL.PW-nightly-45888a7-windows-x64-setup.exe",
+          "url": "https://github.com/zhuzhi-09/PixelWorld/releases/download/nightly/PCL.PW-nightly-45888a7-windows-x64-setup.exe",
+          "size": 15926784,
+          "sha256": "8e97399da99bdf0c2ea4758109010342681e7138bcd367fa52ea150fdea5e3c0"
         }
       ]
     }

@@ -195,20 +195,18 @@ class _LoginDialogState extends State<_LoginDialog> {
                     onSelectionChanged: (s) => setState(() => _oauth = s.first),
                   ),
                   const SizedBox(height: 16),
-                  IndexedStack(
-                    index: _oauth ? 0 : 1,
-                    alignment: Alignment.topCenter,
-                    children: [
-                      DeviceLoginPanel(
-                        create: (onCode) => ConnectLogin(site, onCode),
-                        run: widget.run,
-                        onDone: (acc) => loggedIn(context, acc),
-                        intro: '点击开始后会在浏览器中打开 $site 的授权页面，确认授权并选择角色即可，启动器不会接触你的密码。',
-                        startLabel: '开始 OAuth 登录',
-                      ),
-                      _passwordForm(theme),
-                    ],
+                  Visibility(
+                    visible: _oauth,
+                    maintainState: true,
+                    child: DeviceLoginPanel(
+                      create: (onCode) => ConnectLogin(site, onCode),
+                      run: widget.run,
+                      onDone: (acc) => loggedIn(context, acc),
+                      intro: '点击开始后会在浏览器中打开 $site 的授权页面，确认授权并选择角色即可，启动器不会接触你的密码。',
+                      startLabel: '开始 OAuth 登录',
+                    ),
                   ),
+                  Visibility(visible: !_oauth, maintainState: true, child: _passwordForm(theme)),
                 ],
               ),
       ),

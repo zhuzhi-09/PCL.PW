@@ -51,11 +51,15 @@ Future<void> _enterAddress(WidgetTester tester, {String? type}) async {
 
 Finder get _loginButton => find.widgetWithText(FilledButton, '登录');
 
+double _dialogHeight(WidgetTester tester) =>
+    tester.getSize(find.descendant(of: find.byType(AlertDialog), matching: find.byType(Material)).first).height;
+
 void main() {
   testWidgets('外置登录：从下拉列表选择内置站点，默认显示 OAuth，点开始后才登录，可以和账户密码来回切换', (tester) async {
     await _enterAddress(tester);
     expect(find.text('littleskin.cn'), findsOneWidget);
     expect(_commands, isEmpty); // 不会自动开始
+    final oauthHeight = _dialogHeight(tester);
     await tester.tap(find.text('开始 OAuth 登录'));
     await tester.pumpAndSettle();
     expect(_oauthRuns.single.site, 'littleskin.cn');
@@ -65,6 +69,7 @@ void main() {
     await tester.tap(find.text('账户密码'));
     await tester.pumpAndSettle();
     expect(find.text('验证服务器：littleskin.cn'), findsOneWidget);
+    expect(_dialogHeight(tester), greaterThan(oauthHeight));
     await tester.enterText(find.widgetWithText(TextField, '账户'), 'bob@example.com');
     await tester.enterText(find.widgetWithText(TextField, '密码'), 'pw');
     await tester.tap(_loginButton);

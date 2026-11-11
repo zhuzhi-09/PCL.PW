@@ -82,10 +82,7 @@ class _AiWorkspaceSettingsState extends State<AiWorkspaceSettings> {
     await cfg.update({
       'aiUserRoots': [
         for (final r in cfg.aiUserRoots)
-          if (r['id'] != id)
-            r
-          else if (change != null)
-            {...r, ...change},
+          if (r['id'] != id) r else if (change != null) {...r, ...change},
       ],
     });
   }
@@ -138,7 +135,11 @@ class _AiWorkspaceSettingsState extends State<AiWorkspaceSettings> {
           Wrap(
             spacing: 8,
             children: [
-              OutlinedButton.icon(onPressed: _addRoot, icon: const Icon(Icons.create_new_folder_outlined, size: 18), label: const Text('添加文件夹')),
+              OutlinedButton.icon(
+                onPressed: _addRoot,
+                icon: const Icon(Icons.create_new_folder_outlined, size: 18),
+                label: const Text('添加文件夹'),
+              ),
               TextButton.icon(
                 onPressed: () => openInFileManager(aiWorkspaceDir),
                 icon: const Icon(Icons.folder_open_outlined, size: 18),
@@ -186,10 +187,16 @@ class _AiWorkspaceSettingsState extends State<AiWorkspaceSettings> {
               controller: _searchKey,
               obscureText: !_showKey,
               decoration: InputDecoration(
-                labelText: engine == 'exa' ? 'Exa 的 API Key（可以不填）' : '搜索服务的 API Key',
-                helperText: engine == 'exa'
-                    ? '不填也能用，有频率限制；填了之后额度更高。只会发给 Exa'
-                    : '和模型的 Key 分开保存，只会发给所选的搜索服务',
+                labelText: switch (engine) {
+                  'exa' => 'Exa 的 API Key（可以不填）',
+                  'deepseek' => 'DeepSeek 的 API Key（模型是 DeepSeek 时可以不填）',
+                  _ => '搜索服务的 API Key',
+                },
+                helperText: switch (engine) {
+                  'exa' => '不填也能用，有频率限制；填了之后额度更高。只会发给 Exa',
+                  'deepseek' => '不填时用模型的 Key。每 1000 次搜索约 0.75 美元，只会发给 DeepSeek',
+                  _ => '和模型的 Key 分开保存，只会发给所选的搜索服务',
+                },
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => _showKey = !_showKey),

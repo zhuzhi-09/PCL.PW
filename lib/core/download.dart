@@ -21,6 +21,7 @@ const _mirrors = [
   ('https://meta.fabricmc.net', '$_bmclapi/fabric-meta'),
   ('https://maven.minecraftforge.net', '$_bmclapi/maven'),
   ('https://maven.neoforged.net/releases', '$_bmclapi/maven'),
+  ('https://authlib-injector.yushi.moe', '$_bmclapi/mirrors/authlib-injector'),
 ];
 
 /// GitHub 直连失败或卡住时依次尝试的镜像

@@ -7,6 +7,10 @@ import 'package:window_manager/window_manager.dart';
 
 import 'app_info.dart';
 import 'core/accounts.dart';
+import 'core/auth/auth.dart';
+import 'core/auth/authlib_injector.dart';
+import 'core/auth/yggdrasil.dart';
+import 'core/auth/yggdrasil_connect.dart';
 import 'core/ai/ai_chat.dart';
 import 'core/ai/ai_context.dart';
 import 'core/ai/ai_tools.dart';
@@ -37,8 +41,8 @@ import 'core/loader_names.dart';
 
 enum GameState { idle, preparing, running }
 
-/// 启动过程中需要界面参与的决定（正版验证、赞助劝导）
-abstract interface class LaunchPrompts {
+/// 启动过程中需要界面参与的决定（正版验证、赞助劝导、外置登录重新输入密码）
+abstract interface class LaunchPrompts implements AuthPrompts {
   Future<OwnershipChoice> askOwnership();
   Future<void> askSponsor(int launchCount);
 
@@ -226,12 +230,20 @@ class AppState extends ChangeNotifier {
 
   Future<void> selectAccount(String id) => config.update({'selectedAccount': id});
 
-  /// 微软登录。登录过一次正版账号后，不再进行正版购买劝导
-  Future<Account> loginMicrosoft(MicrosoftLogin login, void Function(DeviceCode) onCode) async {
-    final acc = await accounts.upsert(await login.run(onCode));
-    await config.update({'selectedAccount': acc.id, 'hintBuy': true});
+  /// 执行登录命令，保存并选中得到的账户。登录过一次正版账号后，不再进行正版购买劝导
+  Future<Account> login(LoginCommand command) async {
+    final acc = await accounts.upsert(await command.execute());
+    await config.update({'selectedAccount': acc.id, if (acc.type == AccountType.microsoft) 'hintBuy': true});
     return acc;
   }
+
+  /// 各类账户启动前的处理（在这里组装具体实现，其余代码只依赖 [AccountAuth]）
+  AccountAuth _authFor(Account acc) => switch (acc.type) {
+    AccountType.offline => const OfflineAuth(),
+    AccountType.microsoft => MicrosoftAuth(config.effectiveMsClientId),
+    AccountType.yggdrasil => YggdrasilAuth(AuthlibInjector(downloader)),
+    AccountType.yggdrasilConnect => ConnectAuth(AuthlibInjector(downloader)),
+  };
 
   bool isFavorite(String id) => favorites.any((f) => f.id == id);
 
@@ -448,11 +460,16 @@ class AppState extends ChangeNotifier {
     notifyListeners();
     try {
       final dl = downloader;
-      if (acc.type == AccountType.microsoft) {
-        t.setStage('验证账户');
-        final refreshed = await refreshIfNeeded(acc, cfg.effectiveMsClientId);
-        if (!identical(refreshed, acc)) acc = await accounts.upsert(refreshed);
+      if (acc.type != AccountType.offline) t.setStage('验证账户');
+      final AuthSession auth;
+      try {
+        auth = await _authFor(acc).prepare(acc, prompts);
+      } on LoginCancelled {
+        tasks.remove(t);
+        gameState = GameState.idle;
+        return false;
       }
+      if (!identical(auth.account, acc)) acc = await accounts.upsert(auth.account);
       t.setStage('分析版本');
       final info = await analyzeInstance(g, id);
       final inst = readInstanceSettings(g.versionDir(id));
@@ -516,6 +533,7 @@ class AppState extends ChangeNotifier {
         classpathHead: android?.lwjglClasspath ?? const [],
         classpathTail: android != null && lwjgl2 ? [android.lwjglx] : const [],
         skipLibrary: android == null ? null : (name) => name.startsWith('org.lwjgl'),
+        authJvmArgs: auth.jvmArgs,
       );
       if (needsAppleSiliconGlfw(ctx.v.libraries)) await ensureAppleSiliconGlfw();
       var args = buildArgs(ctx);

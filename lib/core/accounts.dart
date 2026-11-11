@@ -10,7 +10,8 @@ import 'package:path/path.dart' as p;
 import 'paths.dart';
 import 'secure.dart';
 
-enum AccountType { offline, microsoft }
+/// 账户类型：离线、微软、外置登录（Yggdrasil API，账户密码）、外置登录（Yggdrasil Connect，OAuth 授权）
+enum AccountType { offline, microsoft, yggdrasil, yggdrasilConnect }
 
 class Account {
   Account({
@@ -22,6 +23,10 @@ class Account {
     this.refreshToken,
     this.expiresAt,
     this.importedLegacy = false,
+    this.server,
+    this.serverName,
+    this.login,
+    this.clientToken,
   });
 
   final String id;
@@ -37,15 +42,44 @@ class Account {
   /// 从 PCL-CE 导入的微软账户：刷新令牌属于 PCL-CE 的应用，过期后需要重新登录
   final bool importedLegacy;
 
-  Account copyWithId(String newId) => Account(
-    id: newId,
+  /// 外置登录：authlib-injector API 根地址（不以 / 结尾）
+  final String? server;
+
+  /// 外置登录：验证服务器名称（元数据中的 serverName）
+  final String? serverName;
+
+  /// Yggdrasil API：登录用的账户（邮箱或用户名），令牌失效后重新输入密码时使用
+  final String? login;
+
+  /// Yggdrasil API 的 clientToken；Yggdrasil Connect 为 OAuth client_id（刷新令牌时必须与登录时相同）
+  final String? clientToken;
+
+  String get typeLabel => switch (type) {
+    AccountType.offline => '离线账户',
+    AccountType.microsoft => '微软账户',
+    AccountType.yggdrasil || AccountType.yggdrasilConnect => '外置登录 · ${serverName ?? Uri.tryParse('$server')?.host}',
+  };
+
+  Account copyWith({
+    String? id,
+    String? name,
+    String? accessToken,
+    String? refreshToken,
+    int? expiresAt,
+    String? clientToken,
+  }) => Account(
+    id: id ?? this.id,
     type: type,
-    name: name,
+    name: name ?? this.name,
     uuid: uuid,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
-    expiresAt: expiresAt,
+    accessToken: accessToken ?? this.accessToken,
+    refreshToken: refreshToken ?? this.refreshToken,
+    expiresAt: expiresAt ?? this.expiresAt,
     importedLegacy: importedLegacy,
+    server: server,
+    serverName: serverName,
+    login: login,
+    clientToken: clientToken ?? this.clientToken,
   );
 
   Map<String, dynamic> toJson() => {
@@ -54,20 +88,28 @@ class Account {
     'name': name,
     'uuid': uuid,
     'accessToken': accessToken,
-    if (refreshToken != null) 'refreshToken': refreshToken,
-    if (expiresAt != null) 'expiresAt': expiresAt,
+    'refreshToken': ?refreshToken,
+    'expiresAt': ?expiresAt,
     if (importedLegacy) 'importedFrom': 'pcl',
+    'server': ?server,
+    'serverName': ?serverName,
+    'login': ?login,
+    'clientToken': ?clientToken,
   };
 
   static Account fromJson(Map<String, dynamic> j) => Account(
     id: '${j['id']}',
-    type: j['type'] == 'microsoft' ? AccountType.microsoft : AccountType.offline,
+    type: AccountType.values.asNameMap()[j['type']] ?? AccountType.offline,
     name: '${j['name']}',
     uuid: '${j['uuid']}',
     accessToken: '${j['accessToken']}',
     refreshToken: j['refreshToken'] as String?,
     expiresAt: (j['expiresAt'] as num?)?.toInt(),
     importedLegacy: j['importedFrom'] == 'pcl',
+    server: j['server'] as String?,
+    serverName: j['serverName'] as String?,
+    login: j['login'] as String?,
+    clientToken: j['clientToken'] as String?,
   );
 }
 
@@ -123,11 +165,11 @@ class AccountStore {
     unawaited(Paths.backupConfigFile(_file));
   }
 
-  /// 添加或更新账户（同类型同 UUID 视为同一账户）
+  /// 添加或更新账户（同类型、同验证服务器、同 UUID 视为同一账户）
   Future<Account> upsert(Account acc) async {
-    final i = accounts.indexWhere((a) => a.type == acc.type && a.uuid == acc.uuid);
+    final i = accounts.indexWhere((a) => a.type == acc.type && a.server == acc.server && a.uuid == acc.uuid);
     if (i >= 0) {
-      acc = acc.copyWithId(accounts[i].id);
+      acc = acc.copyWith(id: accounts[i].id);
       accounts[i] = acc;
     } else {
       accounts.add(acc);
@@ -142,7 +184,7 @@ class AccountStore {
       (a) => a.type == acc.type && (acc.type == AccountType.offline ? a.name == acc.name : a.uuid == acc.uuid),
     );
     if (i >= 0) {
-      acc = acc.copyWithId(accounts[i].id);
+      acc = acc.copyWith(id: accounts[i].id);
       accounts[i] = acc;
     } else {
       accounts.add(acc);

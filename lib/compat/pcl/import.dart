@@ -345,7 +345,7 @@ Future<PclImportResult> importFromPcl(
           final name = '${pr['username'] ?? ''}';
           if (name.isEmpty) continue;
           if (type == 'authlib' || type == 'yggdrasil') {
-            result.skippedAccounts.add('$name（第三方验证暂不支持）');
+            result.skippedAccounts.add('$name（外置登录账户不能导入，请在账户中重新登录）');
             continue;
           }
           final microsoft = type == 'microsoft';

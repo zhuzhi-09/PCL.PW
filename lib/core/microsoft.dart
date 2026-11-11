@@ -1,47 +1,20 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'accounts.dart';
+import 'auth/auth.dart';
+import 'auth/http_json.dart';
+import 'auth/oauth.dart';
 
 const _msAuth = 'https://login.microsoftonline.com/consumers/oauth2/v2.0';
 const _scope = 'XboxLive.signin offline_access';
 
-class DeviceCode {
-  DeviceCode({required this.userCode, required this.verificationUri, required this.expiresIn});
+OAuthClient _oauth(String clientId) => OAuthClient(
+  clientId: clientId.trim(),
+  deviceEndpoint: '$_msAuth/devicecode',
+  tokenEndpoint: '$_msAuth/token',
+);
 
-  final String userCode;
-  final String verificationUri;
-  final int expiresIn;
-}
-
-final _client = HttpClient()..connectionTimeout = const Duration(seconds: 20);
-
-Future<(int, Map<String, dynamic>)> _request(
-  String method,
-  String url, {
-  Object? json,
-  Map<String, String>? form,
-  String? bearer,
-}) async {
-  final req = await _client.openUrl(method, Uri.parse(url));
-  req.headers.set(HttpHeaders.acceptHeader, 'application/json');
-  if (bearer != null) req.headers.set(HttpHeaders.authorizationHeader, 'Bearer $bearer');
-  if (form != null) {
-    req.headers.contentType = ContentType('application', 'x-www-form-urlencoded', charset: 'utf-8');
-    req.write(Uri(queryParameters: form).query);
-  } else if (json != null) {
-    req.headers.contentType = ContentType.json;
-    req.write(jsonEncode(json));
-  }
-  final res = await req.close().timeout(const Duration(seconds: 30));
-  final body = await res.transform(utf8.decoder).join();
-  Map<String, dynamic> data;
-  try {
-    data = body.isEmpty ? {} : jsonDecode(body) as Map<String, dynamic>;
-  } catch (_) {
-    data = {};
-  }
-  return (res.statusCode, data);
+Future<(int, Map<String, dynamic>)> _request(String method, String url, {Object? json, String? bearer}) async {
+  final r = await requestJson(method, url, json: json, bearer: bearer);
+  return (r.status, r.map);
 }
 
 /// Xbox 的错误码转为可读的说明
@@ -100,64 +73,33 @@ Future<Account> _minecraftFromMs(String msAccess, String msRefresh) async {
 }
 
 /// 微软账户的设备代码登录。用户在浏览器中输入代码，这里轮询直到完成。
-class MicrosoftLogin {
-  MicrosoftLogin(this.clientId);
+class MicrosoftLogin implements LoginCommand {
+  MicrosoftLogin(this.clientId, this.onCode);
 
   final String clientId;
+  final void Function(DeviceCode) onCode;
   bool _cancelled = false;
 
+  @override
   void cancel() => _cancelled = true;
 
-  Future<Account> run(void Function(DeviceCode) onCode) async {
+  @override
+  Future<Account> execute() async {
     if (clientId.trim().isEmpty) throw Exception('请先在「设置 - 其他」中填写 Azure 应用 Client ID');
-    final (status, dc) = await _request(
-      'POST',
-      '$_msAuth/devicecode',
-      form: {'client_id': clientId.trim(), 'scope': _scope},
-    );
-    if (status >= 400 || dc['device_code'] == null) {
-      throw Exception('无法开始登录：${dc['error_description'] ?? dc['error'] ?? status}');
-    }
-    final expiresIn = (dc['expires_in'] as num).toInt();
-    onCode(
-      DeviceCode(userCode: '${dc['user_code']}', verificationUri: '${dc['verification_uri']}', expiresIn: expiresIn),
-    );
-
-    var interval = Duration(seconds: (dc['interval'] as num?)?.toInt() ?? 5);
-    final deadline = DateTime.now().add(Duration(seconds: expiresIn));
-    while (DateTime.now().isBefore(deadline)) {
-      await Future<void>.delayed(interval);
-      if (_cancelled) throw const LoginCancelled();
-      final (_, t) = await _request(
-        'POST',
-        '$_msAuth/token',
-        form: {
-          'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
-          'client_id': clientId.trim(),
-          'device_code': '${dc['device_code']}',
-        },
-      );
-      switch (t['error']) {
-        case 'authorization_pending':
-          continue;
-        case 'slow_down':
-          interval += const Duration(seconds: 5);
-          continue;
-        case null:
-          return _minecraftFromMs('${t['access_token']}', '${t['refresh_token']}');
-        default:
-          throw Exception('登录失败：${t['error']}');
-      }
-    }
-    throw Exception('登录超时');
+    final t = await _oauth(clientId).deviceLogin(_scope, onCode, cancelled: () => _cancelled);
+    return _minecraftFromMs(t.accessToken, '${t.refreshToken}');
   }
 }
 
-class LoginCancelled implements Exception {
-  const LoginCancelled();
+/// 微软账户启动前的处理：令牌快过期时刷新
+class MicrosoftAuth implements AccountAuth {
+  const MicrosoftAuth(this.clientId);
+
+  final String clientId;
 
   @override
-  String toString() => '已取消登录';
+  Future<AuthSession> prepare(Account acc, AuthPrompts prompts) async =>
+      (account: await refreshIfNeeded(acc, clientId), jvmArgs: const <String>[]);
 }
 
 /// 启动前刷新即将过期的微软账户
@@ -183,16 +125,7 @@ Future<Account> refreshIfNeeded(Account acc, String clientId) async {
     return acc;
   }
   if (clientId.trim().isEmpty || acc.refreshToken == null) throw Exception('微软账户已过期，请重新登录');
-  final (_, t) = await _request(
-    'POST',
-    '$_msAuth/token',
-    form: {
-      'grant_type': 'refresh_token',
-      'client_id': clientId.trim(),
-      'refresh_token': acc.refreshToken!,
-      'scope': _scope,
-    },
-  );
-  if (t['error'] != null || t['access_token'] == null) throw Exception('微软账户已过期，请重新登录');
-  return (await _minecraftFromMs('${t['access_token']}', '${t['refresh_token']}')).copyWithId(acc.id);
+  final t = await _oauth(clientId).refresh(acc.refreshToken!, scope: _scope);
+  if (t == null) throw Exception('微软账户已过期，请重新登录');
+  return (await _minecraftFromMs(t.accessToken, t.refreshToken ?? acc.refreshToken!)).copyWith(id: acc.id);
 }

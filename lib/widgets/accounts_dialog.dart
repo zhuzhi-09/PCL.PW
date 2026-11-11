@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
 import '../core/accounts.dart';
-import 'microsoft_login_dialog.dart';
+import '../core/microsoft.dart';
+import 'device_login_dialog.dart';
+import 'yggdrasil_login_dialog.dart';
 
-/// 账户管理：切换、添加离线账户、移除
+/// 账户管理：切换、添加离线 / 微软 / 外置登录账户、移除
 Future<void> showAccountsDialog(BuildContext context) =>
     showDialog<void>(context: context, builder: (_) => const _AccountsDialog());
 
@@ -60,7 +62,7 @@ class _AccountsDialogState extends State<_AccountsDialog> {
                 selectedTileColor: scheme.secondaryContainer,
                 leading: CircleAvatar(child: Text(a.name.characters.first.toUpperCase())),
                 title: Text(a.name),
-                subtitle: Text(a.type == AccountType.microsoft ? '微软账户' : '离线账户'),
+                subtitle: Text(a.typeLabel),
                 onTap: () => state.selectAccount(a.id),
                 trailing: IconButton(
                   tooltip: '移除',
@@ -99,7 +101,11 @@ class _AccountsDialogState extends State<_AccountsDialog> {
             Align(
               alignment: Alignment.centerLeft,
               child: FilledButton.icon(
-                onPressed: () => showMicrosoftLogin(context),
+                onPressed: () => showDeviceLogin(
+                  context,
+                  title: '微软登录',
+                  create: (onCode) => MicrosoftLogin(state.config.effectiveMsClientId, onCode),
+                ),
                 icon: const Icon(Icons.login),
                 label: const Text('微软登录'),
               ),
@@ -111,6 +117,17 @@ class _AccountsDialogState extends State<_AccountsDialog> {
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
               ),
             ],
+            const SizedBox(height: 20),
+            Text('第三方账户', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilledButton.tonalIcon(
+                onPressed: () => showYggdrasilLogin(context),
+                icon: const Icon(Icons.dns_outlined),
+                label: const Text('外置登录'),
+              ),
+            ),
           ],
         ),
       ),

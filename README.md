@@ -24,7 +24,7 @@ Pixel World 是一个跨平台的 Minecraft 启动器，本项目为轻度使用
 - **模组加载器**：Forge、NeoForge、Fabric、Quilt、Legacy Fabric、LiteLoader、Cleanroom、OptiFine（独立安装，或作为模组与加载器一起安装）、LabyMod。安卓上暂时不能安装需要运行安装器的 Forge、NeoForge、Cleanroom 与 OptiFine，见「下一步」。
 - **资源**：从 Modrinth 搜索并安装模组、光影包、资源包、数据包，自动安装必需的前置模组；模组启用与禁用；存档、截图等文件管理。
 - **下载**：官方源与 BMCLAPI 镜像，失败自动回退；多线程下载；SHA-1 校验；结尾的慢连接自动换节点。
-- **账户**：微软正版登录与离线账户；账户在 Windows 上用 DPAPI 加密保存。
+- **账户**：微软正版登录、离线账户与外置登录；账户在 Windows 上用 DPAPI 加密保存。
 - **Java**：自动查找本机 Java，缺少时按版本需要自动下载。
 - **启动与排错**：启动游戏、游戏日志、崩溃分析；可选的 AI 排障助手（自填接口），可以查看日志、搜索并安装模组、修改配置文件、备份与恢复，每次修改都需要你确认。
 - **从 PCL-CE 迁移**：导入全局设置、游戏文件夹与账户；直接使用 PCL-CE 的版本文件夹与版本设置。
@@ -39,7 +39,6 @@ Pixel World 是一个跨平台的 Minecraft 启动器，本项目为轻度使用
 
 - Linux 桌面集成（.deb/AppImage）与更多发行版验证。
 - 整合包安装（Modrinth、CurseForge）。
-- 第三方验证账户（Authlib-Injector 等）。
 - 安卓：手柄、自定义按键布局，更多渲染器选项。
 
 ## 下载

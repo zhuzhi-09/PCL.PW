@@ -25,7 +25,16 @@ Never _xboxError(int status, Map<String, dynamic> data, String url) {
     case 2148916238:
       throw Exception('未成年账户需要加入家庭组后才能登录');
   }
-  throw Exception('请求失败（$status）：$url');
+  final reason = '${data['errorMessage'] ?? data['error_description'] ?? data['Message'] ?? data['error'] ?? ''}'
+      .trim();
+  if (reason.contains('Invalid app registration')) {
+    throw Exception(
+      'Minecraft 拒绝了这个 Azure 应用（$status Invalid app registration）。'
+      '新应用需要先通过 Mojang 的审核（https://aka.ms/mce-reviewappid），'
+      '审核通过后要用同一个 Client ID 重新登录；刚通过时可能要等一段时间才生效',
+    );
+  }
+  throw Exception('请求失败（$status）：$url${reason.isEmpty ? '' : '\n$reason'}');
 }
 
 Future<Map<String, dynamic>> _postJson(String url, Object body) async {
@@ -60,7 +69,10 @@ Future<Account> _minecraftFromMs(String msAccess, String msRefresh) async {
     bearer: mcToken,
   );
   if (status == 404) throw Exception('该账户没有购买 Minecraft: Java Edition');
-  if (status >= 400) throw Exception('获取档案失败（$status）');
+  if (status >= 400) {
+    final reason = '${profile['errorMessage'] ?? profile['error'] ?? ''}'.trim();
+    throw Exception('获取档案失败（$status）${reason.isEmpty ? '' : '：$reason'}');
+  }
   return Account(
     id: newId(),
     type: AccountType.microsoft,

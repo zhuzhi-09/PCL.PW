@@ -192,10 +192,13 @@ class _VersionsViewState extends State<_VersionsView> {
                   decoration: BoxDecoration(color: scheme.surfaceContainerLow, borderRadius: BorderRadius.circular(12)),
                   clipBehavior: Clip.antiAlias,
                   child: list.isEmpty
-                      ? Center(child: Text('没有符合条件的版本', style: TextStyle(color: scheme.onSurfaceVariant)))
+                      ? Center(
+                          child: Text('没有符合条件的版本', style: TextStyle(color: scheme.onSurfaceVariant)),
+                        )
                       : ListView.separated(
                           itemCount: list.length,
-                          separatorBuilder: (_, _) => Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: .3)),
+                          separatorBuilder: (_, _) =>
+                              Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: .3)),
                           itemBuilder: (context, i) {
                             final v = list[i];
                             final on = v == selected;
@@ -208,11 +211,16 @@ class _VersionsViewState extends State<_VersionsView> {
                                   height: 48,
                                   padding: const EdgeInsets.symmetric(horizontal: 14),
                                   decoration: BoxDecoration(
-                                    border: Border(left: BorderSide(color: on ? scheme.primary : Colors.transparent, width: 3)),
+                                    border: Border(
+                                      left: BorderSide(color: on ? scheme.primary : Colors.transparent, width: 3),
+                                    ),
                                   ),
                                   child: Row(
                                     children: [
-                                      Text(v.id, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                                      Text(
+                                        v.id,
+                                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                                      ),
                                       const SizedBox(width: 8),
                                       if (latest) _Tag('最新', filled: true),
                                       if (installed.contains(v.id)) ...[const SizedBox(width: 6), const _Tag('已安装')],
@@ -235,7 +243,9 @@ class _VersionsViewState extends State<_VersionsView> {
           right: Container(
             decoration: BoxDecoration(color: scheme.surfaceContainerLow, borderRadius: BorderRadius.circular(14)),
             child: selected == null
-                ? Center(child: Text('选择左边的版本', style: TextStyle(color: scheme.onSurfaceVariant)))
+                ? Center(
+                    child: Text('选择左边的版本', style: TextStyle(color: scheme.onSurfaceVariant)),
+                  )
                 : InstallPanel(key: ValueKey(selected.id), version: selected),
           ),
         );
@@ -263,7 +273,9 @@ class _Tag extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: theme.textTheme.labelSmall?.copyWith(color: filled ? scheme.onPrimaryContainer : scheme.onSurfaceVariant),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: filled ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+        ),
       ),
     );
   }
@@ -456,7 +468,10 @@ class _InstallPanelState extends State<InstallPanel> {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text('安装 ${widget.version.id}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  Text(
+                    '安装 ${widget.version.id}',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     widget.version.releaseTime.split('T').first,
@@ -595,10 +610,7 @@ class _InstallPanelState extends State<InstallPanel> {
               const SizedBox(width: 10),
               FilledButton(
                 onPressed: canInstall ? _install : null,
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(110, 44),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
+                style: FilledButton.styleFrom(minimumSize: const Size(110, 44)),
                 child: const Text('安装'),
               ),
             ],
@@ -657,7 +669,12 @@ class _LoaderTile extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                        ),
                         Text(
                           hint,
                           maxLines: 1,

@@ -22,7 +22,7 @@ class SideNavGroup<T> {
   final List<SideNavItem<T>> items;
 }
 
-/// 二级页面左侧的分组导航：每项 44 高的圆角矩形，选中项带浅色底和左侧主题色竖线
+/// 二级页面左侧的分组导航（MD3 导航抽屉）：每项 44 高，选中项是药丸形的 secondaryContainer 指示器
 class SideNav<T> extends StatelessWidget {
   const SideNav({super.key, required this.groups, required this.value, required this.onChanged, this.width = 196});
 
@@ -69,26 +69,21 @@ class _SideNavTile<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final iconColor = selected ? scheme.primary : scheme.onSurfaceVariant;
+    final fg = selected ? scheme.onSecondaryContainer : scheme.onSurfaceVariant;
+    final iconColor = fg;
     return Material(
-      color: selected ? scheme.surfaceContainer : Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
+      color: selected ? scheme.secondaryContainer : Colors.transparent,
+      shape: const StadiumBorder(),
       clipBehavior: Clip.antiAlias,
+      animationDuration: const Duration(milliseconds: 150),
       child: InkWell(
         onTap: onTap,
+        customBorder: const StadiumBorder(),
         child: SizedBox(
           height: 44,
           child: Row(
             children: [
-              Container(
-                width: 3,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: selected ? scheme.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(width: 11),
+              const SizedBox(width: 16),
               if (item.loader != null)
                 LoaderIcon(item.loader!, size: 19, color: iconColor)
               else
@@ -99,14 +94,13 @@ class _SideNavTile<T> extends StatelessWidget {
                   item.label,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
+                    color: fg,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ),
-              if (item.trailing != null)
-                Text(item.trailing!, style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
-              const SizedBox(width: 12),
+              if (item.trailing != null) Text(item.trailing!, style: theme.textTheme.labelSmall?.copyWith(color: fg)),
+              const SizedBox(width: 16),
             ],
           ),
         ),
@@ -140,7 +134,9 @@ class PageTabs<T> extends StatelessWidget {
     final scheme = theme.colorScheme;
     return Container(
       height: 44,
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: scheme.outlineVariant.withValues(alpha: .4)))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: scheme.outlineVariant.withValues(alpha: .4))),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -192,17 +188,17 @@ class SegmentPicker<T> extends StatelessWidget {
     final scheme = theme.colorScheme;
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(color: scheme.surfaceContainer, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(color: scheme.surfaceContainer, borderRadius: BorderRadius.circular(20)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           for (final (v, label) in options)
             Material(
-              color: v == value ? scheme.surfaceContainerHighest : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              color: v == value ? scheme.secondaryContainer : Colors.transparent,
+              shape: const StadiumBorder(),
               child: InkWell(
                 onTap: () => onChanged(v),
-                borderRadius: BorderRadius.circular(8),
+                customBorder: const StadiumBorder(),
                 child: Container(
                   height: 32,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -210,7 +206,7 @@ class SegmentPicker<T> extends StatelessWidget {
                   child: Text(
                     label,
                     style: theme.textTheme.labelMedium?.copyWith(
-                      color: v == value ? scheme.onSurface : scheme.onSurfaceVariant,
+                      color: v == value ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
                       fontWeight: v == value ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),

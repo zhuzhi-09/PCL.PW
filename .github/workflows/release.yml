@@ -37,7 +37,9 @@ jobs:
           channel: stable
           cache: true
       # window_manager 依赖的 cnativeapi 在测试时会编译本地代码，需要 GTK 3、X11、Xi 的开发包
-      - run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libx11-dev libxi-dev pkg-config
+      - name: Dependencies
+        timeout-minutes: 20
+        run: bash .github/apt-install.sh libgtk-3-dev libx11-dev libxi-dev pkg-config
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
@@ -148,11 +150,11 @@ jobs:
           channel: stable
           cache: true
       - name: Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config \
-            libgtk-3-dev liblzma-dev libx11-dev libxi-dev rpm \
-            makepkg pacman-package-manager zstd libarchive-tools
+        timeout-minutes: 20
+        run: >-
+          bash .github/apt-install.sh clang cmake ninja-build pkg-config
+          libgtk-3-dev liblzma-dev libx11-dev libxi-dev rpm
+          makepkg pacman-package-manager zstd libarchive-tools
       - name: Build
         run: |
           set -euo pipefail

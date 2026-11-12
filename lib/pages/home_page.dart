@@ -42,7 +42,11 @@ class _HomePageState extends State<HomePage> {
     super.didChangeDependencies();
     final state = AppScope.of(context);
     final config = state.config;
-    final key = [config.gameDir, for (final folder in config.gameFolders) folder.path, state.gameState.index].join('\u0000');
+    final key = [
+      config.gameDir,
+      for (final folder in config.gameFolders) folder.path,
+      state.gameState.index,
+    ].join('\u0000');
     if (_worldsKey == key) return;
     final first = _worlds == null;
     _worldsKey = key;
@@ -246,13 +250,22 @@ class _HeroCard extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.black.withValues(alpha: .55), Colors.black.withValues(alpha: .25), Colors.black.withValues(alpha: .02)],
+                  colors: [
+                    Colors.black.withValues(alpha: .55),
+                    Colors.black.withValues(alpha: .25),
+                    Colors.black.withValues(alpha: .02),
+                  ],
                   stops: const [0, .5, 1],
                 ),
               ),
             ),
           ),
-          if (v != null) Positioned(right: 16, top: 16, child: VersionIcon(info: v, versionDir: versionDir!, size: 64, radius: 14)),
+          if (v != null)
+            Positioned(
+              right: 16,
+              top: 16,
+              child: VersionIcon(info: v, versionDir: versionDir!, size: 64, radius: 14),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
             child: Column(
@@ -269,7 +282,10 @@ class _HeroCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('切换版本', style: theme.textTheme.labelMedium?.copyWith(color: white.withValues(alpha: .8))),
+                          Text(
+                            '切换版本',
+                            style: theme.textTheme.labelMedium?.copyWith(color: white.withValues(alpha: .8)),
+                          ),
                           Icon(Icons.expand_more, size: 16, color: white.withValues(alpha: .8)),
                         ],
                       ),
@@ -293,12 +309,18 @@ class _HeroCard extends StatelessWidget {
                       v.id,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelSmall?.copyWith(color: white.withValues(alpha: .5), fontFamily: 'monospace'),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: white.withValues(alpha: .5),
+                        fontFamily: 'monospace',
+                      ),
                     ),
                   ),
                 const SizedBox(height: 4),
                 if (v == null)
-                  Text('先下载或选择一个版本，准备好就开始', style: theme.textTheme.bodySmall?.copyWith(color: white.withValues(alpha: .75)))
+                  Text(
+                    '先下载或选择一个版本，准备好就开始',
+                    style: theme.textTheme.bodySmall?.copyWith(color: white.withValues(alpha: .75)),
+                  )
                 else
                   _VersionFacts(state: state, version: v, latest: latest),
                 const Spacer(),
@@ -313,7 +335,6 @@ class _HeroCard extends StatelessWidget {
                         side: BorderSide(color: white.withValues(alpha: .25)),
                         backgroundColor: Colors.black.withValues(alpha: .18),
                         minimumSize: const Size(0, 44),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       icon: const Icon(Icons.tune, size: 18),
                       label: const Text('版本设置'),
@@ -415,7 +436,6 @@ class _LaunchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    const shape = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)));
     if (state.gameState == GameState.preparing && state.task != null) {
       return ListenableBuilder(
         listenable: state.task!,
@@ -425,7 +445,10 @@ class _LaunchButton extends StatelessWidget {
             width: 190,
             height: 44,
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: Colors.white.withValues(alpha: .14), borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: .14),
+              borderRadius: BorderRadius.circular(22),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -457,7 +480,7 @@ class _LaunchButton extends StatelessWidget {
         children: [
           FilledButton.icon(
             onPressed: state.resumeGame,
-            style: FilledButton.styleFrom(shape: shape, minimumSize: const Size(130, 44)),
+            style: FilledButton.styleFrom(minimumSize: const Size(130, 44)),
             icon: const Icon(Icons.sports_esports, size: 19),
             label: const Text('返回游戏'),
           ),
@@ -469,7 +492,6 @@ class _LaunchButton extends StatelessWidget {
               backgroundColor: scheme.error,
               foregroundColor: scheme.onError,
               minimumSize: const Size(44, 44),
-              shape: shape,
             ),
             icon: const Icon(Icons.stop, size: 19),
           ),
@@ -484,7 +506,6 @@ class _LaunchButton extends StatelessWidget {
         foregroundColor: running ? scheme.onError : scheme.onPrimaryFixed,
         disabledBackgroundColor: Colors.white.withValues(alpha: .2),
         disabledForegroundColor: Colors.white.withValues(alpha: .6),
-        shape: shape,
         minimumSize: const Size(132, 44),
         padding: const EdgeInsets.symmetric(horizontal: 18),
         textStyle: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -497,7 +518,12 @@ class _LaunchButton extends StatelessWidget {
 
 /// 右半边：启动器公告 + 2×2 常用操作（跟当前版本相关）
 class _SidePanel extends StatelessWidget {
-  const _SidePanel({required this.onInstallMods, required this.onManageMods, required this.onFolder, required this.onLog});
+  const _SidePanel({
+    required this.onInstallMods,
+    required this.onManageMods,
+    required this.onFolder,
+    required this.onLog,
+  });
 
   final VoidCallback onInstallMods;
   final VoidCallback? onManageMods;
@@ -522,9 +548,13 @@ class _SidePanel extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(child: _QuickButton(icon: Icons.download_outlined, label: '装模组', onTap: onInstallMods)),
+                      Expanded(
+                        child: _QuickButton(icon: Icons.download_outlined, label: '装模组', onTap: onInstallMods),
+                      ),
                       const SizedBox(width: 6),
-                      Expanded(child: _QuickButton(icon: Icons.view_list_outlined, label: '管理模组', onTap: onManageMods)),
+                      Expanded(
+                        child: _QuickButton(icon: Icons.view_list_outlined, label: '管理模组', onTap: onManageMods),
+                      ),
                     ],
                   ),
                 ),
@@ -533,9 +563,13 @@ class _SidePanel extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(child: _QuickButton(icon: Icons.folder_outlined, label: '文件夹', onTap: onFolder)),
+                      Expanded(
+                        child: _QuickButton(icon: Icons.folder_outlined, label: '文件夹', onTap: onFolder),
+                      ),
                       const SizedBox(width: 6),
-                      Expanded(child: _QuickButton(icon: Icons.article_outlined, label: '查看日志', onTap: onLog)),
+                      Expanded(
+                        child: _QuickButton(icon: Icons.article_outlined, label: '查看日志', onTap: onLog),
+                      ),
                     ],
                   ),
                 ),
@@ -577,7 +611,9 @@ class _QuickButton extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelLarge?.copyWith(color: enabled ? null : scheme.onSurfaceVariant.withValues(alpha: .5)),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: enabled ? null : scheme.onSurfaceVariant.withValues(alpha: .5),
+                  ),
                 ),
               ),
             ],
@@ -644,10 +680,18 @@ class _NoticeStripState extends State<_NoticeStrip> {
                           title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelLarge?.copyWith(color: scheme.onPrimaryContainer, fontWeight: FontWeight.w700),
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: scheme.onPrimaryContainer,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                      Text('查看 ›', style: theme.textTheme.labelSmall?.copyWith(color: scheme.onPrimaryContainer.withValues(alpha: .8))),
+                      Text(
+                        '查看 ›',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.onPrimaryContainer.withValues(alpha: .8),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 2),
@@ -751,7 +795,9 @@ class _WorldCard extends StatelessWidget {
                     height: 68,
                     child: CoverBackground(
                       iconPath: icon,
-                      child: Center(child: CoverThumb(iconPath: icon, size: 54, radius: 9, modified: world.modified)),
+                      child: Center(
+                        child: CoverThumb(iconPath: icon, size: 54, radius: 9, modified: world.modified),
+                      ),
                     ),
                   ),
                   Padding(
@@ -931,9 +977,21 @@ class _DesktopHomeState extends State<_DesktopHome> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      Expanded(child: _QuickButton(icon: Icons.download_outlined, label: '装模组', onTap: widget.onInstallMods)),
+                                      Expanded(
+                                        child: _QuickButton(
+                                          icon: Icons.download_outlined,
+                                          label: '装模组',
+                                          onTap: widget.onInstallMods,
+                                        ),
+                                      ),
                                       const SizedBox(width: 10),
-                                      Expanded(child: _QuickButton(icon: Icons.view_list_outlined, label: '管理模组', onTap: widget.onSettings)),
+                                      Expanded(
+                                        child: _QuickButton(
+                                          icon: Icons.view_list_outlined,
+                                          label: '管理模组',
+                                          onTap: widget.onSettings,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -942,9 +1000,21 @@ class _DesktopHomeState extends State<_DesktopHome> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      Expanded(child: _QuickButton(icon: Icons.folder_outlined, label: '文件夹', onTap: widget.onFolder)),
+                                      Expanded(
+                                        child: _QuickButton(
+                                          icon: Icons.folder_outlined,
+                                          label: '文件夹',
+                                          onTap: widget.onFolder,
+                                        ),
+                                      ),
                                       const SizedBox(width: 10),
-                                      Expanded(child: _QuickButton(icon: Icons.article_outlined, label: '查看日志', onTap: widget.onLog)),
+                                      Expanded(
+                                        child: _QuickButton(
+                                          icon: Icons.article_outlined,
+                                          label: '查看日志',
+                                          onTap: widget.onLog,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -1013,17 +1083,19 @@ class _DesktopHomeState extends State<_DesktopHome> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 left: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const ChangelogHint(),
-                    if (cfg.homeNews) const VersionNewsFeed(),
-                  ],
+                  children: [const ChangelogHint(), if (cfg.homeNews) const VersionNewsFeed()],
                 ),
                 right: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 8),
                     if (widget.version != null)
-                      _VersionInfoCard(state: widget.state, version: widget.version!, latest: widget.latest, onSettings: widget.onSettings),
+                      _VersionInfoCard(
+                        state: widget.state,
+                        version: widget.version!,
+                        latest: widget.latest,
+                        onSettings: widget.onSettings,
+                      ),
                     if (cfg.homeHints) ...[const SizedBox(height: 12), const HomeHints(compact: true)],
                   ],
                 ),
@@ -1100,7 +1172,10 @@ class _DesktopHero extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              if (v != null) ...[VersionIcon(info: v, versionDir: versionDir!, size: 44, radius: 12), const SizedBox(width: 12)],
+              if (v != null) ...[
+                VersionIcon(info: v, versionDir: versionDir!, size: 44, radius: 12),
+                const SizedBox(width: 12),
+              ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1116,7 +1191,10 @@ class _DesktopHero extends StatelessWidget {
                         v.id,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant, fontFamily: 'monospace'),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                          fontFamily: 'monospace',
+                        ),
                       ),
                   ],
                 ),
@@ -1135,10 +1213,7 @@ class _DesktopHero extends StatelessWidget {
               const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: onSettings,
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(0, 44),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
+                style: OutlinedButton.styleFrom(minimumSize: const Size(0, 44)),
                 icon: const Icon(Icons.tune, size: 18),
                 label: const Text('版本设置'),
               ),
@@ -1233,7 +1308,10 @@ class _WorldTileState extends State<_WorldTile> {
                               style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
                             ),
                             Text(
-                              [if (widget.versionName.isNotEmpty) widget.versionName, _timeAgo(widget.world.modified)].join(' · '),
+                              [
+                                if (widget.versionName.isNotEmpty) widget.versionName,
+                                _timeAgo(widget.world.modified),
+                              ].join(' · '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
@@ -1318,7 +1396,8 @@ class _VersionInfoCard extends StatelessWidget {
           row('版本', describeVersion(version), first: true),
           FutureBuilder<int?>(
             future: version.loader == Loader.vanilla ? Future.value(null) : _modCount(state, version),
-            builder: (context, snap) => row('模组', version.loader == Loader.vanilla ? '原版，不加载模组' : (snap.data == null ? '—' : '${snap.data} 个')),
+            builder: (context, snap) =>
+                row('模组', version.loader == Loader.vanilla ? '原版，不加载模组' : (snap.data == null ? '—' : '${snap.data} 个')),
           ),
           row('最近游玩', latest == null ? '还没玩过' : '${latest!.name} · ${_timeAgo(latest!.modified)}'),
           row('版本 ID', version.id),

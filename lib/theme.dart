@@ -25,6 +25,23 @@ DynamicScheme _md3Scheme(bool dark, Color seed) {
 
 double _max(double a, double b) => a > b ? a : b;
 
+/// MD3 按钮形状：平时是药丸形（全圆角），按下时收成圆角矩形。
+/// Material 会对形状变化做插值，所以按下时有一个圆角收缩的动画
+final WidgetStateProperty<OutlinedBorder> md3ButtonShape = WidgetStateProperty.resolveWith(
+  (states) => states.contains(WidgetState.pressed)
+      ? const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
+      : const StadiumBorder(),
+);
+
+/// 圆形图标按钮按下时收成圆角方形
+final WidgetStateProperty<OutlinedBorder> md3IconButtonShape = WidgetStateProperty.resolveWith(
+  (states) => states.contains(WidgetState.pressed)
+      ? const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
+      : const CircleBorder(),
+);
+
+const _buttonAnimation = Duration(milliseconds: 150);
+
 ColorScheme md3ColorScheme(Brightness brightness, {Color seed = defaultThemeSeed}) {
   final s = _md3Scheme(brightness == Brightness.dark, seed);
   Color c(DynamicColor d) => Color(d.getArgb(s));
@@ -101,10 +118,23 @@ ThemeData buildTheme(Brightness brightness, {Color seed = defaultThemeSeed}) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      style: ButtonStyle(
+        shape: md3ButtonShape,
+        animationDuration: _buttonAnimation,
+        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 20, vertical: 14)),
       ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: ButtonStyle(shape: md3ButtonShape, animationDuration: _buttonAnimation),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(shape: md3ButtonShape, animationDuration: _buttonAnimation),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(shape: md3ButtonShape, animationDuration: _buttonAnimation),
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(shape: md3IconButtonShape, animationDuration: _buttonAnimation),
     ),
   );
 }

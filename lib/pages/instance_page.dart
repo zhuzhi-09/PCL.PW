@@ -3,6 +3,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import '../core/android_storage.dart';
 import 'file_manager_page.dart';
+
 import 'package:flutter/material.dart';
 
 import '../app_scope.dart';
@@ -140,7 +141,10 @@ class _InstancePageState extends State<InstancePage> {
                           versionTitle(info) == info.id ? describeVersion(info) : info.id,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant, fontFamily: 'monospace'),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                            fontFamily: 'monospace',
+                          ),
                         ),
                       ],
                     ),
@@ -155,14 +159,14 @@ class _InstancePageState extends State<InstancePage> {
                               if (context.mounted) toast(context, '打不开文件夹：${errorText(e)}');
                             }
                           },
-                    style: OutlinedButton.styleFrom(minimumSize: const Size(0, 44), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                    style: OutlinedButton.styleFrom(minimumSize: const Size(0, 44)),
                     icon: const Icon(Icons.folder_outlined, size: 18),
                     label: const Text('打开文件夹'),
                   ),
                   const SizedBox(width: 8),
                   FilledButton.icon(
                     onPressed: running ? null : () => _launch(info),
-                    style: FilledButton.styleFrom(minimumSize: const Size(0, 44), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                    style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
                     icon: const Icon(Icons.rocket_launch, size: 19),
                     label: const Text('开始游戏'),
                   ),

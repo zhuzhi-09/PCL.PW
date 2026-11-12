@@ -166,23 +166,16 @@ class AccountStore {
   }
 
   /// 添加或更新账户（同类型、同验证服务器、同 UUID 视为同一账户）
-  Future<Account> upsert(Account acc) async {
-    final i = accounts.indexWhere((a) => a.type == acc.type && a.server == acc.server && a.uuid == acc.uuid);
-    if (i >= 0) {
-      acc = acc.copyWith(id: accounts[i].id);
-      accounts[i] = acc;
-    } else {
-      accounts.add(acc);
-    }
-    await _save();
-    return acc;
-  }
+  Future<Account> upsert(Account acc) =>
+      _put(acc, (a) => a.type == acc.type && a.server == acc.server && a.uuid == acc.uuid);
 
-  /// 导入（PCL-CE）：离线账户按名称匹配，避免 UUID 生成方式不同导致重复；微软账户按 UUID 匹配
-  Future<Account> importAccount(Account acc) async {
-    final i = accounts.indexWhere(
-      (a) => a.type == acc.type && (acc.type == AccountType.offline ? a.name == acc.name : a.uuid == acc.uuid),
-    );
+  /// 导入（PCL-CE）：离线账户按名称匹配，避免 UUID 生成方式不同导致重复；其他账户同 [upsert]
+  Future<Account> importAccount(Account acc) => acc.type == AccountType.offline
+      ? _put(acc, (a) => a.type == AccountType.offline && a.name == acc.name)
+      : upsert(acc);
+
+  Future<Account> _put(Account acc, bool Function(Account) same) async {
+    final i = accounts.indexWhere(same);
     if (i >= 0) {
       acc = acc.copyWith(id: accounts[i].id);
       accounts[i] = acc;

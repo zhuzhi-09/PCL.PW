@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'app_scope.dart';
+import 'core/accounts.dart';
 import 'app_state.dart';
 import 'core/crash.dart';
 import 'platform.dart';
@@ -570,7 +571,12 @@ class _AccountChip extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final account = AppScope.of(context).selectedAccount;
-    final kind = account == null ? '' : (account.type.name == 'microsoft' ? ' · 正版' : ' · 离线');
+    final kind = switch (account?.type) {
+      null => '',
+      AccountType.microsoft => ' · 正版',
+      AccountType.offline => ' · 离线',
+      _ => ' · ${account!.serverName ?? '外置'}',
+    };
     final chip = _BarChip(
       onTap: () => showAccountsDialog(context),
       padding: EdgeInsets.only(left: 7, right: avatarOnly ? 7 : 12),

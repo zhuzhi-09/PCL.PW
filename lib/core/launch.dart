@@ -103,7 +103,11 @@ class LaunchContext {
     this.classpathHead = const [],
     this.classpathTail = const [],
     this.skipLibrary,
+    this.authJvmArgs = const [],
   });
+
+  /// 账户验证需要的 JVM 参数（外置登录的 authlib-injector）
+  final List<String> authJvmArgs;
 
   /// 放在 classpath 最前面的 jar（安卓上替换游戏自带的 LWJGL）
   final List<String> classpathHead;
@@ -207,6 +211,7 @@ List<String> buildArgs(LaunchContext ctx) {
     jvm.add('-Xms${(memory.initial! * 1024).floor()}m');
   }
   if (!jvm.contains('-Dlog4j2.formatMsgNoLookups=true')) jvm.add('-Dlog4j2.formatMsgNoLookups=true');
+  jvm.addAll(ctx.authJvmArgs);
 
   // 编码（PCL #4700、#5892、#5909）
   if (java.major > 8) {

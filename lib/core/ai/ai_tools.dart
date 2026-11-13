@@ -816,26 +816,14 @@ class AiToolbox {
     ...webTools(state),
   ];
 
-  /// 工作区与联网可以在设置里分别关闭；关闭后既不告诉模型，也不允许调用
-  bool _enabled(AiToolDef t) {
-    final n = t.spec.name;
-    if (n.startsWith('ws_')) return state.config.aiWorkspace;
-    if (n.startsWith('web_') || n == 'mcwiki_search') return state.config.aiWeb;
-    return true;
-  }
+  // 按内置服务分组（见 mcp_hub.dart）：游戏管理、AI 工作区、联网搜索。
+  // 对话不直接调用这里的操作，统一经 McpHub 调用；工作区与联网关闭后，对应的服务不提供给模型
+  static bool _isWorkspace(AiToolDef t) => t.spec.name.startsWith('ws_');
+  static bool _isWeb(AiToolDef t) => t.spec.name.startsWith('web_') || t.spec.name == 'mcwiki_search';
 
-  List<AiTool> get specs => [for (final t in all) if (_enabled(t)) t.spec];
-
-  AiToolDef? find(String name) => all.where((t) => t.spec.name == name && _enabled(t)).firstOrNull;
-
-  /// 按开启的能力追加到系统提示的说明
-  Future<String?> promptExtra() async {
-    final parts = [
-      if (state.config.aiWorkspace) await workspacePrompt(state),
-      if (state.config.aiWeb) webPrompt,
-    ];
-    return parts.isEmpty ? null : parts.join('\n\n');
-  }
+  List<AiToolDef> get gameDefs => [for (final t in all) if (!_isWorkspace(t) && !_isWeb(t)) t];
+  List<AiToolDef> get workspaceDefs => [for (final t in all) if (_isWorkspace(t)) t];
+  List<AiToolDef> get webDefs => [for (final t in all) if (_isWeb(t)) t];
 
   // ---------- 安装游戏 ----------
 

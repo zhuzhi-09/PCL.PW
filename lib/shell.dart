@@ -7,7 +7,6 @@ import 'package:window_manager/window_manager.dart';
 
 import 'app_scope.dart';
 import 'core/accounts.dart';
-import 'core/instance_files.dart';
 import 'app_state.dart';
 import 'core/crash.dart';
 import 'platform.dart';
@@ -21,6 +20,7 @@ import 'widgets/window_buttons.dart';
 import 'pages/ai_page.dart';
 import 'pages/diagnose_page.dart';
 import 'pages/download_page.dart';
+import 'pages/file_manager_page.dart';
 import 'pages/home_feed.dart';
 import 'pages/home_page.dart';
 import 'pages/instance_page.dart';
@@ -32,7 +32,8 @@ import 'pages/versions_page.dart';
 
 export 'widgets/shell_layout.dart' show AlignedSplit;
 
-enum MainPage { home, download, settings, tools, ai }
+/// files 只在手机上出现（内置文件管理器）；电脑上打开文件夹用系统的资源管理器
+enum MainPage { home, download, settings, tools, ai, files }
 
 /// 从主页面进入的子页面：顶栏显示返回按钮和标题
 enum SubPage { versions, log, instance, tasks, diagnose }
@@ -51,6 +52,7 @@ const _mainTitles = {
   MainPage.settings: '设置',
   MainPage.tools: '工具',
   MainPage.ai: 'AI 助手',
+  MainPage.files: '文件',
 };
 
 /// 页面切换，供各页面打开子页面或返回
@@ -63,7 +65,15 @@ class ShellNav extends InheritedWidget {
   /// 关闭子页面并切换到某个主页面
   final void Function(MainPage) goMain;
 
+  /// 切到「设置」页的某个小节（见 SettingsPage 的小节名，例如 ai、aiTools）
+  void openSettings(String section) {
+    settingsSectionRequest.value = section;
+    goMain(MainPage.settings);
+  }
+
   static ShellNav of(BuildContext context) => context.getInheritedWidgetOfExactType<ShellNav>()!;
+
+  static ShellNav? maybeOf(BuildContext context) => context.getInheritedWidgetOfExactType<ShellNav>();
 
   @override
   bool updateShouldNotify(ShellNav old) => false;
@@ -85,6 +95,17 @@ class _ShellState extends State<Shell> {
   final _rootKey = GlobalKey();
   final _splitX = ValueNotifier<double?>(null);
   bool _askedStorage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 手机上「打开文件夹」切到「文件」页，而不是盖住整个界面
+    fileManagerRequest.addListener(_onFileRequest);
+  }
+
+  void _onFileRequest() {
+    if (fileManagerRequest.value != null && mounted) _goMain(MainPage.files);
+  }
 
   @override
   void didChangeDependencies() {
@@ -110,6 +131,7 @@ class _ShellState extends State<Shell> {
 
   @override
   void dispose() {
+    fileManagerRequest.removeListener(_onFileRequest);
     _crashes?.cancel();
     _splitX.dispose();
     super.dispose();
@@ -132,7 +154,14 @@ class _ShellState extends State<Shell> {
       SubPage.diagnose => const DiagnosePage(),
       null => IndexedStack(
         index: _page.index,
-        children: const [HomePage(), DownloadPage(), SettingsPage(), ToolsPage(), AiPage()],
+        children: [
+          const HomePage(),
+          const DownloadPage(),
+          const SettingsPage(),
+          const ToolsPage(),
+          const AiPage(),
+          if (isDesktop) const SizedBox.shrink() else const EmbeddedFileManager(),
+        ],
       ),
     };
     final scheme = Theme.of(context).colorScheme;
@@ -213,14 +242,7 @@ class _Rail extends StatelessWidget {
           item(MainPage.download, Icons.download_outlined, Icons.download, '下载'),
           item(MainPage.tools, Icons.construction_outlined, Icons.construction, '工具'),
           // 手机上的内置文件管理器（电脑上打开文件夹用系统的资源管理器）
-          if (!isDesktop)
-            _RailItem(
-              icon: Icons.folder_outlined,
-              activeIcon: Icons.folder,
-              label: '文件',
-              selected: false,
-              onTap: () => openInFileManager(AppScope.read(context).config.gameDir),
-            ),
+          if (!isDesktop) item(MainPage.files, Icons.folder_outlined, Icons.folder, '文件'),
           item(MainPage.settings, Icons.settings_outlined, Icons.settings, '设置'),
           item(MainPage.ai, Icons.chat_bubble_outline, Icons.chat_bubble, 'AI'),
         ],
@@ -485,7 +507,11 @@ class _TasksPill extends StatelessWidget {
         child: task == null
             ? Row(
                 children: [
-                  Icon(games > 0 ? Icons.sports_esports_outlined : Icons.check, size: 16, color: scheme.onSurfaceVariant),
+                  Icon(
+                    games > 0 ? Icons.sports_esports_outlined : Icons.check,
+                    size: 16,
+                    color: scheme.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(

@@ -265,7 +265,7 @@ class HudSession {
   String? _toolStatus(ChatSession s, int userIndex) {
     for (final c in _open(s, userIndex)) {
       final p = chats.pendingOf(c.id);
-      final label = p?.plan?.title ?? chats.toolbox?.find(c.name)?.label ?? c.name;
+      final label = p?.plan?.title ?? chats.hub?.find(c.name)?.label ?? c.name;
       return p != null && p.waiting ? '等待确认：$label' : '正在执行：$label';
     }
     return null;

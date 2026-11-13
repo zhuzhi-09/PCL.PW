@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import '../app_info.dart';
+import 'ai/mcp_client.dart' show McpServerConfig, defaultMcpServers;
 import 'paths.dart';
 
 /// 默认 JVM 参数
@@ -94,6 +95,9 @@ class LauncherConfig extends ChangeNotifier {
     // 联网搜索与抓取网页；搜索引擎 auto 为内置（DuckDuckGo，失败时必应），也可以填自己的服务
     'aiWeb': true,
     'aiSearchEngine': 'auto',
+    // 外部 MCP 服务（见 core/ai/mcp_client.dart）与每个服务的权限（ask / readOnly，键为服务 id，内置服务为 game、workspace、web）
+    'aiMcpServers': [for (final s in defaultMcpServers) s.toJson()],
+    'aiMcpPolicy': <String, dynamic>{},
     'aiSearchUrl': '',
     // 上下文长度（0 表示按模型自动判断）与自动压缩的阈值（0 表示不自动压缩）
     'aiContextWindow': 0,
@@ -163,6 +167,7 @@ class LauncherConfig extends ChangeNotifier {
   String get dismissedChangelog => _get('dismissedChangelog');
   String get dismissedBetaHint => _get('dismissedBetaHint');
   bool get storageAsked => _get('storageAsked');
+
   /// 界面缩放，0 为自动
   double get uiScale => ((_data['uiScale'] as num?) ?? 0).toDouble();
   double get renderScale => (_data['renderScale'] as num).toDouble().clamp(0.25, 1.0);
@@ -196,6 +201,7 @@ class LauncherConfig extends ChangeNotifier {
   int get themeColor => (_data['themeColor'] as num?)?.toInt() ?? 0xFF2F6B4F;
   String get selectedVersion => _get('selectedVersion');
   String get selectedAccount => _get('selectedAccount');
+
   /// 用户自己填写的 Client ID。早期版本会把内置 ID 预填进设置，保存后会存成"自填"，这里当作未填写
   String get msClientId {
     final v = _get('msClientId');
@@ -207,6 +213,7 @@ class LauncherConfig extends ChangeNotifier {
     final custom = msClientId.trim();
     return custom.isEmpty ? AppInfo.msClientId : custom;
   }
+
   String get afterLaunch => _get('afterLaunch');
   int get launchCount => (_data['launchCount'] as num).toInt();
   bool get hintBuy => _get('hintBuy');
@@ -225,6 +232,11 @@ class LauncherConfig extends ChangeNotifier {
   ];
   bool get aiWeb => _get('aiWeb');
   String get aiSearchEngine => _get('aiSearchEngine');
+  List<McpServerConfig> get aiMcpServers => [
+    for (final x in (_data['aiMcpServers'] as List? ?? const []))
+      if (x is Map) McpServerConfig.fromJson(x.cast<String, dynamic>()),
+  ];
+  Map<String, dynamic> get aiMcpPolicy => (_data['aiMcpPolicy'] as Map?)?.cast<String, dynamic>() ?? const {};
   String get aiSearchUrl => _get('aiSearchUrl');
   int get aiContextWindow => (_data['aiContextWindow'] as num).toInt();
   int get aiCompactAt => (_data['aiCompactAt'] as num).toInt();

@@ -14,6 +14,7 @@ import 'core/auth/yggdrasil_connect.dart';
 import 'core/ai/ai_chat.dart';
 import 'core/ai/ai_context.dart';
 import 'core/ai/ai_tools.dart';
+import 'core/ai/mcp_hub.dart';
 import 'compat/pcl/paths.dart';
 import 'core/config.dart';
 import 'core/android_runtime.dart';
@@ -55,7 +56,7 @@ class AppState extends ChangeNotifier {
   AppState._(this.config, this.accounts) {
     config.addListener(notifyListeners);
     chats
-      ..toolbox = AiToolbox(this)
+      ..hub = McpHub(this, AiToolbox(this))
       ..toolsEnabled = (() => config.aiTools)
       ..confirmRead = (() => config.aiConfirmRead)
       ..contextWindow = ((ai) =>

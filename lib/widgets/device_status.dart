@@ -16,6 +16,10 @@ class _DeviceStatusState extends State<DeviceStatus> with WidgetsBindingObserver
 
   int? _battery;
   bool _charging = false;
+
+  /// 接着电源（包括已充满、充电暂停）
+  bool _plugged = false;
+  bool _full = false;
   String _network = 'none';
   Timer? _timer;
 
@@ -47,6 +51,8 @@ class _DeviceStatusState extends State<DeviceStatus> with WidgetsBindingObserver
       setState(() {
         _battery = (r['battery'] as num?)?.toInt();
         _charging = r['charging'] == true;
+        _full = r['full'] == true;
+        _plugged = r['plugged'] == true || _charging || _full;
         _network = r['network'] as String? ?? 'none';
       });
     } catch (_) {
@@ -55,7 +61,7 @@ class _DeviceStatusState extends State<DeviceStatus> with WidgetsBindingObserver
   }
 
   IconData get _batteryIcon {
-    if (_charging) return Icons.battery_charging_full;
+    if (_plugged) return Icons.battery_charging_full;
     final b = _battery ?? 100;
     if (b <= 15) return Icons.battery_alert;
     if (b <= 30) return Icons.battery_2_bar;
@@ -78,7 +84,20 @@ class _DeviceStatusState extends State<DeviceStatus> with WidgetsBindingObserver
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final (netIcon, netLabel) = _networkInfo;
-    final low = !_charging && (_battery ?? 100) <= 15;
+    final low = !_plugged && (_battery ?? 100) <= 15;
+    // 接着电源时图标和百分比用主题色，一眼能看出正在充电
+    final color = low
+        ? scheme.error
+        : _plugged
+        ? scheme.primary
+        : scheme.onSurfaceVariant;
+    final batteryLabel = _full
+        ? '已充满'
+        : _charging
+        ? '正在充电'
+        : _plugged
+        ? '已接通电源'
+        : '电量';
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -88,18 +107,18 @@ class _DeviceStatusState extends State<DeviceStatus> with WidgetsBindingObserver
         ),
         const SizedBox(width: 12),
         Tooltip(
-          message: _charging ? '正在充电' : '电量',
+          message: batteryLabel,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               RotatedBox(
                 quarterTurns: 1,
-                child: Icon(_batteryIcon, size: 18, color: low ? scheme.error : scheme.onSurfaceVariant),
+                child: Icon(_batteryIcon, size: 18, color: color),
               ),
               const SizedBox(width: 2),
               Text(
                 _battery == null ? '--' : '$_battery%',
-                style: theme.textTheme.labelMedium?.copyWith(color: low ? scheme.error : scheme.onSurfaceVariant),
+                style: theme.textTheme.labelMedium?.copyWith(color: color),
               ),
             ],
           ),

@@ -72,7 +72,9 @@ class AiSidePanel extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: color ?? scheme.onSurfaceVariant),
             const SizedBox(width: 10),
-            Expanded(child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodyMedium)),
+            Expanded(
+              child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodyMedium),
+            ),
             if (trailing != null)
               Text(trailing, style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
           ],
@@ -89,7 +91,9 @@ class AiSidePanel extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(8, 0, 0, 6),
             child: Row(
               children: [
-                Expanded(child: Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
+                Expanded(
+                  child: Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                ),
                 ?action,
               ],
             ),
@@ -124,14 +128,36 @@ class AiSidePanel extends StatelessWidget {
               Icons.folder_special_outlined,
               'AI 工作区',
               trailing: cfg.aiTools && cfg.aiWorkspace ? '开' : '关',
-              onTap: () => showAiSettingsDialog(context),
+              onTap: () => showAiSettingsDialog(context, section: 'aiWorkspace'),
             ),
             row(
               Icons.travel_explore,
               '联网搜索',
               trailing: cfg.aiTools && cfg.aiWeb ? engine : '关',
-              onTap: () => showAiSettingsDialog(context),
+              onTap: () => showAiSettingsDialog(context, section: 'aiWorkspace'),
             ),
+            // 外部 MCP 服务：连接后显示工具数，失败时显示原因
+            if (cfg.aiTools && state.chats.hub != null)
+              ValueListenableBuilder(
+                valueListenable: state.chats.hub!.statusVersion,
+                builder: (context, _, _) => Column(
+                  children: [
+                    for (final s in state.chats.hub!.externals)
+                      if (s.config.enabled)
+                        row(
+                          Icons.extension_outlined,
+                          s.name,
+                          trailing: s.error != null
+                              ? '连接失败'
+                              : s.toolCount != null
+                              ? '${s.toolCount} 个工具'
+                              : '未连接',
+                          color: s.error != null ? scheme.error : null,
+                          onTap: () => showAiSettingsDialog(context, section: 'aiTools'),
+                        ),
+                  ],
+                ),
+              ),
           ]),
           if (context0 != null)
             section(
@@ -287,7 +313,12 @@ class _WorkspaceFilesState extends State<_WorkspaceFiles> {
       action: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(tooltip: '刷新', visualDensity: VisualDensity.compact, onPressed: _scan, icon: const Icon(Icons.refresh, size: 18)),
+          IconButton(
+            tooltip: '刷新',
+            visualDensity: VisualDensity.compact,
+            onPressed: _scan,
+            icon: const Icon(Icons.refresh, size: 18),
+          ),
           IconButton(
             tooltip: '打开文件夹',
             visualDensity: VisualDensity.compact,

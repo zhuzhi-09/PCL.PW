@@ -8,7 +8,8 @@ import '../core/ai/ai_client.dart';
 import '../core/ai/ai_context.dart';
 import '../core/secure.dart';
 import '../platform.dart';
-import 'ai_workspace_settings.dart';
+import '../shell.dart' show ShellNav;
+import 'ai_mcp_settings.dart';
 
 /// AI 排障的接口设置：用户自己填写接口地址、模型与 API Key
 class AiSettingsForm extends StatefulWidget {
@@ -293,22 +294,6 @@ class AiSettingsFormState extends State<AiSettingsForm> {
           value: cfg.aiConfirm,
           onChanged: (v) => cfg.update({'aiConfirm': v}),
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('允许 AI 操作游戏文件'),
-          subtitle: const Text('查看版本、模组与日志，安装或禁用模组，备份与删除文件；会修改文件的操作都需要你确认'),
-          value: cfg.aiTools,
-          onChanged: (v) => cfg.update({'aiTools': v}),
-        ),
-        if (cfg.aiTools)
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('查看类操作也需要确认'),
-            subtitle: const Text('关闭时，AI 查看版本、模组、文件与日志不需要确认'),
-            value: cfg.aiConfirmRead,
-            onChanged: (v) => cfg.update({'aiConfirmRead': v}),
-          ),
-        if (cfg.aiTools) const AiWorkspaceSettings(),
         if (widget.showButtons) ...[
           const SizedBox(height: 8),
           Row(
@@ -325,10 +310,48 @@ class AiSettingsFormState extends State<AiSettingsForm> {
   }
 }
 
-Future<void> showAiSettingsDialog(BuildContext context) {
+/// AI 设置里「工具与服务」一页：是否允许 AI 操作、查看类操作是否确认、各个 MCP 服务
+class AiToolsSettings extends StatelessWidget {
+  const AiToolsSettings({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = AppScope.of(context).config;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: const Text('允许 AI 使用工具'),
+          subtitle: const Text('查看版本、模组与日志，安装或禁用模组，联网搜索，以及下面的 MCP 服务；会修改内容的操作都需要你确认'),
+          value: cfg.aiTools,
+          onChanged: (v) => cfg.update({'aiTools': v}),
+        ),
+        if (cfg.aiTools)
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text('查看类操作也需要确认'),
+            subtitle: const Text('关闭时，AI 查看版本、模组、文件与日志不需要确认'),
+            value: cfg.aiConfirmRead,
+            onChanged: (v) => cfg.update({'aiConfirmRead': v}),
+          ),
+        if (cfg.aiTools) const AiMcpSettings(),
+      ],
+    );
+  }
+}
+
+/// 打开 AI 设置：在主界面里切到「设置」页的对应 AI 小节（[section] 为 ai、aiTools 或 aiWorkspace）；
+/// 不在主界面里时（例如还没有外壳的场景）退回单独的页面
+Future<void> showAiSettingsDialog(BuildContext context, {String section = 'ai'}) async {
+  final nav = ShellNav.maybeOf(context);
+  if (nav != null) {
+    nav.openSettings(section);
+    return;
+  }
   // 手机上键盘会占掉大半屏幕，用全屏页面代替对话框
   if (!isDesktop) {
-    return Navigator.of(context).push(
+    await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (context) => Scaffold(
           appBar: AppBar(title: const Text('AI 排障设置')),
@@ -339,6 +362,7 @@ Future<void> showAiSettingsDialog(BuildContext context) {
         ),
       ),
     );
+    return;
   }
   final form = GlobalKey<AiSettingsFormState>();
   return showDialog<void>(

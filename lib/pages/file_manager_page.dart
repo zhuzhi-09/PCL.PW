@@ -11,11 +11,14 @@ import '../core/instance_files.dart';
 import '../core/paths.dart';
 import '../platform.dart';
 import '../widgets/format.dart';
+import '../widgets/side_nav.dart';
 
 /// 选择文件夹：桌面端用系统对话框，手机上用内置的文件管理器
 Future<String?> pickFolder(BuildContext context, {String? start, String confirm = '选择'}) async {
   if (isDesktop) return getDirectoryPath(initialDirectory: start, confirmButtonText: confirm);
-  return Navigator.of(context).push<String>(FileManagerPage.route(start ?? AppScope.read(context).config.gameDir, pick: true, confirm: confirm));
+  return Navigator.of(
+    context,
+  ).push<String>(FileManagerPage.route(start ?? AppScope.read(context).config.gameDir, pick: true, confirm: confirm));
 }
 
 /// 手机上的下载目录（找不到时用存储根目录）
@@ -35,7 +38,9 @@ Future<String?> pickFile(
 }) async {
   if (isDesktop) {
     final f = await openFile(
-      acceptedTypeGroups: [if (extensions != null && extensions.isNotEmpty) XTypeGroup(label: label, extensions: extensions)],
+      acceptedTypeGroups: [
+        if (extensions != null && extensions.isNotEmpty) XTypeGroup(label: label, extensions: extensions),
+      ],
       confirmButtonText: confirm,
     );
     return f?.path;
@@ -54,18 +59,27 @@ Future<String?> pickFile(
 }
 
 /// 选择保存位置：桌面端用系统对话框，手机上用内置的文件管理器（选文件夹并填写文件名）
-Future<String?> pickSavePath(BuildContext context, String name, {String? start, List<String>? extensions, String label = '文件'}) async {
+Future<String?> pickSavePath(
+  BuildContext context,
+  String name, {
+  String? start,
+  List<String>? extensions,
+  String label = '文件',
+}) async {
   if (isDesktop) {
     final loc = await getSaveLocation(
       suggestedName: name,
       confirmButtonText: '保存',
-      acceptedTypeGroups: [if (extensions != null && extensions.isNotEmpty) XTypeGroup(label: label, extensions: extensions)],
+      acceptedTypeGroups: [
+        if (extensions != null && extensions.isNotEmpty) XTypeGroup(label: label, extensions: extensions),
+      ],
     );
     return loc?.path;
   }
   return Navigator.of(context).push<String>(
     MaterialPageRoute(
-      builder: (_) => FileManagerPage(start: start ?? mobileDownloadDir, mode: FilePickMode.save, saveName: name, label: label),
+      builder: (_) =>
+          FileManagerPage(start: start ?? mobileDownloadDir, mode: FilePickMode.save, saveName: name, label: label),
     ),
   );
 }
@@ -73,8 +87,22 @@ Future<String?> pickSavePath(BuildContext context, String name, {String? start, 
 /// 文件管理器的用途：浏览管理，或者为其他功能选择文件夹、文件、保存位置
 enum FilePickMode { none, folder, file, save }
 
-final _textFile = RegExp(r'\.(txt|log|json|json5|toml|properties|cfg|conf|ini|yml|yaml|mcmeta|snbt|md|csv|xml)$', caseSensitive: false);
+final _textFile = RegExp(
+  r'\.(txt|log|json|json5|toml|properties|cfg|conf|ini|yml|yaml|mcmeta|snbt|md|csv|xml)$',
+  caseSensitive: false,
+);
 final _imageFile = RegExp(r'\.(png|jpe?g|webp|gif|bmp)$', caseSensitive: false);
+
+/// 手机上要求「文件」页打开某个位置：主界面切到「文件」页，文件管理器打开这个路径（文件则打开所在文件夹并标出它）
+final fileManagerRequest = ValueNotifier<String?>(null);
+
+/// 主界面里的「文件」页
+class EmbeddedFileManager extends StatelessWidget {
+  const EmbeddedFileManager({super.key});
+
+  @override
+  Widget build(BuildContext context) => FileManagerPage(start: AppScope.of(context).config.gameDir, embedded: true);
+}
 
 /// 手机上的内置文件管理器：浏览、新建、重命名、复制 / 剪切 / 粘贴、删除到回收站、从手机导入文件。
 /// [pick] 为 true 时用来选择文件夹，返回选中的路径。
@@ -88,7 +116,11 @@ class FileManagerPage extends StatefulWidget {
     this.extensions,
     this.saveName,
     this.label = '文件',
+    this.embedded = false,
   }) : mode = mode ?? (pick ? FilePickMode.folder : FilePickMode.none);
+
+  /// 嵌在主界面的「文件」页里：不带标题栏，常用位置显示为左侧二级菜单
+  final bool embedded;
 
   final String start;
   final FilePickMode mode;
@@ -103,8 +135,9 @@ class FileManagerPage extends StatefulWidget {
 
   bool get pick => mode != FilePickMode.none;
 
-  static Route<String> route(String start, {bool pick = false, String confirm = '选择'}) =>
-      MaterialPageRoute(builder: (_) => FileManagerPage(start: start, pick: pick, confirm: confirm));
+  static Route<String> route(String start, {bool pick = false, String confirm = '选择'}) => MaterialPageRoute(
+    builder: (_) => FileManagerPage(start: start, pick: pick, confirm: confirm),
+  );
 
   @override
   State<FileManagerPage> createState() => _FileManagerPageState();
@@ -173,10 +206,28 @@ class _FileManagerPageState extends State<FileManagerPage> {
       _dir = widget.start;
     }
     _load();
+    if (widget.embedded) {
+      fileManagerRequest.addListener(_onRequest);
+      _onRequest();
+    }
+  }
+
+  /// 别的页面要求打开某个位置（见 [fileManagerRequest]）
+  void _onRequest() {
+    final path = fileManagerRequest.value;
+    if (path == null) return;
+    fileManagerRequest.value = null;
+    if (FileSystemEntity.isFileSync(path)) {
+      _open(p.dirname(path));
+      _highlight = path;
+    } else {
+      _open(path);
+    }
   }
 
   @override
   void dispose() {
+    fileManagerRequest.removeListener(_onRequest);
     _scroll.dispose();
     _saveName.dispose();
     super.dispose();
@@ -415,6 +466,182 @@ class _FileManagerPageState extends State<FileManagerPage> {
       (icon: Icons.delete_outline, label: '回收站', path: mobileTrashFor(state.config.gameDir)),
     ];
     final clip = _clipboard;
+    final actions = [
+      IconButton(tooltip: '上一级', onPressed: _up, icon: const Icon(Icons.arrow_upward)),
+      IconButton(tooltip: '新建文件夹', onPressed: _newFolder, icon: const Icon(Icons.create_new_folder_outlined)),
+      if (!widget.pick)
+        IconButton(tooltip: '从手机导入文件', onPressed: _import, icon: const Icon(Icons.file_upload_outlined)),
+      IconButton(tooltip: '刷新', onPressed: _load, icon: const Icon(Icons.refresh)),
+      const SizedBox(width: 8),
+    ];
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 嵌在主界面里时，常用位置放在左侧的二级菜单
+        if (!widget.embedded)
+          SizedBox(
+            height: 44,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                for (final s in shortcuts)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ActionChip(
+                      avatar: Icon(s.icon, size: 18),
+                      label: Text(s.label),
+                      onPressed: () => _open(s.path),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        _Breadcrumbs(path: _dir, onOpen: _open),
+        if (_busy != null) ...[const LinearProgressIndicator(), _Banner(text: _busy!)],
+        if (clip != null)
+          Material(
+            color: scheme.secondaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+              child: Row(
+                children: [
+                  Icon(clip.cut ? Icons.content_cut : Icons.content_copy, size: 18),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      '已${clip.cut ? '剪切' : '复制'}「${p.basename(clip.paths.first)}」'
+                      '${clip.paths.length > 1 ? ' 等 ${clip.paths.length} 项' : ''}，打开目标文件夹后粘贴',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  TextButton(onPressed: () => setState(() => _clipboard = null), child: const Text('取消')),
+                  FilledButton.tonalIcon(
+                    onPressed: _busy == null ? _paste : null,
+                    icon: const Icon(Icons.content_paste),
+                    label: const Text('粘贴到这里'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        Expanded(child: _body(theme)),
+        if (widget.mode == FilePickMode.folder)
+          Material(
+            color: scheme.surfaceContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 16, 10),
+              child: Row(
+                children: [
+                  Expanded(child: Text(_dir, overflow: TextOverflow.ellipsis)),
+                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: _error == null ? () => Navigator.pop(context, _dir) : null,
+                    child: Text('${widget.confirm}这个文件夹'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (widget.mode == FilePickMode.file)
+          Material(
+            color: scheme.surfaceContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 16, 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.extensions == null || widget.extensions!.isEmpty
+                          ? '点一个文件来${widget.confirm}'
+                          : '点一个 ${widget.extensions!.map((e) => '.$e').join(' / ')} 文件来${widget.confirm}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
+                ],
+              ),
+            ),
+          ),
+        if (widget.mode == FilePickMode.save)
+          Material(
+            color: scheme.surfaceContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _saveName,
+                      decoration: const InputDecoration(labelText: '文件名', isDense: true, border: OutlineInputBorder()),
+                      onSubmitted: (_) => _confirmSave(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
+                  FilledButton(onPressed: _error == null ? _confirmSave : null, child: const Text('保存到这里')),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+
+    if (widget.embedded) {
+      // 当前所在的常用位置（最具体的那一个），在二级菜单里高亮
+      String? current;
+      for (final s in shortcuts) {
+        if ((p.equals(s.path, _dir) || p.isWithin(s.path, _dir)) &&
+            (current == null || s.path.length > current.length)) {
+          current = s.path;
+        }
+      }
+      return PopScope(
+        // 返回键先回到上一个文件夹，没有可返回的再交给系统
+        canPop: _history.isEmpty,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop) _back();
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SideNav<String?>(
+              groups: [
+                SideNavGroup('位置', [for (final s in shortcuts) SideNavItem<String?>(s.path, s.label, s.icon)]),
+              ],
+              value: current,
+              onChanged: (v) {
+                if (v != null) _open(v);
+              },
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            p.basename(_dir).isEmpty ? _dir : p.basename(_dir),
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
+                        ...actions,
+                      ],
+                    ),
+                  ),
+                  Expanded(child: content),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
@@ -428,126 +655,9 @@ class _FileManagerPageState extends State<FileManagerPage> {
             FilePickMode.save => '保存${widget.label}',
             FilePickMode.none => '文件管理',
           }),
-          actions: [
-            IconButton(tooltip: '上一级', onPressed: _up, icon: const Icon(Icons.arrow_upward)),
-            IconButton(tooltip: '新建文件夹', onPressed: _newFolder, icon: const Icon(Icons.create_new_folder_outlined)),
-            if (!widget.pick)
-              IconButton(tooltip: '从手机导入文件', onPressed: _import, icon: const Icon(Icons.file_upload_outlined)),
-            IconButton(tooltip: '刷新', onPressed: _load, icon: const Icon(Icons.refresh)),
-            const SizedBox(width: 8),
-          ],
+          actions: actions,
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              height: 44,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  for (final s in shortcuts)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ActionChip(
-                        avatar: Icon(s.icon, size: 18),
-                        label: Text(s.label),
-                        onPressed: () => _open(s.path),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            _Breadcrumbs(path: _dir, onOpen: _open),
-            if (_busy != null) ...[const LinearProgressIndicator(), _Banner(text: _busy!)],
-            if (clip != null)
-              Material(
-                color: scheme.secondaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
-                  child: Row(
-                    children: [
-                      Icon(clip.cut ? Icons.content_cut : Icons.content_copy, size: 18),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          '已${clip.cut ? '剪切' : '复制'}「${p.basename(clip.paths.first)}」'
-                          '${clip.paths.length > 1 ? ' 等 ${clip.paths.length} 项' : ''}，打开目标文件夹后粘贴',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      TextButton(onPressed: () => setState(() => _clipboard = null), child: const Text('取消')),
-                      FilledButton.tonalIcon(
-                        onPressed: _busy == null ? _paste : null,
-                        icon: const Icon(Icons.content_paste),
-                        label: const Text('粘贴到这里'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            Expanded(child: _body(theme)),
-            if (widget.mode == FilePickMode.folder)
-              Material(
-                color: scheme.surfaceContainer,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 16, 10),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(_dir, overflow: TextOverflow.ellipsis)),
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
-                      const SizedBox(width: 8),
-                      FilledButton(
-                        onPressed: _error == null ? () => Navigator.pop(context, _dir) : null,
-                        child: Text('${widget.confirm}这个文件夹'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            if (widget.mode == FilePickMode.file)
-              Material(
-                color: scheme.surfaceContainer,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 16, 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.extensions == null || widget.extensions!.isEmpty
-                              ? '点一个文件来${widget.confirm}'
-                              : '点一个 ${widget.extensions!.map((e) => '.$e').join(' / ')} 文件来${widget.confirm}',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
-                    ],
-                  ),
-                ),
-              ),
-            if (widget.mode == FilePickMode.save)
-              Material(
-                color: scheme.surfaceContainer,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _saveName,
-                          decoration: const InputDecoration(labelText: '文件名', isDense: true, border: OutlineInputBorder()),
-                          onSubmitted: (_) => _confirmSave(),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('取消')),
-                      FilledButton(onPressed: _error == null ? _confirmSave : null, child: const Text('保存到这里')),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
+        body: content,
       ),
     );
   }
@@ -624,22 +734,24 @@ class _FileManagerPageState extends State<FileManagerPage> {
             if (widget.mode == FilePickMode.save) return setState(() => _saveName.text = name);
             _openFile(e as File);
           },
-          trailing: widget.pick ? null : PopupMenuButton<String>(
-            tooltip: '更多操作',
-            onSelected: (v) => switch (v) {
-              'copy' => setState(() => _clipboard = (paths: [e.path], cut: false)),
-              'cut' => setState(() => _clipboard = (paths: [e.path], cut: true)),
-              'rename' => _rename(e),
-              'delete' => _delete(e),
-              _ => null,
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'copy', child: Text('复制')),
-              const PopupMenuItem(value: 'cut', child: Text('剪切')),
-              const PopupMenuItem(value: 'rename', child: Text('重命名')),
-              PopupMenuItem(value: 'delete', child: Text(_inTrash ? '彻底删除' : '删除')),
-            ],
-          ),
+          trailing: widget.pick
+              ? null
+              : PopupMenuButton<String>(
+                  tooltip: '更多操作',
+                  onSelected: (v) => switch (v) {
+                    'copy' => setState(() => _clipboard = (paths: [e.path], cut: false)),
+                    'cut' => setState(() => _clipboard = (paths: [e.path], cut: true)),
+                    'rename' => _rename(e),
+                    'delete' => _delete(e),
+                    _ => null,
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(value: 'copy', child: Text('复制')),
+                    const PopupMenuItem(value: 'cut', child: Text('剪切')),
+                    const PopupMenuItem(value: 'rename', child: Text('重命名')),
+                    PopupMenuItem(value: 'delete', child: Text(_inTrash ? '彻底删除' : '删除')),
+                  ],
+                ),
         );
       },
     );
@@ -683,10 +795,7 @@ class _Breadcrumbs extends StatelessWidget {
         separatorBuilder: (_, _) => Icon(Icons.chevron_right, size: 16, color: scheme.onSurfaceVariant),
         itemBuilder: (context, i) {
           final c = crumbs[crumbs.length - 1 - i];
-          return TextButton(
-            onPressed: i == 0 ? null : () => onOpen(c.path),
-            child: Text(c.label),
-          );
+          return TextButton(onPressed: i == 0 ? null : () => onOpen(c.path), child: Text(c.label));
         },
       ),
     );

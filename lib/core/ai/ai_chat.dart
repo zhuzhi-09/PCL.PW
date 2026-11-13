@@ -10,6 +10,7 @@ import 'ai_client.dart';
 import 'ai_context.dart';
 import 'ai_prompt.dart';
 import 'ai_tools.dart';
+import 'mcp_hub.dart';
 import '../paths.dart';
 
 /// 工具调用的结果状态
@@ -166,7 +167,7 @@ class PendingTool {
 
   final String sessionId;
   final AiToolCall call;
-  final AiToolDef? def;
+  HubTool? def;
   ToolPlan? plan;
   bool running = false;
   Completer<bool>? _decision;
@@ -181,8 +182,8 @@ class ChatStore extends ChangeNotifier {
   /// 按最后更新时间排序，新的在前
   final List<ChatSession> sessions;
 
-  /// 可用的启动器操作，由 AppState 设置
-  AiToolbox? toolbox;
+  /// 工具的统一出入口（内置服务与外部 MCP 服务），由 AppState 设置
+  McpHub? hub;
 
   /// 是否向模型提供操作，以及只读操作是否也需要确认
   bool Function() toolsEnabled = () => true;
@@ -424,11 +425,11 @@ class ChatStore extends ChangeNotifier {
     _bump(s);
     unawaited(_save(s));
     notifyListeners();
-    final toolsOn = toolbox != null && toolsEnabled();
-    final tools = toolsOn ? toolbox!.specs : const <AiTool>[];
+    final toolsOn = hub != null && toolsEnabled();
     try {
-      // 按开启的能力（工作区、联网）追加说明
-      final extra = toolsOn ? await toolbox!.promptExtra() : null;
+      final tools = toolsOn ? await hub!.specs() : const <AiTool>[];
+      // 按开启的服务（工作区、联网、外部 MCP 服务）追加说明
+      final extra = toolsOn ? await hub!.promptExtra() : null;
       final system = [assistantSystemPrompt, ?extra, ?systemExtra].join('\n\n');
       // 工作区与联网任务需要更多轮工具调用
       for (var round = 0; round < 32; round++) {
@@ -506,8 +507,8 @@ class ChatStore extends ChangeNotifier {
     bool Function() stopped, {
     bool interactive = true,
   }) async {
-    final def = toolbox?.find(call.name);
-    final pending = _pending[call.id] = PendingTool(s.id, call, def);
+    final h = hub;
+    final pending = _pending[call.id] = PendingTool(s.id, call, h?.find(call.name));
     notifyListeners();
     ChatMessage result(ToolStatus status, String content, {String? title, List<String> details = const []}) =>
         ChatMessage(
@@ -515,55 +516,52 @@ class ChatStore extends ChangeNotifier {
           content,
           toolCallId: call.id,
           status: status,
-          title: title ?? def?.label ?? call.name,
+          title: title ?? pending.def?.label ?? call.name,
           details: details,
         );
+    var cancelled = false;
     try {
-      if (def == null) return result(ToolStatus.error, '没有名为 ${call.name} 的工具');
-      final ToolPlan plan;
-      try {
-        plan = await def.prepare(call.args);
-      } catch (e) {
-        return result(ToolStatus.error, '$e');
-      }
-      pending.plan = plan;
-      final needsApproval = switch (def.kind) {
-        ToolKind.read => confirmRead(),
-        ToolKind.write => !(_allowed[s.id]?.contains(call.name) ?? false),
-        ToolKind.danger => true,
-      };
-      if (needsApproval && !interactive) {
-        return result(
-          ToolStatus.denied,
-          '这条消息来自游戏内，没有人能在启动器里确认这个操作，所以没有执行。'
-          '请告诉用户回到启动器的「AI」页，在同一个对话里继续完成这一步。',
-          title: plan.title,
-          details: plan.details,
-        );
-      }
-      if (needsApproval) {
-        pending._decision = Completer<bool>();
-        notifyListeners();
-        final ok = await pending._decision!.future;
-        if (stopped()) return result(ToolStatus.cancelled, '操作已取消，没有执行。', title: plan.title, details: plan.details);
-        if (!ok) {
-          return result(
-            ToolStatus.denied,
-            '用户拒绝了这个操作，没有执行。不要再次请求同样的操作；可以询问用户的想法，或提供其他办法。',
-            title: plan.title,
-            details: plan.details,
-          );
-        }
-      }
-      pending.running = true;
-      notifyListeners();
-      try {
-        final out = await plan.run();
-        if (def.kind != ToolKind.read) unawaited(logAiOperation(plan.title, out));
-        return result(ToolStatus.done, out, title: plan.title, details: plan.details);
-      } catch (e) {
-        return result(ToolStatus.error, '执行失败：$e', title: plan.title, details: plan.details);
-      }
+      if (h == null) return result(ToolStatus.error, '没有可用的工具');
+      // 所有工具（内置服务与外部 MCP 服务）都经 McpHub 调用；服务的权限（只读时直接拒绝）也在那里处理，
+      // 这里只负责向用户确认
+      final out = await h.call(
+        call.name,
+        call.args,
+        onPlan: (tool, plan) {
+          pending
+            ..def = tool
+            ..plan = plan;
+          notifyListeners();
+        },
+        onRun: () {
+          pending.running = true;
+          notifyListeners();
+        },
+        approve: (tool, plan) async {
+          final needsApproval = switch (tool.kind) {
+            ToolKind.read => confirmRead(),
+            ToolKind.write => !(_allowed[s.id]?.contains(call.name) ?? false),
+            ToolKind.danger => true,
+          };
+          if (!needsApproval) return true;
+          if (!interactive) return null;
+          pending._decision = Completer<bool>();
+          notifyListeners();
+          final ok = await pending._decision!.future;
+          if (stopped()) {
+            cancelled = true;
+            return false;
+          }
+          return ok;
+        },
+      );
+      if (cancelled) return result(ToolStatus.cancelled, '操作已取消，没有执行。', title: out.title, details: out.details);
+      return result(
+        ToolStatus.values.asNameMap()[out.status] ?? ToolStatus.error,
+        out.content,
+        title: out.title,
+        details: out.details,
+      );
     } finally {
       _pending.remove(call.id);
     }

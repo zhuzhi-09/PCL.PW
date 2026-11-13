@@ -64,10 +64,16 @@ class MainActivity : FlutterActivity() {
                 caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "ethernet"
                 else -> "other"
             }
+            // 充电状态以系统的电池广播为准：部分机型插着电时 BatteryManager.isCharging 仍返回 false
+            val sticky = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            val status = sticky?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
+            val plugged = (sticky?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: 0) != 0
             result.success(
                 mapOf(
                     "battery" to battery.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY),
-                    "charging" to battery.isCharging,
+                    "charging" to (status == BatteryManager.BATTERY_STATUS_CHARGING || battery.isCharging),
+                    "full" to (status == BatteryManager.BATTERY_STATUS_FULL),
+                    "plugged" to plugged,
                     "network" to network,
                 ),
             )

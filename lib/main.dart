@@ -48,7 +48,9 @@ Future<void> main(List<String> args) async {
   }
   // 手机上「打开文件夹」使用内置的文件管理器
   mobileFileManager = (path) async {
-    await appNavigator.currentState?.push(FileManagerPage.route(path));
+    // 切到主界面的「文件」页；先关掉盖在上面的页面和对话框
+    appNavigator.currentState?.popUntil((r) => r.isFirst);
+    fileManagerRequest.value = path;
   };
   runApp(AppScope(state: state, child: const PclPwApp()));
 }

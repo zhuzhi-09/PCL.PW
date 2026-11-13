@@ -8,10 +8,14 @@ import '../widgets/theme_color_dialog.dart';
 import '../widgets/settings_group.dart';
 import '../widgets/side_nav.dart';
 import '../widgets/ai_settings.dart';
+import '../widgets/ai_workspace_settings.dart';
 import '../widgets/storage_location.dart';
 import 'settings_sections.dart';
 
-enum _Section { launch, java, manage, appearance, ai, misc, about }
+enum _Section { launch, java, manage, appearance, misc, ai, aiTools, aiWorkspace, about }
+
+/// 从别的页面跳到设置的某个小节（值为小节名，例如 ai、aiTools、aiWorkspace），见 ShellNav.openSettings
+final settingsSectionRequest = ValueNotifier<String?>(null);
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -23,6 +27,40 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   _Section _section = _Section.launch;
 
+  @override
+  void initState() {
+    super.initState();
+    settingsSectionRequest.addListener(_onRequest);
+    _onRequest();
+  }
+
+  @override
+  void dispose() {
+    settingsSectionRequest.removeListener(_onRequest);
+    super.dispose();
+  }
+
+  void _onRequest() {
+    final s = _Section.values.asNameMap()[settingsSectionRequest.value];
+    if (s == null) return;
+    settingsSectionRequest.value = null;
+    if (mounted) setState(() => _section = s);
+  }
+
+  /// AI 的几个小节共用的外框
+  static Widget _aiPage(String title, String? intro, Widget child) => ListView(
+    padding: const EdgeInsets.fromLTRB(6, 2, 16, 16),
+    children: [
+      SettingsGroup(
+        title: title,
+        children: [
+          if (intro != null) Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 0), child: Text(intro)),
+          Padding(padding: const EdgeInsets.fromLTRB(20, 8, 20, 20), child: child),
+        ],
+      ),
+    ],
+  );
+
   static const _groups = [
     SideNavGroup('游戏', [
       SideNavItem(_Section.launch, '启动', Icons.rocket_launch_outlined),
@@ -31,8 +69,12 @@ class _SettingsPageState extends State<SettingsPage> {
     ]),
     SideNavGroup('启动器', [
       SideNavItem(_Section.appearance, '个性化', Icons.palette_outlined),
-      SideNavItem(_Section.ai, 'AI 排障', Icons.auto_awesome_outlined),
       SideNavItem(_Section.misc, '其他', Icons.tune),
+    ]),
+    SideNavGroup('AI', [
+      SideNavItem(_Section.ai, '模型与接口', Icons.auto_awesome_outlined),
+      SideNavItem(_Section.aiTools, '工具与服务', Icons.extension_outlined),
+      SideNavItem(_Section.aiWorkspace, '工作区与联网', Icons.travel_explore),
     ]),
     SideNavGroup('关于', [SideNavItem(_Section.about, '关于与致谢', Icons.info_outline)]),
   ];
@@ -51,25 +93,14 @@ class _SettingsPageState extends State<SettingsPage> {
               _Section.misc => const MiscSection(),
               _Section.manage => const GameStorageSection(),
               _Section.appearance => const _AppearanceSection(),
-              _Section.ai => ListView(
-                padding: const EdgeInsets.fromLTRB(6, 2, 16, 16),
-                children: const [
-                  SettingsGroup(
-                    title: 'AI 排障',
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
-                        child: Text(
-                          '游戏崩溃后，可以把截取的日志发送给你自己的 AI 服务分析原因。'
-                          '支持 OpenAI 兼容接口（DeepSeek、通义千问、Kimi、OpenRouter、本机 Ollama 等）和 Anthropic 接口；'
-                          '费用由你的 AI 服务商收取。',
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.fromLTRB(20, 8, 20, 20), child: AiSettingsForm()),
-                    ],
-                  ),
-                ],
+              _Section.ai => _aiPage(
+                '模型与接口',
+                'AI 助手使用你自己的 AI 服务。支持 OpenAI 兼容接口（DeepSeek、通义千问、Kimi、OpenRouter、本机 Ollama 等）'
+                    '和 Anthropic 接口；费用由你的 AI 服务商收取。',
+                const AiSettingsForm(),
               ),
+              _Section.aiTools => _aiPage('工具与服务', null, const AiToolsSettings()),
+              _Section.aiWorkspace => _aiPage('工作区与联网', null, const AiWorkspaceSettings()),
               _Section.about => const _AboutSection(),
             },
           ),
@@ -144,10 +175,7 @@ class _AppearanceSection extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 14),
-              child: ThemeColorPicker(
-                current: cfg.themeColor,
-                onChanged: (color) => cfg.update({'themeColor': color}),
-              ),
+              child: ThemeColorPicker(current: cfg.themeColor, onChanged: (color) => cfg.update({'themeColor': color})),
             ),
           ],
         ),

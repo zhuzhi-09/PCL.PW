@@ -801,7 +801,7 @@ class _ToolCardState extends State<_ToolCard> {
     final chats = widget.chats;
     final pending = chats.pendingOf(widget.call.id);
     final result = widget.session.resultOf(widget.call.id);
-    final def = chats.toolbox?.find(widget.call.name);
+    final def = chats.hub?.find(widget.call.name);
     final kind = def?.kind ?? ToolKind.read;
     final title = result?.title ?? pending?.plan?.title ?? def?.label ?? widget.call.name;
     final details = result?.details ?? pending?.plan?.details ?? const <String>[];
@@ -874,6 +874,8 @@ class _ToolCardState extends State<_ToolCard> {
       (_, ToolStatus.done) => (Icons.check_circle_outline, scheme.primary, ''),
       (_, ToolStatus.denied) => (Icons.block, scheme.onSurfaceVariant, '已拒绝'),
       (_, ToolStatus.error) => (Icons.error_outline, scheme.error, '失败'),
+      // 同一轮的多个操作依次处理，排在后面的还没轮到
+      (null, null) when chats.isBusy(widget.session.id) => (Icons.schedule, scheme.onSurfaceVariant, '等待前面的操作'),
       _ => (Icons.remove_circle_outline, scheme.onSurfaceVariant, '已取消'),
     };
     final busy = pending != null;

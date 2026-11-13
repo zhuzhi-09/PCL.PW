@@ -10,8 +10,10 @@ import 'yggdrasil_api.dart';
 /// Yggdrasil Connect：基于 OpenID Connect 的外置登录。用设备代码流取得访问令牌，
 /// 访问令牌直接作为游戏的 accessToken 交给 authlib-injector
 abstract final class YggdrasilConnect {
-  /// 内置支持的皮肤站（域名）与本启动器在该站注册的 OAuth client_id。增删站点只需要改这里
-  static const builtInClientIds = {'littleskin.cn': '/* ur littleskin cilent id */'};
+  /// 内置支持的皮肤站（域名）与本启动器在该站注册的 OAuth client_id。增删站点只需要改这里。
+  /// 还没有在 LittleSkin 注册应用，暂时为空：所有站点都用账户密码登录；站点在元数据里提供公用应用
+  /// （shared_client_id）时仍可以 OAuth 登录。注册后加上 `'littleskin.cn': '<client_id>'`
+  static const builtInClientIds = <String, String>{};
 
   /// 申请的权限：ID 令牌、刷新令牌、授权时选择角色、进入多人游戏服务器
   static const scope = 'openid offline_access Yggdrasil.PlayerProfiles.Select Yggdrasil.Server.Join';

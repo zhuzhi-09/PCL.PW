@@ -65,6 +65,31 @@ jobs:
             dist/*-setup.exe
             dist/*-portable.zip
 
+  # Windows ARM64：在 ARM64 机器上原生编译。Flutter 没有 ARM64 的 SDK 压缩包，用 git 拉取对应版本
+  windows-arm64:
+    needs: check
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/checkout@v5
+      - name: Flutter
+        shell: bash
+        run: |
+          git clone --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Build
+        env:
+          PW_ARCH: arm64
+        run: |
+          flutter config --no-analytics
+          flutter pub get
+          dart run tool/build_installer.dart
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-arm64
+          path: |
+            dist/*-setup.exe
+            dist/*-portable.zip
+
   android:
     needs: check
     runs-on: ubuntu-latest
@@ -138,17 +163,35 @@ jobs:
   # Linux 版还在测试：只在 nightly 构建，正式标签不发布。
   # cnativeapi 需要 glib 2.74+ 的 G_CONNECT_DEFAULT，使用 Ubuntu 24.04 构建，
   # 兼容 glibc 2.39 及以上的发行版。
+  # aarch64 在 ARM64 机器上原生编译；Flutter 没有 Linux ARM64 的 SDK 压缩包，用 git 拉取对应版本
   linux:
     needs: check
     if: ${{ github.ref_type == 'branch' }}
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, flutter: x64, deb: amd64, rpm: x86_64, tar: x64 }
+          - { os: ubuntu-24.04-arm, flutter: arm64, deb: arm64, rpm: aarch64, tar: arm64 }
+    runs-on: ${{ matrix.os }}
+    env:
+      FLUTTER_ARCH: ${{ matrix.flutter }}
+      DEB_ARCH: ${{ matrix.deb }}
+      RPM_ARCH: ${{ matrix.rpm }}
+      TAR_ARCH: ${{ matrix.tar }}
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
+        if: ${{ matrix.flutter == 'x64' }}
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+      - name: Flutter (ARM64)
+        if: ${{ matrix.flutter == 'arm64' }}
+        run: |
+          git clone --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
       - name: Dependencies
         timeout-minutes: 20
         run: >-
@@ -162,7 +205,7 @@ jobs:
           flutter build linux --release --dart-define=PCLPW_COMMIT="$PCLPW_COMMIT" --dart-define=PCLPW_CHANNEL="$PCLPW_CHANNEL" --dart-define=PCLPW_MS_CLIENT_ID="$PCLPW_MS_CLIENT_ID"
           version=$(sed -n 's/^version:[[:space:]]*\([0-9.]*\).*/\1/p' pubspec.yaml)
           stage="$RUNNER_TEMP/PixelWorld"
-          bundle=build/linux/x64/release/bundle
+          bundle="build/linux/$FLUTTER_ARCH/release/bundle"
           rm -rf "$stage" "$RUNNER_TEMP"/pclpw-* "$RUNNER_TEMP"/PixelWorld.AppDir
           mkdir -p "$stage" dist
           cp -R "$bundle/." "$stage/"
@@ -171,7 +214,7 @@ jobs:
           desktop="$RUNNER_TEMP/io.github.zhuzhi09.pcl_pw.desktop"
           cp packaging/linux/io.github.zhuzhi09.pcl_pw.desktop "$desktop"
 
-          tar -C "$RUNNER_TEMP" -czf "dist/PixelWorld-$version-linux-x64.tar.gz" PixelWorld
+          tar -C "$RUNNER_TEMP" -czf "dist/PixelWorld-$version-linux-$TAR_ARCH.tar.gz" PixelWorld
 
           # Debian / Ubuntu
           pkg="$RUNNER_TEMP/pkgroot"
@@ -183,8 +226,8 @@ jobs:
           ln -s /opt/PCL.PW/pcl_pw "$pkg/usr/bin/pcl-pw"
           install -m644 "$desktop" "$pkg/usr/share/applications/io.github.zhuzhi09.pcl_pw.desktop"
           install -m644 "$icon" "$pkg/usr/share/icons/hicolor/256x256/apps/io.github.zhuzhi09.pcl_pw.png"
-          sed "s/@VERSION@/$version/" packaging/linux/control > "$pkg/DEBIAN/control"
-          dpkg-deb --build --root-owner-group "$pkg" "dist/PixelWorld-$version-linux-amd64.deb"
+          sed -e "s/@VERSION@/$version/" -e "s/@ARCH@/$DEB_ARCH/" packaging/linux/control > "$pkg/DEBIAN/control"
+          dpkg-deb --build --root-owner-group "$pkg" "dist/PixelWorld-$version-linux-$DEB_ARCH.deb"
 
           # Fedora / openSUSE / RHEL
           rpmtop="$RUNNER_TEMP/rpmbuild"
@@ -195,9 +238,10 @@ jobs:
             -e "s|@STAGE@|$stage|g" \
             -e "s|@DESKTOP@|$desktop|g" \
             -e "s|@ICON@|$icon|g" \
+            -e "s|@ARCH@|$RPM_ARCH|g" \
             packaging/linux/pcl-pw.spec > "$spec"
           rpmbuild -bb --define "_topdir $rpmtop" "$spec"
-          cp "$rpmtop/RPMS/x86_64/pcl-pw-$version-1.x86_64.rpm" "dist/PixelWorld-$version-linux-x86_64.rpm"
+          cp "$rpmtop/RPMS/$RPM_ARCH/pcl-pw-$version-1.$RPM_ARCH.rpm" "dist/PixelWorld-$version-linux-$RPM_ARCH.rpm"
 
           # Arch / CachyOS / Manjaro
           archbuild="$RUNNER_TEMP/archbuild"
@@ -207,12 +251,15 @@ jobs:
             -e "s|@STAGE@|$stage|g" \
             -e "s|@DESKTOP@|$desktop|g" \
             -e "s|@ICON@|$icon|g" \
+            -e "s|@ARCH@|$RPM_ARCH|g" \
             packaging/linux/PKGBUILD > "$archbuild/PKGBUILD"
-          sed "s|^PKGEXT=.*|PKGEXT='.pkg.tar.zst'|" /etc/makepkg.conf > "$RUNNER_TEMP/makepkg.conf"
+          # Ubuntu 的 makepkg.conf 写的是 x86_64，按机器架构改掉
+          sed -e "s|^PKGEXT=.*|PKGEXT='.pkg.tar.zst'|" -e "s|^CARCH=.*|CARCH=\"$RPM_ARCH\"|" \
+            -e "s|^CHOST=.*|CHOST=\"$RPM_ARCH-pc-linux-gnu\"|" /etc/makepkg.conf > "$RUNNER_TEMP/makepkg.conf"
           (cd "$archbuild" && PACKAGER="Pixel World <paper_zhu@163.com>" \
             makepkg --config "$RUNNER_TEMP/makepkg.conf" --nodeps --noconfirm)
-          cp "$archbuild/pcl-pw-$version-1-x86_64.pkg.tar.zst" \
-            "dist/PixelWorld-$version-linux-x86_64.pkg.tar.zst"
+          cp "$archbuild/pcl-pw-$version-1-$RPM_ARCH.pkg.tar.zst" \
+            "dist/PixelWorld-$version-linux-$RPM_ARCH.pkg.tar.zst"
 
           # AppImage
           appdir="$RUNNER_TEMP/PixelWorld.AppDir"
@@ -224,24 +271,25 @@ jobs:
           cp packaging/linux/AppRun "$appdir/AppRun"
           chmod +x "$appdir/AppRun"
           curl -fL --retry 3 -o "$RUNNER_TEMP/appimagetool" \
-            https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+            "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$RPM_ARCH.AppImage"
           chmod +x "$RUNNER_TEMP/appimagetool"
-          ARCH=x86_64 "$RUNNER_TEMP/appimagetool" --appimage-extract-and-run \
-            "$appdir" "dist/PixelWorld-$version-linux-x86_64.AppImage"
+          ARCH="$RPM_ARCH" "$RUNNER_TEMP/appimagetool" --appimage-extract-and-run \
+            "$appdir" "dist/PixelWorld-$version-linux-$RPM_ARCH.AppImage"
       - uses: actions/upload-artifact@v4
         with:
-          name: linux
+          name: linux-${{ matrix.tar }}
           path: |
-            dist/*-linux-x64.tar.gz
-            dist/*-linux-amd64.deb
-            dist/*-linux-x86_64.rpm
-            dist/*-linux-x86_64.pkg.tar.zst
-            dist/*-linux-x86_64.AppImage
+            dist/*-linux-*.tar.gz
+            dist/*-linux-*.deb
+            dist/*-linux-*.rpm
+            dist/*-linux-*.pkg.tar.zst
+            dist/*-linux-*.AppImage
 
   publish:
-    needs: [windows, android, macos, linux]
-    # macOS 或 Linux 构建失败时仍然发布 Windows 与安卓版
-    if: ${{ !cancelled() && needs.windows.result == 'success' && needs.android.result == 'success' }}
+    needs: [windows, windows-arm64, android, macos, linux]
+    # macOS、Linux 或 ARM64 版构建失败时仍然发布 Windows 与安卓版
+    # 只有 main 与版本标签会发布；在其他分支手动运行时只构建，用来验证工作流
+    if: ${{ !cancelled() && (github.ref == 'refs/heads/main' || github.ref_type == 'tag') && needs.windows.result == 'success' && needs.android.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -252,14 +300,23 @@ jobs:
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
-          LINUX_RESULT: ${{ needs.linux.result }}
         run: |
           version=$(sed -n 's/^version:[[:space:]]*\([0-9.]*\).*/\1/p' pubspec.yaml)
           sha=${GITHUB_SHA::7}
           about="本软件是第三方基于 PCL 二次创作的产物，与 PCL 及其作者无关，请勿就本软件的问题打扰 PCL 作者。"
-          downloads=$'- Windows：安装包（`*-setup.exe`）或便携版（`*-portable.zip`）\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」'
-          if [ "$LINUX_RESULT" = "success" ]; then
-            downloads+=$'\n- Linux（测试版）：需要 Ubuntu 24.04 及以上（glibc 2.39+）\n  - `*-linux-amd64.deb`：Debian/Ubuntu 安装包\n  - `*-linux-x86_64.rpm`：Fedora/openSUSE/RHEL 安装包\n  - `*-linux-x86_64.pkg.tar.zst`：Arch / CachyOS / Manjaro 安装包，`sudo pacman -U 文件名`\n  - `*-linux-x86_64.AppImage`：下载后 `chmod +x` 直接运行\n  - `*-linux-x64.tar.gz`：解压后运行 `PixelWorld/pcl_pw`'
+          # 下载说明按实际产出的文件生成：某个平台或架构没有构建成功时不列出来
+          has() { compgen -G "dist/$1" >/dev/null; }
+          downloads=$'- Windows（x64）：安装包（`*-windows-x64-setup.exe`）或便携版（`*-windows-x64-portable.zip`）'
+          if has '*-windows-arm64-*'; then
+            downloads+=$'\n- Windows（ARM64，测试版）：`*-windows-arm64-setup.exe` 或 `*-windows-arm64-portable.zip`，骁龙等 ARM 处理器的 Windows 电脑原生运行'
+          fi
+          downloads+=$'\n- 安卓：`*-android-arm64.apk`，需要 Android 8.0 及以上、64 位 ARM 处理器'
+          if has '*-macos.dmg'; then
+            downloads+=$'\n- macOS：`*-macos.dmg`，需要 macOS 12 及以上，Apple 芯片与 Intel 通用。没有经过 Apple 公证，首次打开时如果提示无法验证开发者，请到「系统设置 → 隐私与安全性」中点「仍要打开」'
+          fi
+          if has '*-linux-*'; then
+            downloads+=$'\n- Linux（测试版）：需要 Ubuntu 24.04 及以上（glibc 2.39+）。x86_64 电脑选 `amd64` / `x86_64` / `x64`，ARM64 电脑选 `arm64` / `aarch64`'
+            downloads+=$'\n  - `*.deb`：Debian/Ubuntu 安装包\n  - `*.rpm`：Fedora/openSUSE/RHEL 安装包\n  - `*.pkg.tar.zst`：Arch / CachyOS / Manjaro 安装包，`sudo pacman -U 文件名`\n  - `*.AppImage`：下载后 `chmod +x` 直接运行\n  - `*.tar.gz`：解压后运行 `PixelWorld/pcl_pw`'
           fi
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             tag="$GITHUB_REF_NAME"

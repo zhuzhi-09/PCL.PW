@@ -3,7 +3,7 @@ Version:        @VERSION@
 Release:        1
 Summary:        Pixel World Launcher
 License:        Apache-2.0
-BuildArch:      x86_64
+BuildArch:      @ARCH@
 Requires:       gtk3, libX11, libXi, xz-libs, libstdc++, mesa-libGL, mesa-libEGL
 
 %description

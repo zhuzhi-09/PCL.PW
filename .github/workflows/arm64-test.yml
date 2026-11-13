@@ -1,0 +1,76 @@
+# 试验：在 GitHub 的 ARM64 机器上原生编译 Linux aarch64 与 Windows ARM64 版。
+# Flutter 还没有提供这两个平台的 SDK 压缩包，用 git 拉取对应版本；跑通后并入 release.yml
+name: ARM64 build test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ci/arm64]
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: 3.47.9
+
+jobs:
+  linux-arm64:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v5
+      - name: Dependencies
+        timeout-minutes: 20
+        run: bash .github/apt-install.sh clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libx11-dev libxi-dev file
+      - name: Flutter
+        run: |
+          git clone --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Build
+        run: |
+          set -euo pipefail
+          flutter --version
+          flutter config --no-analytics
+          flutter pub get
+          flutter build linux --release --no-tree-shake-icons
+          ls build/linux
+          file build/linux/*/release/bundle/pcl_pw build/linux/*/release/bundle/lib/*.so
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-arm64
+          path: build/linux/*/release/bundle
+          retention-days: 3
+
+  windows-arm64:
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/checkout@v5
+      - name: Flutter
+        shell: bash
+        run: |
+          git clone --depth 1 -b "$FLUTTER_VERSION" https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter --version
+          flutter config --no-analytics
+          flutter pub get
+          dart run tool/build_installer.dart
+          ls build/windows dist
+      # 读 PE 头确认是原生 ARM64（AA64）而不是 x64（8664）
+      - name: Check architecture
+        shell: pwsh
+        run: |
+          Get-ChildItem dist -Recurse -Include *.exe,*.dll | ForEach-Object {
+            $b = [IO.File]::ReadAllBytes($_.FullName)
+            $pe = [BitConverter]::ToInt32($b, 0x3c)
+            '{0:X4}  {1}' -f [BitConverter]::ToUInt16($b, $pe + 4), $_.Name
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-arm64
+          path: |
+            dist/*-setup.exe
+            dist/*-portable.zip
+          retention-days: 3

@@ -70,35 +70,12 @@ class CoverPalette {
     return [for (final c in picked) Color.fromARGB(255, (c[0] * .8).round(), (c[1] * .8).round(), (c[2] * .8).round())];
   }
 
-  /// 由主色组成的背景：两团径向光斑叠在一个斜向渐变上
-  Decoration background({BorderRadius? borderRadius}) {
-    final a = colors[0], c = colors[2];
-    return BoxDecoration(
-      borderRadius: borderRadius,
-      gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [c, a]),
-    );
-  }
-
-  /// 叠在 [background] 上的光斑（Flutter 的 BoxDecoration 只能有一个渐变，分两层画）
-  List<Widget> glows() => [
-    Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(center: const Alignment(.56, -.4), radius: .9, colors: [colors[0], colors[0].withValues(alpha: 0)]),
-        ),
-      ),
-    ),
-    Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(center: const Alignment(.9, .9), radius: .8, colors: [colors[1], colors[1].withValues(alpha: 0)]),
-        ),
-      ),
-    ),
-  ];
+  /// 由主色组成的纯色背景（界面默认不用渐变）
+  Decoration background({BorderRadius? borderRadius}) =>
+      BoxDecoration(borderRadius: borderRadius, color: colors[0]);
 }
 
-/// 封面背景：有封面时用取出的主色，否则用主题色的同色系渐变
+/// 封面背景：有封面时用取出的主色，否则用主题色压暗后的颜色；都是纯色
 class CoverBackground extends StatelessWidget {
   const CoverBackground({super.key, required this.iconPath, this.borderRadius, this.child});
 
@@ -122,7 +99,7 @@ class CoverBackground extends StatelessWidget {
           duration: const Duration(milliseconds: 250),
           decoration: palette.background(borderRadius: borderRadius),
           clipBehavior: borderRadius == null ? Clip.none : Clip.antiAlias,
-          child: Stack(children: [...palette.glows(), ?child]),
+          child: child,
         );
       },
     );

@@ -221,8 +221,10 @@ class _Rail extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final inset = MediaQuery.paddingOf(context).left;
-    // macOS 的红绿灯在左上角，图标从它们下面开始
-    final top = Platform.isMacOS ? 40.0 : 10.0;
+    // macOS 的红绿灯由原生代码挪到侧栏里水平居中、与顶栏中线对齐（macos/Runner/MainFlutterWindow.swift）：
+    // 侧栏加宽到能完整容纳它们，图标从它们下面留出空隙再开始
+    final top = Platform.isMacOS ? 64.0 : 10.0;
+    final width = Platform.isMacOS ? 84.0 : 76.0;
     Widget item(MainPage p, IconData icon, IconData active, String label) => _RailItem(
       icon: icon,
       activeIcon: active,
@@ -231,7 +233,7 @@ class _Rail extends StatelessWidget {
       onTap: () => onMain(p),
     );
     return Container(
-      width: 76 + inset,
+      width: width + inset,
       padding: EdgeInsets.fromLTRB(inset, top, 0, 10),
       color: scheme.surfaceContainerLow,
       child: Column(
@@ -411,7 +413,7 @@ class _TopBarState extends State<_TopBar> {
     return SizedBox(
       height: 56,
       child: Padding(
-        padding: EdgeInsets.only(left: sub != null ? 6 : 14, right: isDesktop && !nativeWindowButtons ? 0 : 14),
+        padding: EdgeInsets.only(left: (sub != null ? 6 : 14) + (Platform.isMacOS ? 8 : 0), right: isDesktop && !nativeWindowButtons ? 0 : 14),
         child: Row(
           children: [
             Expanded(child: titleArea),

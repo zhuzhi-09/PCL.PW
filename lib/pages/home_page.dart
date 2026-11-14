@@ -245,21 +245,8 @@ class _HeroCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: Stack(
         children: [
-          // 左侧压暗，保证文字清楚
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withValues(alpha: .55),
-                    Colors.black.withValues(alpha: .25),
-                    Colors.black.withValues(alpha: .02),
-                  ],
-                  stops: const [0, .5, 1],
-                ),
-              ),
-            ),
-          ),
+          // 均匀压暗，封面颜色很亮时白色文字也清楚
+          Positioned.fill(child: ColoredBox(color: Colors.black.withValues(alpha: .28))),
           if (v != null)
             Positioned(
               right: 16,
@@ -1141,11 +1128,7 @@ class _DesktopHero extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: scheme.outlineVariant.withValues(alpha: .4)),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [scheme.surfaceContainerLow, Color.lerp(scheme.surfaceContainerLow, scheme.primary, .08)!],
-        ),
+        color: scheme.surfaceContainerLow,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1282,12 +1265,7 @@ class _WorldTileState extends State<_WorldTile> {
             borderRadius: BorderRadius.circular(14),
             clipBehavior: Clip.antiAlias,
             child: Ink(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color.lerp(base, tint, _hover ? .45 : .32)!, base],
-                  stops: const [0, .55],
-                ),
-              ),
+              decoration: BoxDecoration(color: Color.lerp(base, tint, _hover ? .22 : .12)),
               child: InkWell(
                 onTap: widget.onTap,
                 child: Padding(

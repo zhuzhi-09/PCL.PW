@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi' show Abi;
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
@@ -171,7 +172,10 @@ bool get isInstalledWindowsBuild =>
     Platform.isWindows && File(p.join(p.dirname(Platform.resolvedExecutable), '.pw-install.json')).existsSync();
 
 /// 当前平台使用的发布文件；Linux 还没有发布包
-ReleaseAsset? assetFor(Release r, {bool? android, bool? windows, bool? macos, bool? installed}) {
+/// 当前程序的 Windows 架构：ARM64 版选 arm64 的安装包；x64 版（包括在 ARM 电脑上模拟运行的）选 x64
+String get windowsArch => Abi.current() == Abi.windowsArm64 ? 'arm64' : 'x64';
+
+ReleaseAsset? assetFor(Release r, {bool? android, bool? windows, bool? macos, bool? installed, String? arch}) {
   android ??= Platform.isAndroid;
   windows ??= Platform.isWindows;
   macos ??= Platform.isMacOS;
@@ -180,7 +184,8 @@ ReleaseAsset? assetFor(Release r, {bool? android, bool? windows, bool? macos, bo
   if (android) {
     suffix = '-android-arm64.apk';
   } else if (windows) {
-    suffix = installed ? '-windows-x64-setup.exe' : '-windows-x64-portable.zip';
+    final a = arch ?? windowsArch;
+    suffix = installed ? '-windows-$a-setup.exe' : '-windows-$a-portable.zip';
   } else if (macos) {
     suffix = '-macos.dmg';
   } else {

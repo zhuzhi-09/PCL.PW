@@ -7,6 +7,8 @@ set -uo pipefail
 opts=(-o Acquire::Retries=2 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20 -o DPkg::Lock::Timeout=60)
 # 第一项为空：先用系统默认的源
 mirrors=("" "http://mirrors.edge.kernel.org/ubuntu" "http://mirrors.mit.edu/ubuntu")
+# ARM 机器的软件源是 ubuntu-ports，上面的镜像只有 x86；只用默认源，多试几次
+if [ "$(dpkg --print-architecture)" != amd64 ]; then mirrors=("" "" ""); fi
 
 # 把 Ubuntu 官方源（含 Azure 镜像列表与安全更新源）替换成指定镜像；第三方源（如 packages.microsoft.com）不动
 current=""

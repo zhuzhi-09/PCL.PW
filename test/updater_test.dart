@@ -57,6 +57,27 @@ void main() {
     expect(isNewer(nightly, currentCommit: ''), isTrue);
   });
 
+  test('Windows 按程序架构选择安装包', () {
+    final r = rel(
+      'nightly',
+      files: [
+        'PixelWorld-nightly-abc1234-windows-x64-setup.exe',
+        'PixelWorld-nightly-abc1234-windows-x64-portable.zip',
+        'PixelWorld-nightly-abc1234-windows-arm64-setup.exe',
+        'PixelWorld-nightly-abc1234-windows-arm64-portable.zip',
+      ],
+    );
+    String? pick(String arch, bool installed) =>
+        assetFor(r, android: false, windows: true, installed: installed, arch: arch)?.name;
+    expect(pick('x64', true), 'PixelWorld-nightly-abc1234-windows-x64-setup.exe');
+    expect(pick('x64', false), 'PixelWorld-nightly-abc1234-windows-x64-portable.zip');
+    expect(pick('arm64', true), 'PixelWorld-nightly-abc1234-windows-arm64-setup.exe');
+    expect(pick('arm64', false), 'PixelWorld-nightly-abc1234-windows-arm64-portable.zip');
+    // 没有 arm64 包的旧发布：ARM64 版找不到对应的包，不会误装 x64 版
+    final old = rel('v0.3.3', files: ['PCL.PW-0.3.3-windows-x64-setup.exe']);
+    expect(assetFor(old, android: false, windows: true, installed: true, arch: 'arm64'), isNull);
+  });
+
   test('按平台选择发布文件', () {
     final r = rel(
       'v0.3.0',

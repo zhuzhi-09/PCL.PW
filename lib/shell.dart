@@ -221,7 +221,7 @@ class _Rail extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final inset = MediaQuery.paddingOf(context).left;
-    // macOS 的红绿灯在左上角（距左边约 20pt，在 56pt 高的标题栏里垂直居中）：
+    // macOS 的红绿灯由原生代码挪到侧栏里水平居中、与顶栏中线对齐（macos/Runner/MainFlutterWindow.swift）：
     // 侧栏加宽到能完整容纳它们，图标从它们下面留出空隙再开始
     final top = Platform.isMacOS ? 64.0 : 10.0;
     final width = Platform.isMacOS ? 84.0 : 76.0;

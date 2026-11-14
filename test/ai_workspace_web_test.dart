@@ -65,7 +65,20 @@ void main() {
 
   group('isBlockedHost', () {
     test('拒绝网址里写明的本机与内网地址', () {
-      for (final h in ['localhost', 'a.localhost', 'printer.local', '127.0.0.1', '10.0.0.8', '172.20.1.1', '192.168.1.1', '169.254.1.1', '0.0.0.0', '[::1]', 'fd00::1', 'fe80::1']) {
+      for (final h in [
+        'localhost',
+        'a.localhost',
+        'printer.local',
+        '127.0.0.1',
+        '10.0.0.8',
+        '172.20.1.1',
+        '192.168.1.1',
+        '169.254.1.1',
+        '0.0.0.0',
+        '[::1]',
+        'fd00::1',
+        'fe80::1',
+      ]) {
         expect(isBlockedHost(h), isTrue, reason: h);
       }
     });
@@ -79,7 +92,8 @@ void main() {
   test('解析必应结果（含 ck 跳转链接）', () {
     final target = 'https://modrinth.com/mod/sodium';
     final enc = 'a1${base64Url.encode(utf8.encode(target)).replaceAll('=', '')}';
-    final page = '''
+    final page =
+        '''
 <ol id="b_results">
   <li class="b_algo"><h2><a href="https://www.bing.com/ck/a?!&&p=1&u=$enc&ntb=1">Sodium - Modrinth</a></h2>
     <div class="b_caption"><p>A modern rendering engine for Minecraft.</p></div></li>
@@ -123,8 +137,18 @@ void main() {
   });
 
   test('解析 Exa 的 MCP 响应（SSE 与普通 JSON）', () {
-    const text = 'Title: Iris issue\nURL: https://github.com/IrisShaders/Iris/issues/3136\nPublished: 2026-10-01\nHighlights:\nIncompatibility between Iris and Sodium.\n\n---\n\nTitle: N/A\nURL: https://example.com/a\nText: Second   result';
-    final sse = 'event: message\ndata: ${jsonEncode({'jsonrpc': '2.0', 'id': 1, 'result': {'content': [{'type': 'text', 'text': text}]}})}\n\n';
+    const text =
+        'Title: Iris issue\nURL: https://github.com/IrisShaders/Iris/issues/3136\nPublished: 2026-10-01\nHighlights:\nIncompatibility between Iris and Sodium.\n\n---\n\nTitle: N/A\nURL: https://example.com/a\nText: Second   result';
+    final sse =
+        'event: message\ndata: ${jsonEncode({
+          'jsonrpc': '2.0',
+          'id': 1,
+          'result': {
+            'content': [
+              {'type': 'text', 'text': text},
+            ],
+          },
+        })}\n\n';
     final r = parseMcpResult(sse)!;
     final list = parseExa('${(r['content'] as List).first['text']}');
     expect(list.length, 2);
@@ -133,8 +157,59 @@ void main() {
     expect(list[0].snippet, 'Incompatibility between Iris and Sodium.');
     expect(list[1].title, 'https://example.com/a');
     expect(list[1].snippet, 'Second result');
-    expect(parseMcpResult(jsonEncode({'result': {'content': []}})), isNotNull);
-    expect(() => parseMcpResult(jsonEncode({'error': {'message': 'rate limited'}})), throwsA(isA<ToolError>()));
+    expect(
+      parseMcpResult(
+        jsonEncode({
+          'result': {'content': []},
+        }),
+      ),
+      isNotNull,
+    );
+    expect(
+      () => parseMcpResult(
+        jsonEncode({
+          'error': {'message': 'rate limited'},
+        }),
+      ),
+      throwsA(isA<ToolError>()),
+    );
+  });
+
+  test('解析 DeepSeek 搜索结果：优先用 summary，带上日期，跳过没有网址的', () {
+    final body = jsonEncode({
+      'results': [
+        {
+          'title': 'Sodium',
+          'url': 'https://modrinth.com/mod/sodium',
+          'snippet': 's',
+          'summary': '  A  rendering mod ',
+          'date': '2026-10-01T00:00:00Z',
+        },
+        {'title': '', 'url': 'https://example.com/a', 'snippet': 'only snippet', 'summary': '', 'date': null},
+        {'title': 'no url', 'url': ''},
+      ],
+    });
+    final list = parseDeepseekSearch(body);
+    expect(list.length, 2);
+    expect(list[0].snippet, '[2026-10-01] A rendering mod');
+    expect(list[1].title, 'https://example.com/a');
+    expect(list[1].snippet, 'only snippet');
+    expect(parseDeepseekSearch(jsonEncode({'results': []})), isEmpty);
+    expect(
+      parseDeepseekSearch(
+        jsonEncode({
+          'error': {'message': 'x'},
+        }),
+      ),
+      isEmpty,
+    );
+  });
+
+  test('DeepSeek 搜索只在模型接口是 DeepSeek 时借用模型的 Key', () {
+    expect(deepseekSearchKey('https://api.deepseek.com/v1', () => 'sk-model'), 'sk-model');
+    expect(deepseekSearchKey('https://api.deepseek.com', () => 'sk-model'), 'sk-model');
+    expect(deepseekSearchKey('https://api.openai.com/v1', () => 'sk-model'), '');
+    expect(deepseekSearchKey('https://api.deepseek.com.evil.example/v1', () => 'sk-model'), '');
   });
 
   group('系统代理解析', () {
@@ -151,10 +226,15 @@ HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings
       expect(r.bypass, contains('<local>'));
     });
     test('Windows：分协议的写法与关闭状态', () {
-      final r = parseWindowsProxy('    ProxyEnable    REG_DWORD    0x1\n    ProxyServer    REG_SZ    http=127.0.0.1:1080;https=127.0.0.1:1081;socks=127.0.0.1:1082\n')!;
+      final r = parseWindowsProxy(
+        '    ProxyEnable    REG_DWORD    0x1\n    ProxyServer    REG_SZ    http=127.0.0.1:1080;https=127.0.0.1:1081;socks=127.0.0.1:1082\n',
+      )!;
       expect(r.http, '127.0.0.1:1080');
       expect(r.https, '127.0.0.1:1081');
-      expect(parseWindowsProxy('    ProxyEnable    REG_DWORD    0x0\n    ProxyServer    REG_SZ    127.0.0.1:7890\n'), isNull);
+      expect(
+        parseWindowsProxy('    ProxyEnable    REG_DWORD    0x0\n    ProxyServer    REG_SZ    127.0.0.1:7890\n'),
+        isNull,
+      );
     });
     test('macOS scutil', () {
       const out = '''

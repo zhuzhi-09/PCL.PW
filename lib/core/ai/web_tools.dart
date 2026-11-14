@@ -19,7 +19,9 @@ import 'ai_tools.dart';
 // 默认用内置的搜索：Exa 公开的 MCP 接口（为 AI 设计，不填 Key 也能用，opencode 也是这样做的），
 // 失败时 DuckDuckGo，再失败时必应英文版；都不需要 Key。
 // 必应对程序发出的中文查询会返回不相关的结果（不报错），所以只作为后备，并固定用英文市场；也可以改用自己的 SearXNG
-// 或 Tavily / Brave / Serper。请求跟随系统代理；不按 DNS 解析结果拦截地址
+// 或 Tavily / Brave / Serper。
+// 可选 DeepSeek 的 Search / Fetch 接口（和模型无关，flash 也能用；国内直连）。它按次计费，所以默认不用，
+// 只有在设置里选了 DeepSeek 才会调用：搜索走它，抓网页被拦截时也用它的 Fetch 兜底。请求跟随系统代理；不按 DNS 解析结果拦截地址
 // （代理的 fake-ip、Tailscale 等网络下会误判），只拒绝网址里直接写明的本机与内网地址。
 
 class SearchResult {
@@ -33,6 +35,7 @@ class SearchResult {
 /// 可选的搜索引擎（设置里的 aiSearchEngine）
 const searchEngines = {
   'auto': '内置（Exa，失败时 DuckDuckGo、必应）',
+  'deepseek': 'DeepSeek（按次计费，可以用 DeepSeek 模型的 Key）',
   'exa': 'Exa（Key 可以不填）',
   'bing': '必应（英文结果更可靠）',
   'duckduckgo': 'DuckDuckGo',
@@ -45,7 +48,22 @@ const searchEngines = {
 bool searchEngineNeedsKey(String engine) => const {'tavily', 'brave', 'serper'}.contains(engine);
 
 /// 可以填 Key 的搜索引擎（Exa 不填也能用，填了额度更高）
-bool searchEngineTakesKey(String engine) => engine == 'exa' || searchEngineNeedsKey(engine);
+bool searchEngineTakesKey(String engine) => engine == 'exa' || engine == 'deepseek' || searchEngineNeedsKey(engine);
+
+const deepseekHost = 'api.deepseek.com';
+
+/// DeepSeek 搜索用的 Key：设置里单独填的优先；没填并且模型接口就是 DeepSeek 时用模型的 Key
+/// （Key 只会发给 DeepSeek 自己）
+String deepseekSearchKey(String aiBaseUrl, String Function() modelKey) {
+  final own = SearchKey.load('deepseek');
+  if (own.isNotEmpty) return own;
+  return Uri.tryParse(aiBaseUrl.trim())?.host.toLowerCase() == deepseekHost ? modelKey() : '';
+}
+
+/// 只有设置里选了 DeepSeek 时才返回 Key（按次计费，不在其他情况下偷偷调用）
+String _deepseekKeyOf(AppState state) => state.config.aiSearchEngine == 'deepseek'
+    ? deepseekSearchKey(state.config.aiBaseUrl, () => AiSettings.load(state.config).apiKey)
+    : '';
 
 /// 搜索服务的 Key：每个服务分开加密保存，和模型的 Key 也分开，切换服务时不会把一家的 Key 发给另一家
 abstract final class SearchKey {
@@ -71,7 +89,8 @@ abstract final class SearchKey {
   }
 }
 
-const _ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+const _ua =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
 /// 说明来源的 User-Agent：MediaWiki（Minecraft Wiki）等站点对冒充浏览器的请求会弹人机验证
 const _appUa = 'PixelWorld/${AppInfo.version} (+${AppInfo.repoUrl})';
@@ -134,7 +153,10 @@ Future<_Response> _request(
     final req = await _client.openUrl(hop == 0 ? method : 'GET', current).timeout(const Duration(seconds: 20));
     req.followRedirects = false;
     if (userAgent != null) req.headers.set(HttpHeaders.userAgentHeader, userAgent);
-    req.headers.set(HttpHeaders.acceptLanguageHeader, Platform.localeName.startsWith('zh') ? 'zh-CN,zh;q=0.9,en;q=0.7' : 'en;q=0.9');
+    req.headers.set(
+      HttpHeaders.acceptLanguageHeader,
+      Platform.localeName.startsWith('zh') ? 'zh-CN,zh;q=0.9,en;q=0.7' : 'en;q=0.9',
+    );
     headers.forEach(req.headers.set);
     if (hop == 0 && json != null) {
       req.headers.contentType = ContentType.json;
@@ -235,7 +257,9 @@ List<SearchResult> parseExa(String text) {
     if (url == null || url.isEmpty) continue;
     var title = RegExp(r'^Title:\s*(.+)$', multiLine: true).firstMatch(block)?.group(1)?.trim() ?? '';
     if (title == 'N/A') title = '';
-    final content = RegExp(r'^(?:Highlights|Text|Summary):\s*\n?([\s\S]*)$', multiLine: true).firstMatch(block)?.group(1)?.trim() ?? '';
+    final content =
+        RegExp(r'^(?:Highlights|Text|Summary):\s*\n?([\s\S]*)$', multiLine: true).firstMatch(block)?.group(1)?.trim() ??
+        '';
     var snippet = _clean(content);
     if (snippet.length > 400) snippet = '${snippet.substring(0, 400)}…';
     out.add(SearchResult(title.isEmpty ? url : title, url, snippet));
@@ -274,6 +298,70 @@ Future<List<SearchResult>> _exa(String q, int count) async {
   return list;
 }
 
+/// DeepSeek 的错误说明（OpenAI 兼容的 error 包装）
+String _deepseekError(_Response res) {
+  try {
+    final m = (jsonDecode(res.text) as Map)['error'];
+    if (m is Map && '${m['message'] ?? ''}'.isNotEmpty) return '${m['message']}';
+  } catch (_) {}
+  return switch (res.status) {
+    401 => 'Key 无效',
+    402 => '账户余额不足',
+    429 => '请求太频繁，稍后再试',
+    _ => 'HTTP ${res.status}',
+  };
+}
+
+/// DeepSeek 的搜索结果；summary 比 snippet 长，优先用
+List<SearchResult> parseDeepseekSearch(String body) {
+  final data = jsonDecode(body);
+  if (data is! Map || data['results'] is! List) return const [];
+  return [
+    for (final r in (data['results'] as List).whereType<Map>())
+      if ('${r['url'] ?? ''}'.isNotEmpty)
+        () {
+          final url = '${r['url']}';
+          final title = _clean('${r['title'] ?? ''}');
+          var text = _clean('${r['summary'] ?? ''}');
+          if (text.isEmpty) text = _clean('${r['snippet'] ?? ''}');
+          if (text.length > 500) text = '${text.substring(0, 500)}…';
+          final date = '${r['date'] ?? ''}';
+          final day = date.length >= 10 && date != 'null' ? date.substring(0, 10) : '';
+          return SearchResult(title.isEmpty ? url : title, url, day.isEmpty ? text : '[$day] $text');
+        }(),
+  ];
+}
+
+Future<List<SearchResult>> _deepseek(String key, String q, int count) async {
+  if (key.isEmpty) throw ToolError('DeepSeek 搜索需要 Key：在设置里填写，或把模型接口设为 DeepSeek');
+  // 查询最多 128 个字符
+  final query = q.length > 128 ? q.substring(0, 128) : q;
+  final res = await _request(
+    Uri.https(deepseekHost, '/v1/tools/search'),
+    method: 'POST',
+    headers: {'Authorization': 'Bearer $key'},
+    json: {'query': query, 'count': count},
+    maxBytes: 2 << 20,
+  );
+  if (res.status != 200) throw ToolError('DeepSeek 搜索失败：${_deepseekError(res)}');
+  final list = parseDeepseekSearch(res.text);
+  if (list.isEmpty) throw ToolError('DeepSeek 没有返回结果');
+  return list;
+}
+
+/// 用 DeepSeek 的 Fetch 接口读网页（返回 Markdown 正文），本地抓取被拦截时兜底
+Future<Map<String, String>> _deepseekFetch(String key, Uri url) async {
+  final res = await _request(
+    Uri.https(deepseekHost, '/v1/tools/fetch'),
+    method: 'POST',
+    headers: {'Authorization': 'Bearer $key'},
+    json: {'url': '$url'},
+  );
+  if (res.status != 200) throw ToolError('DeepSeek 也打不开：${_deepseekError(res)}');
+  final data = jsonDecode(res.text) as Map;
+  return {'title': '${data['title'] ?? ''}', 'text': '${data['content'] ?? ''}'.trim()};
+}
+
 Future<List<SearchResult>> _bing(String q, int count) async {
   // 中文市场对程序请求会给出不相关的结果；英文市场 / 国际版的结果正常
   final urls = [
@@ -305,8 +393,10 @@ Future<List<SearchResult>> _duckduckgo(String q) async {
 
 Future<List<SearchResult>> _searxng(String base, String q) async {
   if (base.trim().isEmpty) throw ToolError('没有设置 SearXNG 的地址');
-  final res = await _request(Uri.parse('${base.trim().replaceAll(RegExp(r'/+$'), '')}/search')
-      .replace(queryParameters: {'q': q, 'format': 'json'}));
+  final res = await _request(
+    Uri.parse('${base.trim().replaceAll(RegExp(r'/+$'), '')}/search')
+        .replace(queryParameters: {'q': q, 'format': 'json'}),
+  );
   final data = jsonDecode(res.text) as Map<String, dynamic>;
   return [
     for (final r in (data['results'] as List? ?? const []))
@@ -338,7 +428,11 @@ Future<List<SearchResult>> _keyed(String engine, String q, int count) async {
       final data = jsonDecode(res.text) as Map<String, dynamic>;
       return [
         for (final r in ((data['web'] as Map?)?['results'] as List? ?? const []))
-          SearchResult('${r['title'] ?? ''}', '${r['url'] ?? ''}', _clean(html.parseFragment('${r['description'] ?? ''}').text ?? '')),
+          SearchResult(
+            '${r['title'] ?? ''}',
+            '${r['url'] ?? ''}',
+            _clean(html.parseFragment('${r['description'] ?? ''}').text ?? ''),
+          ),
       ];
     default:
       final res = await _request(
@@ -356,12 +450,25 @@ Future<List<SearchResult>> _keyed(String engine, String q, int count) async {
 }
 
 /// 按设置搜索；auto 依次尝试必应和 DuckDuckGo
-Future<(String engine, List<SearchResult>)> webSearch(AppState state, String q, int count) =>
-    searchWith(state.config.aiSearchEngine, q, count, searxUrl: state.config.aiSearchUrl);
+Future<(String engine, List<SearchResult>)> webSearch(AppState state, String q, int count) => searchWith(
+  state.config.aiSearchEngine,
+  q,
+  count,
+  searxUrl: state.config.aiSearchUrl,
+  deepseekKey: _deepseekKeyOf(state),
+);
 
 /// 用指定的搜索引擎搜索；auto 依次尝试 DuckDuckGo 和必应
-Future<(String engine, List<SearchResult>)> searchWith(String engine, String q, int count, {String searxUrl = ''}) async {
+Future<(String engine, List<SearchResult>)> searchWith(
+  String engine,
+  String q,
+  int count, {
+  String searxUrl = '',
+  String deepseekKey = '',
+}) async {
   switch (engine) {
+    case 'deepseek':
+      return ('DeepSeek', await _deepseek(deepseekKey, q, count));
     case 'exa':
       return ('Exa', await _exa(q, count));
     case 'bing':
@@ -402,10 +509,13 @@ const _blockTags = {
 ({String title, String text}) extractPage(String page) {
   final doc = html.parse(page);
   final title = _clean(doc.querySelector('title')?.text ?? '');
-  for (final e in doc.querySelectorAll('script, style, noscript, svg, nav, footer, header, aside, form, iframe, template')) {
+  for (final e in doc.querySelectorAll(
+    'script, style, noscript, svg, nav, footer, header, aside, form, iframe, template',
+  )) {
     e.remove();
   }
-  final root = doc.querySelector('#mw-content-text') ??
+  final root =
+      doc.querySelector('#mw-content-text') ??
       doc.querySelector('article') ??
       doc.querySelector('main') ??
       doc.querySelector('[role=main]') ??
@@ -430,14 +540,23 @@ const _blockTags = {
   }
 
   walk(root);
-  final text = b
-      .toString()
-      .split('\n')
-      .map((l) => l.trim())
-      .join('\n')
-      .replaceAll(RegExp(r'\n{3,}'), '\n\n')
-      .trim();
+  final text = b.toString().split('\n').map((l) => l.trim()).join('\n').replaceAll(RegExp(r'\n{3,}'), '\n\n').trim();
   return (title: title, text: text);
+}
+
+/// 打开网页并提取正文；本地打不开（人机验证、被拒绝、网络错误）并且有 DeepSeek 的 Key 时，改用 DeepSeek 的 Fetch
+Future<Map<String, String>> fetchPageWithFallback(Uri url, {String deepseekKey = ''}) async {
+  try {
+    return await fetchPage(url);
+  } catch (e) {
+    // 不是文本内容时换一种方式也没用
+    if (deepseekKey.isEmpty || '$e'.contains('不是文本内容')) rethrow;
+    try {
+      return await _deepseekFetch(deepseekKey, url);
+    } catch (e2) {
+      throw ToolError('$e；$e2');
+    }
+  }
 }
 
 /// 打开网页并提取正文；遇到人机验证页时换说明来源的 User-Agent 重试一次
@@ -458,14 +577,17 @@ Future<Map<String, String>> fetchPage(Uri url) async {
 /// Minecraft Wiki 搜索（MediaWiki API）
 Future<List<SearchResult>> searchMcWiki(String q, {bool english = false}) async {
   final host = english ? 'minecraft.wiki' : 'zh.minecraft.wiki';
-  final res = await _request(Uri.https(host, '/api.php', {
-    'action': 'query',
-    'list': 'search',
-    'srsearch': q,
-    'srlimit': '8',
-    'format': 'json',
-    'utf8': '1',
-  }), userAgent: _appUa);
+  final res = await _request(
+    Uri.https(host, '/api.php', {
+      'action': 'query',
+      'list': 'search',
+      'srsearch': q,
+      'srlimit': '8',
+      'format': 'json',
+      'utf8': '1',
+    }),
+    userAgent: _appUa,
+  );
   if (isChallengePage(res.status, res.text)) throw ToolError('Minecraft Wiki 要求人机验证，暂时无法搜索');
   final data = jsonDecode(res.text) as Map<String, dynamic>;
   return [
@@ -514,10 +636,13 @@ List<AiToolDef> webTools(AppState state) => [
       'web_search',
       '用搜索引擎搜索网页，返回标题、网址和摘要。需要详细内容时再用 web_fetch 打开网址。'
           '游戏机制、物品、版本内容优先用 mcwiki_search；找模组用 search_mods。',
-      _schema({
-        'query': {'type': 'string', 'description': '搜索词'},
-        'count': {'type': 'integer', 'description': '结果数量，1–10，默认 6'},
-      }, ['query']),
+      _schema(
+        {
+          'query': {'type': 'string', 'description': '搜索词'},
+          'count': {'type': 'integer', 'description': '结果数量，1–10，默认 6'},
+        },
+        ['query'],
+      ),
     ),
     kind: ToolKind.read,
     label: '联网搜索',
@@ -525,14 +650,18 @@ List<AiToolDef> webTools(AppState state) => [
       final q = '${a['query'] ?? ''}'.trim();
       if (q.isEmpty) throw ToolError('需要 query');
       final count = ((a['count'] as num?)?.toInt() ?? 6).clamp(1, 10);
-      return ToolPlan('搜索「$q」', () => _cached('s:${state.config.aiSearchEngine}:$count:$q', () async {
-        final (engine, list) = await webSearch(state, q, count);
-        if (list.isEmpty) return '没有搜索到「$q」的结果（$engine）';
-        final rows = [
-          for (final (i, r) in list.take(count).indexed) '${i + 1}. ${r.title}\n   ${r.url}${r.snippet.isEmpty ? '' : '\n   ${r.snippet}'}',
-        ];
-        return '搜索「$q」（$engine）$_untrusted\n${rows.join('\n')}';
-      }));
+      return ToolPlan(
+        '搜索「$q」',
+        () => _cached('s:${state.config.aiSearchEngine}:$count:$q', () async {
+          final (engine, list) = await webSearch(state, q, count);
+          if (list.isEmpty) return '没有搜索到「$q」的结果（$engine）';
+          final rows = [
+            for (final (i, r) in list.take(count).indexed)
+              '${i + 1}. ${r.title}\n   ${r.url}${r.snippet.isEmpty ? '' : '\n   ${r.snippet}'}',
+          ];
+          return '搜索「$q」（$engine）$_untrusted\n${rows.join('\n')}';
+        }),
+      );
     },
   ),
   AiToolDef(
@@ -540,10 +669,13 @@ List<AiToolDef> webTools(AppState state) => [
       'web_fetch',
       '打开一个网页，提取正文（纯文本）。内容较长时分段返回，用 start 继续读取后面的部分。'
           '不要用它调用 Modrinth 的 API：模组、光影、资源包的搜索和版本兼容用 search_resources / get_project。',
-      _schema({
-        'url': {'type': 'string', 'description': 'http 或 https 网址'},
-        'start': {'type': 'integer', 'description': '从正文的第几个字符开始，默认 0'},
-      }, ['url']),
+      _schema(
+        {
+          'url': {'type': 'string', 'description': 'http 或 https 网址'},
+          'start': {'type': 'integer', 'description': '从正文的第几个字符开始，默认 0'},
+        },
+        ['url'],
+      ),
     ),
     kind: ToolKind.read,
     label: '打开网页',
@@ -554,7 +686,10 @@ List<AiToolDef> webTools(AppState state) => [
       if (isBlockedHost(url.host)) throw ToolError('不能访问本机或内网地址：${url.host}');
       final start = ((a['start'] as num?)?.toInt() ?? 0).clamp(0, 1 << 30);
       return ToolPlan('打开 ${url.host}${url.path.length > 40 ? '${url.path.substring(0, 40)}…' : url.path}', () async {
-        final page = await _cached('f:$url', () async => jsonEncode(await fetchPage(url)));
+        final page = await _cached(
+          'f:$url',
+          () async => jsonEncode(await fetchPageWithFallback(url, deepseekKey: _deepseekKeyOf(state))),
+        );
         final data = jsonDecode(page) as Map<String, dynamic>;
         final text = '${data['text']}';
         if (text.isEmpty) return '这个网页没有可读的正文（可能需要登录，或内容由脚本生成）';
@@ -570,14 +705,17 @@ List<AiToolDef> webTools(AppState state) => [
     spec: AiTool(
       'mcwiki_search',
       '在 Minecraft Wiki 中搜索条目（物品、方块、生物、游戏机制、版本更新内容）。返回条目标题、摘要和网址，再用 web_fetch 打开条目阅读。',
-      _schema({
-        'query': {'type': 'string', 'description': '搜索词'},
-        'lang': {
-          'type': 'string',
-          'enum': ['zh', 'en'],
-          'description': 'zh 为中文 Wiki（默认），en 为英文 Wiki',
+      _schema(
+        {
+          'query': {'type': 'string', 'description': '搜索词'},
+          'lang': {
+            'type': 'string',
+            'enum': ['zh', 'en'],
+            'description': 'zh 为中文 Wiki（默认），en 为英文 Wiki',
+          },
         },
-      }, ['query']),
+        ['query'],
+      ),
     ),
     kind: ToolKind.read,
     label: '搜索 Minecraft Wiki',
@@ -585,14 +723,17 @@ List<AiToolDef> webTools(AppState state) => [
       final q = '${a['query'] ?? ''}'.trim();
       if (q.isEmpty) throw ToolError('需要 query');
       final host = a['lang'] == 'en' ? 'minecraft.wiki' : 'zh.minecraft.wiki';
-      return ToolPlan('在 Minecraft Wiki 中搜索「$q」', () => _cached('w:$host:$q', () async {
-        final list = await searchMcWiki(q, english: a['lang'] == 'en');
-        if (list.isEmpty) return 'Minecraft Wiki 中没有找到「$q」';
-        return [
-          'Minecraft Wiki 搜索「$q」$_untrusted',
-          for (final r in list) '- ${r.title}\n  ${r.url}\n  ${r.snippet}',
-        ].join('\n');
-      }));
+      return ToolPlan(
+        '在 Minecraft Wiki 中搜索「$q」',
+        () => _cached('w:$host:$q', () async {
+          final list = await searchMcWiki(q, english: a['lang'] == 'en');
+          if (list.isEmpty) return 'Minecraft Wiki 中没有找到「$q」';
+          return [
+            'Minecraft Wiki 搜索「$q」$_untrusted',
+            for (final r in list) '- ${r.title}\n  ${r.url}\n  ${r.snippet}',
+          ].join('\n');
+        }),
+      );
     },
   ),
 ];

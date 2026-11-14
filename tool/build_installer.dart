@@ -42,7 +42,15 @@ Future<void> main() async {
     multiLine: true,
   ).firstMatch(File(p.join(root, 'pubspec.yaml')).readAsStringSync())!.group(1)!;
   final windir = Platform.environment['WINDIR'] ?? r'C:\Windows';
-  final csc = p.join(windir, 'Microsoft.NET', 'Framework64', 'v4.0.30319', 'csc.exe');
+  // ARM64 版 Windows 上 64 位编译器可能在 FrameworkArm64 下；编出的外壳是 AnyCPU，两种都能用
+  final csc =
+      [
+        for (final dir in ['Framework64', 'FrameworkArm64'])
+          p.join(windir, 'Microsoft.NET', dir, 'v4.0.30319', 'csc.exe'),
+      ].firstWhere(
+        (f) => File(f).existsSync(),
+        orElse: () => p.join(windir, 'Microsoft.NET', 'Framework64', 'v4.0.30319', 'csc.exe'),
+      );
   // 用系统自带的 bsdtar 压缩；Git Bash 里的 tar 不支持 zip
   final tar = p.join(windir, 'System32', 'tar.exe');
 
@@ -54,11 +62,17 @@ Future<void> main() async {
   ];
   await run('flutter', ['build', 'windows', '--release', '--no-tree-shake-icons', ...defines], cwd: root);
 
+  // Flutter 按本机架构输出到 build/windows/x64 或 build/windows/arm64；也可以用 PW_ARCH 指定
+  String release(String arch) => p.join(root, 'build', 'windows', arch, 'runner', 'Release');
+  final arch =
+      Platform.environment['PW_ARCH'] ??
+      (Directory(release('arm64')).existsSync() && !Directory(release('x64')).existsSync() ? 'arm64' : 'x64');
+  stdout.writeln('架构：$arch');
   final dist = Directory(p.join(root, 'dist'));
-  final name = 'PixelWorld-$version-windows-x64';
+  final name = 'PixelWorld-$version-windows-$arch';
   final stage = Directory(p.join(dist.path, name));
   if (stage.existsSync()) await stage.delete(recursive: true);
-  await copyTree(Directory(p.join(root, 'build', 'windows', 'x64', 'runner', 'Release')), stage);
+  await copyTree(Directory(release(arch)), stage);
   // Flutter 的可执行文件名不能带点，发布时改名（和 lib/installer/installer_core.dart 的 exeName 一起改）
   await File(p.join(stage.path, 'pcl_pw.exe')).rename(p.join(stage.path, 'PCL.PW.exe'));
 
